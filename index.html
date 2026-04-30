@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DMD 82 — Rallye Citoyen 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+  :root {
+    --navy:     #1a2744;
+    --navy-lt:  #243358;
+    --gold:     #b8932a;
+    --gold-lt:  #f5ead4;
+    --gold-mid: #e8d090;
+    --bg:       #f2f0eb;
+    --bg2:      #e8e5de;
+    --white:    #ffffff;
+    --text:     #1a1e2e;
+    --text2:    #4a5068;
+    --text3:    #8a90a8;
+    --border:   #dcd8ce;
+    --green:    #1a5a32;
+    --shadow:   rgba(26,39,68,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    padding: 40px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Motif de fond subtil */
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.015) 0px,
+      rgba(255,255,255,0.015) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+    pointer-events: none;
+  }
+
+  .logo-wrap {
+    margin-bottom: 18px;
+    position: relative;
+  }
+
+  .logo-wrap img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 24px rgba(0,0,0,0.4));
+  }
+
+  .org-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 10px;
+  }
+
+  .site-title {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 28px;
+    color: var(--white);
+    letter-spacing: .02em;
+    margin-bottom: 14px;
+  }
+
+  /* Thème */
+  .theme-wrap {
+    display: inline-block;
+    border: 1px solid rgba(184,147,42,0.4);
+    border-radius: 30px;
+    padding: 7px 18px;
+    margin-bottom: 18px;
+    background: rgba(184,147,42,0.1);
+  }
+
+  .theme-main {
+    font-family: 'Libre Baskerville', serif;
+    font-style: italic;
+    font-size: 13px;
+    color: var(--gold-mid);
+    letter-spacing: .02em;
+  }
+
+  .theme-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 3px;
+    font-style: italic;
+    letter-spacing: .03em;
+  }
+
+  .site-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .meta-pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    padding: 5px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+
+  .meta-pill.date {
+    background: var(--gold);
+    color: var(--navy);
+  }
+
+  .meta-pill.lieu {
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.65);
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 36px 20px 60px;
+    width: 100%;
+  }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── GRILLE ── */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
+
+  /* ── TUILE ── */
+  .tile {
+    display: block;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--white);
+    padding: 24px 22px 20px;
+    transition: all .22s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  .tile::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--navy), var(--gold));
+    border-radius: 16px 16px 0 0;
+    opacity: 0;
+    transition: opacity .22s;
+  }
+
+  .tile:hover {
+    box-shadow: 0 8px 28px var(--shadow);
+    transform: translateY(-3px);
+    border-color: var(--gold-mid);
+  }
+
+  .tile:hover::before { opacity: 1; }
+
+  .tile.disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    pointer-events: none;
+    box-shadow: none;
+  }
+
+  .tile-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .tile-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    color: var(--text3);
+    text-transform: uppercase;
+  }
+
+  .tile-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .05em;
+    padding: 3px 9px;
+    border-radius: 12px;
+    text-transform: uppercase;
+  }
+
+  .badge-ready { background: #d4edda; color: var(--green); }
+  .badge-soon  { background: var(--gold-lt); color: var(--gold); }
+
+  .tile-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 14px;
+    background: var(--bg);
+  }
+
+  .tile-title {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+
+  .tile-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.5;
+    font-weight: 300;
+  }
+
+  .tile-cta {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--text3);
+    transition: color .2s;
+  }
+
+  .tile:hover .tile-cta { color: var(--gold); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy);
+    padding: 16px 24px;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+  }
+
+  footer strong { color: rgba(184,147,42,0.65); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-wrap">
+    <!-- ⚠️ Remplacez par le nom exact de votre fichier logo sur GitHub -->
+    <img src="LogoRC2026.png"
+         alt="Logo Rallye Citoyen 2026"
+         onerror="this.style.display='none'">
+  </div>
+  <div class="org-label">Délégation Militaire Départementale 82</div>
+  <div class="site-title">Rallye Citoyen 2026</div>
+  <div class="theme-wrap">
+    <div class="theme-main">« Soigner, Secourir, Servir »</div>
+    <div class="theme-sub">Le soin comme devoir, le courage comme héritage</div>
+  </div>
+  <div class="site-meta">
+    <span class="meta-pill date">12 mai 2026</span>
+    <span class="meta-pill lieu">Complexe Jacques Chirac · Montauban</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="section-label">PC Organisation</div>
+
+  <div class="grid">
+
+    <a class="tile" href="fil-rouge.html">
+      <div class="tile-top">
+        <span class="tile-num">01</span>
+        <span class="tile-badge badge-ready">Disponible</span>
+      </div>
+      <div class="tile-icon">📋</div>
+      <div class="tile-title">Fil Rouge</div>
+      <div class="tile-desc">Saisie et correction des réponses des équipes aux 5 feuillets</div>
+      <div class="tile-cta">Accéder →</div>
+    </a>
+
+    <a class="tile disabled" href="#">
+      <div class="tile-top">
+        <span class="tile-num">02</span>
+        <span class="tile-badge badge-soon">À venir</span>
+      </div>
+      <div class="tile-icon">⚖️</div>
+      <div class="tile-title">Bonus / Malus</div>
+      <div class="tile-desc">Attribution des ajustements de points par équipe</div>
+      <div class="tile-cta">Bientôt disponible</div>
+    </a>
+
+    <a class="tile disabled" href="#">
+      <div class="tile-top">
+        <span class="tile-num">03</span>
+        <span class="tile-badge badge-soon">À venir</span>
+      </div>
+      <div class="tile-icon">📊</div>
+      <div class="tile-title">Résultats</div>
+      <div class="tile-desc">Scores en temps réel par équipe et par atelier</div>
+      <div class="tile-cta">Bientôt disponible</div>
+    </a>
+
+    <a class="tile disabled" href="#">
+      <div class="tile-top">
+        <span class="tile-num">04</span>
+        <span class="tile-badge badge-soon">À venir</span>
+      </div>
+      <div class="tile-icon">🏆</div>
+      <div class="tile-title">Classement</div>
+      <div class="tile-desc">Classement général, comportement et prix spéciaux en direct</div>
+      <div class="tile-cta">Bientôt disponible</div>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  Trinôme Académique · <strong>Tarn-et-Garonne</strong> · 8ᵉ édition · Usage interne
+</footer>
+
+</body>
+</html>
