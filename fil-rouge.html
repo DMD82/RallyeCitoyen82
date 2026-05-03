@@ -3,166 +3,619 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fil Rouge — Rallye Citoyen 82</title>
+<title>Fil Rouge — Rallye Citoyen 2026</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
   :root {
-    --bg:      #0e0f11;
-    --bg2:     #161820;
-    --bg3:     #1e2028;
-    --border:  #2e3040;
-    --border2: #3d4055;
-    --text:    #d8dae8;
-    --text2:   #8890a8;
-    --text3:   #555d75;
-    --accent:  #c8a84b;
-    --red:     #c0392b;
-    --green:   #1d7a4a;
-    --white:   #f0f2f8;
-    --f1: #1a3a6b; --f2: #6b1a1a; --f3: #1a5a32; --f4: #5a3e10; --f5: #3a1a5a;
+    --navy:     #1a2744;
+    --navy-lt:  #243358;
+    --gold:     #b8932a;
+    --gold-lt:  #f5ead4;
+    --gold-mid: #e8d090;
+    --bg:       #f2f0eb;
+    --bg2:      #e8e5de;
+    --white:    #ffffff;
+    --text:     #1a1e2e;
+    --text2:    #4a5068;
+    --text3:    #8a90a8;
+    --border:   #dcd8ce;
+    --border2:  #c8c4b8;
+    --green:    #1a5a32;
+    --red:      #8b1a1a;
+    --shadow:   rgba(26,39,68,0.08);
+
+    /* Feuillets */
+    --f1: #1a2744; --f1-lt: #e8edf5;
+    --f2: #6b1a1a; --f2-lt: #f5e8e8;
+    --f3: #1a5a32; --f3-lt: #e8f5ed;
+    --f4: #5a3e10; --f4-lt: #f5eed8;
+    --f5: #3a1a5a; --f5-lt: #ede8f5;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
 
-  .app-label { padding: 10px 16px 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: var(--text3); }
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
-  nav { display: flex; border-bottom: 1px solid var(--border); padding: 0 16px; margin-top: 4px; }
-  .tab { padding: 10px 14px; font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 600; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; display: flex; align-items: center; gap: 7px; }
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    padding: 20px 24px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.015) 0px,
+      rgba(255,255,255,0.015) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+    pointer-events: none;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .header-logo {
+    width: 48px; height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3));
+  }
+
+  .header-text { flex: 1; }
+
+  .header-back {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    text-decoration: none;
+    transition: color .15s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .header-back:hover { color: var(--gold-mid); }
+
+  .header-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--gold-mid);
+    margin-bottom: 3px;
+    opacity: 0.7;
+  }
+
+  .header-title {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--white);
+  }
+
+  /* ── NAV ── */
+  nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    padding: 0 20px;
+    max-width: 780px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  /* Trick pour étendre la bordure full width */
+  .nav-wrap {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab {
+    padding: 11px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    transition: color .15s, border-color .15s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .tab:hover { color: var(--text2); }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .tab .n { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 1px 6px; border-radius: 3px; }
-  .tab.active .n { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
 
-  main { max-width: 780px; margin: 0 auto; padding: 16px 16px 60px; }
+  .tab .n {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text3);
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all .15s;
+  }
+  .tab.active .n { background: var(--navy); color: var(--white); border-color: var(--navy); }
+
+  /* ── MAIN ── */
+  main { flex: 1; max-width: 780px; margin: 0 auto; padding: 20px 20px 60px; width: 100%; }
   .panel { display: none; }
   .panel.active { display: block; }
 
-  .section { border: 1px solid var(--border); border-radius: 4px; margin-bottom: 12px; background: var(--bg2); overflow: hidden; }
-  .section-head { padding: 9px 14px; font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--text2); border-bottom: 1px solid var(--border); background: var(--bg3); display: flex; align-items: center; justify-content: space-between; }
-  .section-body { padding: 14px; }
+  /* ── SECTION ── */
+  .section {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
 
+  .section-head {
+    padding: 10px 16px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  .section-body { padding: 16px; }
+
+  /* ── SELECT ÉQUIPE ── */
   .select-wrap { position: relative; }
-  .select-wrap select { width: 100%; padding: 10px 36px 10px 12px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 3px; color: var(--white); font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; font-weight: 500; appearance: none; cursor: pointer; transition: border-color .15s; }
-  .select-wrap select:focus { outline: none; border-color: var(--accent); }
-  .select-wrap::after { content: '▾'; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 13px; pointer-events: none; }
-  .equipe-meta { margin-top: 7px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); min-height: 16px; letter-spacing: .03em; }
-  .equipe-meta.warn { color: var(--accent); }
+  .select-wrap select {
+    width: 100%;
+    padding: 11px 36px 11px 14px;
+    background: var(--bg);
+    border: 1.5px solid var(--border2);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    appearance: none;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .select-wrap select:focus {
+    outline: none;
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(26,39,68,0.08);
+  }
+  .select-wrap::after {
+    content: '▾';
+    position: absolute; right: 13px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3); font-size: 13px; pointer-events: none;
+  }
 
-  .feuillet { border: 1px solid var(--border); border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
-  .feuillet-head { padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .feuillet-head.f1 { background: var(--f1); } .feuillet-head.f2 { background: var(--f2); }
-  .feuillet-head.f3 { background: var(--f3); } .feuillet-head.f4 { background: var(--f4); }
+  .equipe-meta {
+    margin-top: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    min-height: 16px;
+    letter-spacing: .03em;
+  }
+  .equipe-meta.warn { color: var(--gold); font-weight: 600; }
+
+  /* ── FEUILLET ── */
+  .feuillet {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  .feuillet-head {
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .feuillet-head.f1 { background: var(--f1); }
+  .feuillet-head.f2 { background: var(--f2); }
+  .feuillet-head.f3 { background: var(--f3); }
+  .feuillet-head.f4 { background: var(--f4); }
   .feuillet-head.f5 { background: var(--f5); }
-  .feuillet-label { font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,0.9); }
-  .feuillet-score { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.55); background: rgba(0,0,0,0.25); padding: 2px 9px; border-radius: 2px; letter-spacing: .04em; }
-  .feuillet-body { background: var(--bg2); padding: 12px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .feuillet-label {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: rgba(255,255,255,0.95);
+    letter-spacing: .01em;
+  }
+
+  .feuillet-score {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.2);
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: .04em;
+  }
+
+  .feuillet-body {
+    background: var(--white);
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
   @media (max-width: 520px) { .feuillet-body { grid-template-columns: 1fr; } }
 
+  /* ── QUESTION ── */
   .q-row { display: flex; align-items: flex-start; gap: 8px; }
-  .q-id { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); min-width: 24px; padding-top: 1px; letter-spacing: .02em; }
+  .q-id {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    min-width: 24px;
+    padding-top: 2px;
+    letter-spacing: .02em;
+    font-weight: 600;
+  }
   .q-body { flex: 1; }
-  .q-text { font-size: 12px; color: var(--text2); margin-bottom: 6px; line-height: 1.3; }
-  .q-btns { display: flex; gap: 4px; }
-  .cbtn { width: 28px; height: 28px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 2px; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; color: var(--text3); cursor: pointer; transition: all .12s; display: flex; align-items: center; justify-content: center; }
-  .cbtn:hover { border-color: var(--text2); color: var(--text); }
-  .cbtn.on { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+  .q-text { font-size: 12px; color: var(--text2); margin-bottom: 7px; line-height: 1.35; font-weight: 400; }
+  .q-btns { display: flex; gap: 5px; }
 
-  .score-bar { border: 1px solid var(--border); border-radius: 4px; background: var(--bg2); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .score-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); }
-  .score-val { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 24px; color: var(--accent); letter-spacing: .04em; }
+  .cbtn {
+    width: 30px; height: 30px;
+    background: var(--bg);
+    border: 1.5px solid var(--border2);
+    border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text3);
+    cursor: pointer;
+    transition: all .12s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cbtn:hover { border-color: var(--navy); color: var(--navy); background: var(--bg2); }
 
-  .actions { display: flex; gap: 8px; flex-wrap: wrap; }
-  .btn { padding: 9px 16px; border: 1px solid var(--border2); border-radius: 3px; background: var(--bg3); color: var(--text); font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 600; font-size: 13px; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 6px; }
-  .btn:hover { border-color: var(--text2); color: var(--white); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--bg); font-weight: 700; }
-  .btn.primary:hover { filter: brightness(1.1); }
-  .btn.danger { border-color: var(--red); color: var(--red); }
-  .btn.danger:hover { background: var(--red); color: var(--white); }
-  .btn:disabled { opacity: .4; cursor: not-allowed; filter: none; }
+  /* Couleurs sélection par feuillet */
+  .cbtn.on.f1 { background: var(--f1); border-color: var(--f1); color: white; }
+  .cbtn.on.f2 { background: var(--f2); border-color: var(--f2); color: white; }
+  .cbtn.on.f3 { background: var(--f3); border-color: var(--f3); color: white; }
+  .cbtn.on.f4 { background: var(--f4); border-color: var(--f4); color: white; }
+  .cbtn.on.f5 { background: var(--f5); border-color: var(--f5); color: white; }
 
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+  /* ── SCORE BAR ── */
+  .score-bar {
+    background: var(--navy);
+    border-radius: 16px;
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(26,39,68,0.2);
+  }
+  .score-left { }
+  .score-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 2px;
+  }
+  .score-detail {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    font-style: italic;
+  }
+  .score-val {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 26px;
+    color: var(--gold-mid);
+    letter-spacing: .04em;
+  }
+
+  /* ── BOUTONS ── */
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn {
+    padding: 10px 18px;
+    border: 1.5px solid var(--border2);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--text);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex; align-items: center; gap: 7px;
+    box-shadow: 0 1px 4px var(--shadow);
+  }
+  .btn:hover { border-color: var(--border2); box-shadow: 0 3px 10px var(--shadow); transform: translateY(-1px); }
+  .btn.primary { background: var(--navy); border-color: var(--navy); color: white; font-weight: 700; }
+  .btn.primary:hover { background: var(--navy-lt); border-color: var(--navy-lt); }
+  .btn.danger { border-color: #e0c0c0; color: var(--red); }
+  .btn.danger:hover { background: #fdf0f0; }
+  .btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; box-shadow: none; }
+
+  /* ── MODAL ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,39,68,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 200; display: none;
+    align-items: center; justify-content: center; padding: 20px;
+  }
   .overlay.on { display: flex; }
-  .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 4px; padding: 24px; max-width: 380px; width: 100%; }
-  .modal-title { font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 700; font-size: 16px; letter-spacing: .04em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
-  .modal-body { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; }
-  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .modal {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 400px; width: 100%;
+    box-shadow: 0 20px 60px rgba(26,39,68,0.2);
+  }
+  .modal-title {
+    font-family: 'Libre Baskerville', serif;
+    font-weight: 700; font-size: 18px;
+    color: var(--navy); margin-bottom: 10px;
+  }
+  .modal-body { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 22px; font-weight: 300; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
-  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--bg3); border: 1px solid var(--border2); color: var(--text); padding: 10px 20px; border-radius: 3px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 999; transition: transform .25s ease; letter-spacing: .04em; white-space: nowrap; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+  /* ── TOAST ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(70px);
+    background: var(--navy);
+    color: white;
+    padding: 11px 22px;
+    border-radius: 30px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    z-index: 999;
+    transition: transform .25s ease;
+    letter-spacing: .04em;
+    box-shadow: 0 8px 30px rgba(26,39,68,0.25);
+    white-space: nowrap;
+  }
   .toast.on { transform: translateX(-50%) translateY(0); }
-  .toast.ok  { border-color: var(--green); color: #5ecf8a; }
-  .toast.err { border-color: var(--red); color: #e07070; }
-  .toast.wrn { border-color: var(--accent); color: var(--accent); }
+  .toast.ok  { background: var(--green); }
+  .toast.err { background: var(--red); }
+  .toast.wrn { background: var(--gold); color: var(--navy); }
 
-  .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--accent); border-radius: 50%; animation: rot .6s linear infinite; }
+  /* ── SPINNER ── */
+  .spin {
+    display: inline-block; width: 14px; height: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: rot .6s linear infinite;
+  }
   @keyframes rot { to { transform: rotate(360deg); } }
 
-  .tbl-wrap { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
-  .tbl-head { background: var(--bg3); border-bottom: 1px solid var(--border); padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--text2); }
-  .tbl-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); background: var(--bg); border: 1px solid var(--border); padding: 1px 7px; border-radius: 2px; }
-  table { width: 100%; border-collapse: collapse; }
-  thead tr { background: var(--bg3); }
-  th { padding: 7px 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); text-align: center; border-bottom: 1px solid var(--border); }
-  th:first-child { text-align: left; }
-  td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(255,255,255,0.02); }
-  .eq-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; color: var(--accent); }
-  .eq-nom { font-size: 11px; color: var(--text3); margin-top: 1px; }
-  .chip { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 2px; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px; }
-  .chip.f1 { background: rgba(26,58,107,0.4); color: #7aaae8; }
-  .chip.f2 { background: rgba(107,26,26,0.4); color: #e87a7a; }
-  .chip.f3 { background: rgba(26,90,50,0.4); color: #7ae8a0; }
-  .chip.f4 { background: rgba(90,62,16,0.4); color: #e8c07a; }
-  .chip.f5 { background: rgba(58,26,90,0.4); color: #c07ae8; }
-  .chip.tot { background: var(--accent); color: var(--bg); width: auto; padding: 0 8px; }
-  .btn-det { background: none; border: 1px solid var(--border); border-radius: 2px; padding: 3px 9px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); cursor: pointer; letter-spacing: .04em; transition: all .12s; }
-  .btn-det:hover { border-color: var(--text2); color: var(--text); }
-  .empty { padding: 32px; text-align: center; color: var(--text3); font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .06em; }
+  /* ── TABLEAU RÉPONSES ── */
+  .tbl-wrap {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .tbl-head {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600; font-size: 10px;
+    letter-spacing: .15em; text-transform: uppercase;
+    color: var(--text3);
+  }
+  .tbl-cnt {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; color: var(--text3);
+    background: var(--white); border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 10px;
+  }
 
-  .detail-wrap { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-top: 10px; background: var(--bg2); }
-  .detail-hd { background: var(--bg3); border-bottom: 1px solid var(--border); padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--text2); }
-  .detail-close { background: none; border: none; color: var(--text3); font-size: 16px; cursor: pointer; line-height: 1; }
-  .detail-close:hover { color: var(--text); }
-  .detail-feuillet { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--bg); }
+  th {
+    padding: 8px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text3); text-align: center;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+  th:first-child { text-align: left; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+
+  .eq-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; color: var(--navy); }
+  .eq-nom { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  .chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px;
+  }
+  .chip.f1 { background: var(--f1-lt); color: var(--f1); }
+  .chip.f2 { background: var(--f2-lt); color: var(--f2); }
+  .chip.f3 { background: var(--f3-lt); color: var(--f3); }
+  .chip.f4 { background: var(--f4-lt); color: var(--f4); }
+  .chip.f5 { background: var(--f5-lt); color: var(--f5); }
+  .chip.tot { background: var(--navy); color: white; width: auto; padding: 0 10px; border-radius: 12px; }
+
+  .btn-det {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 4px 10px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    color: var(--text3); cursor: pointer; letter-spacing: .04em;
+    transition: all .12s;
+  }
+  .btn-det:hover { border-color: var(--navy); color: var(--navy); background: var(--white); }
+
+  .empty {
+    padding: 36px; text-align: center; color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .06em;
+    font-style: italic;
+  }
+
+  /* ── DÉTAIL ── */
+  .detail-wrap {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 12px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .detail-hd {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600; font-size: 10px;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--text3);
+  }
+  .detail-close {
+    background: none; border: none; color: var(--text3);
+    font-size: 18px; cursor: pointer; line-height: 1;
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .detail-close:hover { background: var(--border); color: var(--text); }
+
+  .detail-feuillet { padding: 12px 16px; border-bottom: 1px solid var(--border); }
   .detail-feuillet:last-child { border-bottom: none; }
-  .detail-f-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
-  .detail-qs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+  .detail-f-label {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 13px; font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .detail-f-label.f1 { color: var(--f1); }
+  .detail-f-label.f2 { color: var(--f2); }
+  .detail-f-label.f3 { color: var(--f3); }
+  .detail-f-label.f4 { color: var(--f4); }
+  .detail-f-label.f5 { color: var(--f5); }
+
+  .detail-qs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
   @media (max-width: 480px) { .detail-qs { grid-template-columns: repeat(3, 1fr); } }
-  .dq { border-radius: 3px; padding: 5px 3px; text-align: center; border: 1px solid transparent; }
-  .dq .dn { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text3); margin-bottom: 2px; letter-spacing: .04em; }
-  .dq .dr { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 16px; }
-  .dq .dc { font-family: 'IBM Plex Mono', monospace; font-size: 9px; margin-top: 1px; }
-  .dq.ok  { background: rgba(29,122,74,0.15); border-color: rgba(29,122,74,0.3); }
-  .dq.ok .dr { color: #5ecf8a; }
-  .dq.ko  { background: rgba(192,57,43,0.15); border-color: rgba(192,57,43,0.3); }
-  .dq.ko .dr { color: #e07070; }
-  .dq.ko .dc { color: #5ecf8a; }
-  .dq.na  { background: var(--bg3); border-color: var(--border); }
+
+  .dq {
+    border-radius: 10px; padding: 6px 4px; text-align: center;
+    border: 1px solid transparent;
+  }
+  .dq .dn {
+    font-family: 'IBM Plex Mono', monospace; font-size: 9px;
+    color: var(--text3); margin-bottom: 3px; letter-spacing: .04em;
+  }
+  .dq .dr { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 17px; }
+  .dq .dc { font-family: 'IBM Plex Mono', monospace; font-size: 10px; margin-top: 2px; font-weight: 600; }
+
+  .dq.ok  { background: #e8f5ed; border-color: #b8dfc4; }
+  .dq.ok .dr { color: var(--green); }
+  .dq.ko  { background: #f5e8e8; border-color: #e0b8b8; }
+  .dq.ko .dr { color: var(--red); }
+  .dq.ko .dc { color: var(--green); }
+  .dq.na  { background: var(--bg); border-color: var(--border); }
   .dq.na .dr { color: var(--text3); }
 
-  .loading-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+  /* ── LOADING ── */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 300;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 16px;
+  }
   .loading-overlay.hidden { display: none; }
-  .loading-txt { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .1em; color: var(--text3); }
+  .loading-logo { width: 64px; height: 64px; object-fit: contain; margin-bottom: 4px; }
+  .loading-txt {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: .12em;
+    color: var(--text3); text-transform: uppercase;
+  }
+  .spin-dark {
+    display: inline-block; width: 20px; height: 20px;
+    border: 2px solid var(--border2);
+    border-top-color: var(--navy);
+    border-radius: 50%;
+    animation: rot .6s linear infinite;
+  }
 </style>
 </head>
 <body>
 
-<!-- Écran de chargement initial -->
+<!-- Écran de chargement -->
 <div class="loading-overlay" id="loadingOverlay">
-  <span class="spin" style="width:20px;height:20px;border-width:3px"></span>
+  <img src="LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
+  <div class="spin-dark"></div>
   <div class="loading-txt">Chargement des équipes…</div>
 </div>
 
-<div class="app-label">Fil Rouge</div>
-
-<nav>
-  <div class="tab active" id="tab-saisie" onclick="showTab('saisie')">Saisie</div>
-  <div class="tab" id="tab-reponses" onclick="showTabReponses()">
-    Réponses <span class="n" id="badgeN">0</span>
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <img src="LogoRC2026.png" class="header-logo" alt="" onerror="this.style.display='none'">
+    <div class="header-text">
+      <div class="header-label">Rallye Citoyen 2026 · PC Organisation</div>
+      <div class="header-title">Fil Rouge</div>
+    </div>
+    <a class="header-back" href="index.html">← Accueil</a>
   </div>
-</nav>
+</header>
+
+<!-- Nav -->
+<div class="nav-wrap">
+  <nav>
+    <div class="tab active" id="tab-saisie" onclick="showTab('saisie')">
+      Saisie
+    </div>
+    <div class="tab" id="tab-reponses" onclick="showTabReponses()">
+      Réponses <span class="n" id="badgeN">0</span>
+    </div>
+  </nav>
+</div>
 
 <main>
 
@@ -170,11 +623,11 @@
   <div class="panel active" id="panel-saisie">
 
     <div class="section">
-      <div class="section-head">Équipe</div>
+      <div class="section-head">Sélection de l'équipe</div>
       <div class="section-body">
         <div class="select-wrap">
           <select id="selEquipe" onchange="onEquipeChange()">
-            <option value="">— Sélectionner une équipe —</option>
+            <option value="">— Choisir une équipe —</option>
           </select>
         </div>
         <div class="equipe-meta" id="equipeMeta"></div>
@@ -184,12 +637,15 @@
     <div id="feuillets"></div>
 
     <div class="score-bar">
-      <div class="score-label">Réponses saisies / Score</div>
-      <div class="score-val" id="scoreVal">00 / 30</div>
+      <div class="score-left">
+        <div class="score-label">Score fil rouge</div>
+        <div class="score-detail" id="scoreDetail">Sélectionnez une équipe</div>
+      </div>
+      <div class="score-val" id="scoreVal">— / 30</div>
     </div>
 
     <div class="actions">
-      <button class="btn primary" id="btnSave" onclick="enregistrer()">↳ Enregistrer</button>
+      <button class="btn primary" id="btnSave" onclick="enregistrer()">✓ Enregistrer</button>
       <button class="btn" onclick="nouvelleEquipe()">↺ Nouvelle équipe</button>
       <button class="btn danger" onclick="toutEffacer()">✕ Effacer</button>
     </div>
@@ -203,20 +659,21 @@
         Équipes saisies
         <span class="tbl-cnt" id="tblCnt">0</span>
       </div>
-      <div id="tblBody"><div class="empty">// AUCUNE SAISIE</div></div>
+      <div id="tblBody"><div class="empty">Aucune saisie pour le moment</div></div>
     </div>
     <div id="detailZone"></div>
   </div>
 
 </main>
 
+<!-- Modal confirmation -->
 <div class="overlay" id="overlay">
   <div class="modal">
-    <div class="modal-title">⚠ Équipe déjà saisie</div>
+    <div class="modal-title">Équipe déjà saisie</div>
     <div class="modal-body" id="modalTxt"></div>
     <div class="modal-actions">
-      <button class="btn danger" onclick="confirmer()">Écraser</button>
       <button class="btn" onclick="annuler()">Annuler</button>
+      <button class="btn danger" onclick="confirmer()">Écraser et corriger</button>
     </div>
   </div>
 </div>
@@ -224,41 +681,30 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════════════════
 // ⚠️ METTRE À JOUR AVEC L'URL DE VOTRE DÉPLOIEMENT APPS SCRIPT
-// ═══════════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbx_z4XjX0RobfuYxDcOE4TR3FJbzn0V6QSvaupYTxQ3QUPAdSVz9J9OIS0Rx4b8p86v/exec';
+const API_URL = 'METTRE_URL_APPS_SCRIPT_ICI';
 
-// ═══════════════════════════════════════════════════════
-// RÉPONSES OFFICIELLES (côté client pour score temps réel)
-// ═══════════════════════════════════════════════════════
 const REP_OFF = [
-  "B","B","C","C","B","C",  // F1 — SOIGNER
-  "C","B","C","B","C","C",  // F2 — SECOURIR
-  "B","C","B","B","C","C",  // F3 — SERVIR
-  "B","B","B","C","C","B",  // F4 — COURAGE & HÉRITAGE
-  "C","A","B","C","C","B"   // F5 — MISSION FINALE
+  "B","B","C","C","B","C",
+  "C","B","C","B","C","C",
+  "B","C","B","B","C","C",
+  "B","B","B","C","C","B",
+  "C","A","B","C","C","B"
 ];
 
 const FEUILLETS = [
-  { id:1, label:"I — SOIGNER",            cls:"f1", qs:["Geneviève de Galard à Diên Biên Phu","Valérie André — double spécialité","Caducée — domaine d'utilisation","Fondateur de la Croix-Rouge","Position PLS","Lettre S en alphabet OTAN"] },
-  { id:2, label:"II — SECOURIR",           cls:"f2", qs:["Bataille commémorée en 2026 (110 ans)","Numéro d'urgence européen","Mission NE faisant PAS partie du SDIS","Réaction face à un email de phishing","Qui peut utiliser un DAE ?","Sanction douanière — liquide non déclaré"] },
-  { id:3, label:"III — SERVIR",            cls:"f3", qs:["Légion d'Honneur — qui peut la recevoir ?","JDC — affirmation vraie","Bleuet de France — occasions","Rôle d'un porte-drapeau","Citoyens engagés volontairement dans les armées","Verdun 1916 — nombre de victimes"] },
-  { id:4, label:"IV — COURAGE & HÉRITAGE", cls:"f4", qs:["Code Morse — décodage","André Maginot — grade en 1914","Marie Curie — contribution 14-18","Eau potable utilisable sur Terre","Médaille Militaire — à qui ?","SMV — public cible"] },
-  { id:5, label:"V — MISSION FINALE",      cls:"f5", qs:["SIERRA-OSCAR-INDIA-GOLF-NOVEMBER-ECHO-ROMEO","SNU — public concerné","Urgence médicale grave — quel numéro ?","EPIDE — objectif principal","1re femme générale de l'armée française","Synthèse — esprit du triptyque citoyen"] }
+  { id:1, label:"Feuillet I — Soigner",            cls:"f1", qs:["Geneviève de Galard à Diên Biên Phu","Valérie André — double spécialité","Caducée — domaine d'utilisation","Fondateur de la Croix-Rouge","Position PLS","Lettre S en alphabet OTAN"] },
+  { id:2, label:"Feuillet II — Secourir",           cls:"f2", qs:["Bataille commémorée en 2026 (110 ans)","Numéro d'urgence européen","Mission NE faisant PAS partie du SDIS","Réaction face à un email de phishing","Qui peut utiliser un DAE ?","Sanction douanière — liquide non déclaré"] },
+  { id:3, label:"Feuillet III — Servir",            cls:"f3", qs:["Légion d'Honneur — qui peut la recevoir ?","JDC — affirmation vraie","Bleuet de France — occasions","Rôle d'un porte-drapeau","Citoyens engagés volontairement dans les armées","Verdun 1916 — nombre de victimes"] },
+  { id:4, label:"Feuillet IV — Courage & Héritage", cls:"f4", qs:["Code Morse — décodage","André Maginot — grade en 1914","Marie Curie — contribution 14-18","Eau potable utilisable sur Terre","Médaille Militaire — à qui ?","SMV — public cible"] },
+  { id:5, label:"Feuillet V — Mission Finale",      cls:"f5", qs:["SIERRA-OSCAR-INDIA-GOLF-NOVEMBER-ECHO-ROMEO","SNU — public concerné","Urgence médicale grave — quel numéro ?","EPIDE — objectif principal","1re femme générale de l'armée française","Synthèse — esprit du triptyque citoyen"] }
 ];
 
-// ═══════════════════════════════════════════════════════
-// ÉTAT
-// ═══════════════════════════════════════════════════════
-const reps       = {};
-let equipesData  = [];
-let saisiesData  = {};
-let pendingNum   = null;
+const reps      = {};
+let equipesData = [];
+let saisiesData = {};
+let pendingNum  = null;
 
-// ═══════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   buildFeuillets();
   chargerDonnees();
@@ -271,7 +717,7 @@ function buildFeuillets() {
     d.className = 'feuillet';
     d.innerHTML = `
       <div class="feuillet-head ${f.cls}">
-        <span class="feuillet-label">Feuillet ${f.label}</span>
+        <span class="feuillet-label">${f.label}</span>
         <span class="feuillet-score" id="cnt${f.id}">0 / 6</span>
       </div>
       <div class="feuillet-body" id="grid${f.id}"></div>`;
@@ -288,8 +734,8 @@ function buildFeuillets() {
           <div class="q-text">${txt}</div>
           <div class="q-btns">
             ${['A','B','C'].map(l => `
-              <button class="cbtn" data-q="${q}" data-v="${l}"
-                onclick="pick(${q},'${l}',this)">${l}</button>`).join('')}
+              <button class="cbtn" data-q="${q}" data-f="${f.cls}" data-v="${l}"
+                onclick="pick(${q},'${l}','${f.cls}',this)">${l}</button>`).join('')}
           </div>
         </div>`;
       grid.appendChild(r);
@@ -297,9 +743,30 @@ function buildFeuillets() {
   });
 }
 
-// ═══════════════════════════════════════════════════════
-// APPELS API
-// ═══════════════════════════════════════════════════════
+async function chargerDonnees() {
+  try {
+    const data = await apiGet('init');
+    equipesData = data.equipes || [];
+    saisiesData = {};
+    (data.saisies || []).forEach(s => saisiesData[s.num] = s);
+
+    const sel = document.getElementById('selEquipe');
+    sel.innerHTML = '<option value="">— Choisir une équipe —</option>';
+    equipesData.forEach(e => {
+      const o = document.createElement('option');
+      o.value = e.num;
+      o.textContent = `${e.num} — ${e.nom}  ·  ${e.etab}`;
+      sel.appendChild(o);
+    });
+
+    majBadge();
+    document.getElementById('loadingOverlay').classList.add('hidden');
+  } catch (e) {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+    toast('Erreur de chargement : ' + e.message, 'err');
+  }
+}
+
 async function apiGet(action) {
   const res = await fetch(`${API_URL}?action=${action}`);
   if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -316,40 +783,17 @@ async function apiPost(payload) {
   return res.json();
 }
 
-// ═══════════════════════════════════════════════════════
-// CHARGEMENT DES DONNÉES
-// ═══════════════════════════════════════════════════════
-async function chargerDonnees() {
-  try {
-    const data = await apiGet('init');
-    equipesData = data.equipes || [];
-    saisiesData = {};
-    (data.saisies || []).forEach(s => saisiesData[s.num] = s);
-
-    const sel = document.getElementById('selEquipe');
-    sel.innerHTML = '<option value="">— Sélectionner une équipe —</option>';
-    equipesData.forEach(e => {
-      const o = document.createElement('option');
-      o.value = e.num;
-      o.textContent = `${e.num} — ${e.nom}  ·  ${e.etab}`;
-      sel.appendChild(o);
-    });
-
-    majBadge();
-    document.getElementById('loadingOverlay').classList.add('hidden');
-  } catch (e) {
-    document.getElementById('loadingOverlay').classList.add('hidden');
-    toast('Erreur chargement : ' + e.message, 'err');
-  }
-}
-
-// ═══════════════════════════════════════════════════════
-// SÉLECTION ÉQUIPE
-// ═══════════════════════════════════════════════════════
 function onEquipeChange() {
   const num  = document.getElementById('selEquipe').value;
   const meta = document.getElementById('equipeMeta');
-  if (!num) { meta.textContent = ''; meta.className = 'equipe-meta'; return; }
+  if (!num) {
+    meta.textContent = '';
+    meta.className = 'equipe-meta';
+    resetReps(true);
+    document.getElementById('scoreVal').textContent = '— / 30';
+    document.getElementById('scoreDetail').textContent = 'Sélectionnez une équipe';
+    return;
+  }
 
   const eq = equipesData.find(e => e.num === num);
   if (saisiesData[num]) {
@@ -367,20 +811,20 @@ function chargerReponsesExistantes(s) {
   resetReps(true);
   (s.reponses || []).forEach((r, i) => {
     if (!r) return;
-    const q = i + 1;
-    reps[q] = r;
-    const b = document.querySelector(`.cbtn[data-q="${q}"][data-v="${r}"]`);
-    if (b) b.classList.add('on');
+    const q  = i + 1;
+    const fc = FEUILLETS[Math.ceil(q / 6) - 1].cls;
+    reps[q]  = r;
+    const b  = document.querySelector(`.cbtn[data-q="${q}"][data-v="${r}"]`);
+    if (b) b.classList.add('on', fc);
   });
   updateAll();
 }
 
-// ═══════════════════════════════════════════════════════
-// SAISIE
-// ═══════════════════════════════════════════════════════
-function pick(q, val, btn) {
-  document.querySelectorAll(`.cbtn[data-q="${q}"]`).forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
+function pick(q, val, fc, btn) {
+  document.querySelectorAll(`.cbtn[data-q="${q}"]`).forEach(b => {
+    b.classList.remove('on', 'f1', 'f2', 'f3', 'f4', 'f5');
+  });
+  btn.classList.add('on', fc);
   reps[q] = val;
   updateAll();
 }
@@ -398,21 +842,19 @@ function updateAll() {
       if (reps[q] === REP_OFF[q-1]) correct++;
     }
   }
-  document.getElementById('scoreVal').textContent =
-    String(saisis).padStart(2,'0') + ' saisis · ' + String(correct).padStart(2,'0') + ' / 30';
+  document.getElementById('scoreVal').textContent = String(correct).padStart(2,'0') + ' / 30';
+  document.getElementById('scoreDetail').textContent = saisis + ' réponse' + (saisis > 1 ? 's' : '') + ' saisie' + (saisis > 1 ? 's' : '');
 }
 
-// ═══════════════════════════════════════════════════════
-// ENREGISTREMENT
-// ═══════════════════════════════════════════════════════
 function enregistrer() {
   const num = document.getElementById('selEquipe').value;
-  if (!num) { toast('Sélectionner une équipe', 'wrn'); return; }
+  if (!num) { toast('Sélectionnez une équipe', 'wrn'); return; }
 
   if (saisiesData[num]) {
     const eq = equipesData.find(e => e.num === num);
     document.getElementById('modalTxt').innerHTML =
-      `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> a déjà été saisie.<br>Confirmer l'écrasement ?`;
+      `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> a déjà été saisie.<br><br>
+       Voulez-vous écraser les données existantes ?`;
     pendingNum = num;
     document.getElementById('overlay').classList.add('on');
     return;
@@ -436,12 +878,12 @@ async function soumettre(num) {
 
   const btn = document.getElementById('btnSave');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span> Envoi…';
+  btn.innerHTML = '<span class="spin"></span> Enregistrement…';
 
   try {
     const res = await apiPost({ action: 'save', numEquipe: num, reponses: arr });
     btn.disabled = false;
-    btn.innerHTML = '↳ Enregistrer';
+    btn.innerHTML = '✓ Enregistrer';
     if (res.success) {
       toast('Équipe ' + num + ' enregistrée', 'ok');
       saisiesData[num] = { num, reponses: arr, ...res.scores };
@@ -452,14 +894,11 @@ async function soumettre(num) {
     }
   } catch (e) {
     btn.disabled = false;
-    btn.innerHTML = '↳ Enregistrer';
+    btn.innerHTML = '✓ Enregistrer';
     toast('Erreur réseau : ' + e.message, 'err');
   }
 }
 
-// ═══════════════════════════════════════════════════════
-// ONGLET RÉPONSES
-// ═══════════════════════════════════════════════════════
 function showTabReponses() {
   showTab('reponses');
   renderReponses();
@@ -470,7 +909,7 @@ function renderReponses() {
   document.getElementById('tblCnt').textContent = saisies.length;
 
   if (!saisies.length) {
-    document.getElementById('tblBody').innerHTML = '<div class="empty">// AUCUNE SAISIE</div>';
+    document.getElementById('tblBody').innerHTML = '<div class="empty">Aucune équipe saisie pour le moment</div>';
     return;
   }
 
@@ -485,10 +924,13 @@ function renderReponses() {
     const sc  = calcScores(s.reponses || []);
     const tot = sc.reduce((a,b) => a+b, 0);
     h += `<tr>
-      <td><div class="eq-num">${s.num}</div><div class="eq-nom">${eq ? eq.nom : '—'}</div></td>
+      <td>
+        <div class="eq-num">${s.num}</div>
+        <div class="eq-nom">${eq ? eq.nom : '—'}</div>
+      </td>
       ${sc.map((v,i) => `<td style="text-align:center"><span class="chip f${i+1}">${v}</span></td>`).join('')}
       <td style="text-align:center"><span class="chip tot">${tot}</span></td>
-      <td><button class="btn-det" onclick="detail('${s.num}')">voir</button></td>
+      <td><button class="btn-det" onclick="detail('${s.num}')">Détail</button></td>
     </tr>`;
   });
 
@@ -503,13 +945,13 @@ function detail(num) {
 
   let h = `<div class="detail-wrap">
     <div class="detail-hd">
-      <span>Détail — ${num}${eq ? ' · ' + eq.nom : ''}</span>
+      <span>Détail — Équipe ${num}${eq ? ' · ' + eq.nom : ''}</span>
       <button class="detail-close" onclick="document.getElementById('detailZone').innerHTML=''">✕</button>
     </div>`;
 
   FEUILLETS.forEach(f => {
     h += `<div class="detail-feuillet">
-      <div class="detail-f-label">Feuillet ${f.label}</div>
+      <div class="detail-f-label ${f.cls}">${f.label}</div>
       <div class="detail-qs">`;
     for (let i = 1; i <= 6; i++) {
       const q   = (f.id-1)*6+i;
@@ -531,9 +973,6 @@ function detail(num) {
   z.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-// ═══════════════════════════════════════════════════════
-// UTILITAIRES
-// ═══════════════════════════════════════════════════════
 function calcScores(rr) {
   const s = [0,0,0,0,0];
   rr.forEach((r,i) => { if (r && r === REP_OFF[i]) s[Math.floor(i/6)]++; });
@@ -542,7 +981,9 @@ function calcScores(rr) {
 
 function resetReps(clearBtns) {
   for (let q = 1; q <= 30; q++) delete reps[q];
-  if (clearBtns) document.querySelectorAll('.cbtn.on').forEach(b => b.classList.remove('on'));
+  if (clearBtns) document.querySelectorAll('.cbtn.on').forEach(b => {
+    b.classList.remove('on','f1','f2','f3','f4','f5');
+  });
   updateAll();
 }
 
@@ -550,6 +991,8 @@ function nouvelleEquipe() {
   document.getElementById('selEquipe').value = '';
   document.getElementById('equipeMeta').textContent = '';
   document.getElementById('equipeMeta').className = 'equipe-meta';
+  document.getElementById('scoreVal').textContent = '— / 30';
+  document.getElementById('scoreDetail').textContent = 'Sélectionnez une équipe';
   resetReps(true);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
