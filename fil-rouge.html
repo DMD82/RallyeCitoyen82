@@ -657,6 +657,7 @@
     <div class="actions">
       <button class="btn primary" id="btnSave" onclick="enregistrer()">✓ Enregistrer</button>
       <button class="btn" onclick="nouvelleEquipe()">↺ Nouvelle équipe</button>
+      <button class="btn danger" id="btnRaz" onclick="demanderRaz()" style="display:none">⊘ Remettre à zéro</button>
       <button class="btn danger" onclick="toutEffacer()">✕ Effacer</button>
     </div>
 
@@ -683,7 +684,19 @@
     <div class="modal-body" id="modalTxt"></div>
     <div class="modal-actions">
       <button class="btn" onclick="annuler()">Annuler</button>
-      <button class="btn danger" onclick="confirmer()">Écraser et corriger</button>
+      <button class="btn danger" id="btnConfirmer" onclick="confirmer()">Confirmer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal RAZ -->
+<div class="overlay" id="overlayRaz">
+  <div class="modal">
+    <div class="modal-title" style="color:var(--red)">⊘ Remise à zéro</div>
+    <div class="modal-body" id="modalRazTxt"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="annulerRaz()">Annuler</button>
+      <button class="btn danger" id="btnConfirmRaz" onclick="confirmerRaz()">Remettre à zéro</button>
     </div>
   </div>
 </div>
@@ -692,7 +705,7 @@
 
 <script>
 // ⚠️ METTRE À JOUR AVEC L'URL DE VOTRE DÉPLOIEMENT APPS SCRIPT
-const API_URL = 'https://script.google.com/macros/s/AKfycbzi0CwoPYF3H_mYz9zP4FIoGgcbw4wVdZAU5sxg_FiyAe2SxYYAHTZAW4jdvGMpNV4L/exec';
+const API_URL = 'METTRE_URL_APPS_SCRIPT_ICI';
 
 const REP_OFF = [
   "B","B","C","C","B","C",
@@ -846,14 +859,17 @@ function onEquipeChange() {
   }
 
   const eq = equipesData.find(e => e.num === num);
+  const btnRaz = document.getElementById('btnRaz');
   if (saisiesData[num]) {
     meta.textContent = '⚠ Déjà saisie — sera écrasée si vous enregistrez';
     meta.className = 'equipe-meta warn';
     chargerReponsesExistantes(saisiesData[num]);
+    if (btnRaz) btnRaz.style.display = '';
   } else {
     meta.textContent = eq ? eq.etab : '';
     meta.className = 'equipe-meta';
     resetReps(true);
+    if (btnRaz) btnRaz.style.display = 'none';
   }
 }
 
@@ -908,6 +924,7 @@ function enregistrer() {
     document.getElementById('modalTxt').innerHTML =
       `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> n'a que <strong>${nbSaisis} / 30</strong> réponses saisies.<br><br>
        Il manque <strong>${manquantes} réponse${manquantes > 1 ? 's' : ''}</strong>. Voulez-vous enregistrer quand même ?`;
+    document.getElementById('btnConfirmer').textContent = 'Enregistrer quand même';
     pendingNum = num;
     pendingIncomplet = true;
     document.getElementById('overlay').classList.add('on');
@@ -919,6 +936,7 @@ function enregistrer() {
     document.getElementById('modalTxt').innerHTML =
       `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> a déjà été saisie.<br><br>
        Voulez-vous écraser les données existantes ?`;
+    document.getElementById('btnConfirmer').textContent = 'Écraser et corriger';
     pendingNum = num;
     pendingIncomplet = false;
     document.getElementById('overlay').classList.add('on');
@@ -941,6 +959,7 @@ function confirmer() {
     document.getElementById('modalTxt').innerHTML =
       `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> a déjà été saisie.<br><br>
        Voulez-vous écraser les données existantes ?`;
+    document.getElementById('btnConfirmer').textContent = 'Écraser et corriger';
     pendingNum = num;
     pendingIncomplet = false;
     document.getElementById('overlay').classList.add('on');
@@ -1075,12 +1094,59 @@ function nouvelleEquipe() {
   document.getElementById('equipeMeta').className = 'equipe-meta';
   document.getElementById('scoreVal').textContent = '— / 30';
   document.getElementById('scoreDetail').textContent = 'Sélectionnez une équipe';
+  const btnRaz = document.getElementById('btnRaz');
+  if (btnRaz) btnRaz.style.display = 'none';
   resetReps(true);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function toutEffacer() {
   if (confirm('Effacer la saisie en cours ?')) nouvelleEquipe();
+}
+
+function demanderRaz() {
+  const num = document.getElementById('selEquipe').value;
+  if (!num) return;
+  const eq = equipesData.find(e => e.num === num);
+  document.getElementById('modalRazTxt').innerHTML =
+    `Vous allez supprimer toutes les réponses et remettre les scores à zéro pour l'équipe :<br><br>
+     <strong>${num} — ${eq ? eq.nom : ''}</strong><br><br>
+     Cette action est irréversible.`;
+  document.getElementById('overlayRaz').classList.add('on');
+}
+
+function annulerRaz() {
+  document.getElementById('overlayRaz').classList.remove('on');
+}
+
+async function confirmerRaz() {
+  const num = document.getElementById('selEquipe').value;
+  document.getElementById('overlayRaz').classList.remove('on');
+
+  const btn = document.getElementById('btnRaz');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+
+  try {
+    const data = encodeURIComponent(JSON.stringify({ numEquipe: num }));
+    const res  = await apiGet(`resetFilRouge&data=${data}`);
+    btn.disabled = false;
+    btn.innerHTML = '⊘ Remettre à zéro';
+
+    if (res.success) {
+      toast(`Équipe ${num} remise à zéro`, 'ok');
+      delete saisiesData[num];
+      majBadge();
+      nouvelleEquipe();
+      chargerDonnees(true);
+    } else {
+      toast('Erreur : ' + res.message, 'err');
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = '⊘ Remettre à zéro';
+    toast('Erreur réseau : ' + e.message, 'err');
+  }
 }
 
 function majBadge() {
