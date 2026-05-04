@@ -614,6 +614,16 @@
     <div class="tab" id="tab-reponses" onclick="showTabReponses()">
       Réponses <span class="n" id="badgeN">0</span>
     </div>
+    <div style="flex:1"></div>
+    <div style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.06em;display:flex;align-items:center;gap:6px;">
+      <span id="lastUpdate">—</span>
+      <button onclick="chargerDonnees(true)" title="Actualiser maintenant"
+        style="background:none;border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--text3);transition:all .15s;"
+        onmouseover="this.style.borderColor='var(--navy)';this.style.color='var(--navy)'"
+        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">
+        ↻
+      </button>
+    </div>
   </nav>
 </div>
 
@@ -669,7 +679,7 @@
 <!-- Modal confirmation -->
 <div class="overlay" id="overlay">
   <div class="modal">
-    <div class="modal-title">Équipe déjà saisie</div>
+    <div class="modal-title" id="modalTitle">Confirmation</div>
     <div class="modal-body" id="modalTxt"></div>
     <div class="modal-actions">
       <button class="btn" onclick="annuler()">Annuler</button>
@@ -682,7 +692,7 @@
 
 <script>
 // ⚠️ METTRE À JOUR AVEC L'URL DE VOTRE DÉPLOIEMENT APPS SCRIPT
-const API_URL = 'https://script.google.com/macros/s/AKfycbwKuxv6rBz0d3o9MyRjV-LqzTRWo-mn-OFGJqUeUmV_KGrUiOBrqipqYqiEeewf_UT2/exec'
+const API_URL = 'METTRE_URL_APPS_SCRIPT_ICI';
 
 const REP_OFF = [
   "B","B","C","C","B","C",
@@ -703,11 +713,12 @@ const FEUILLETS = [
 const reps      = {};
 let equipesData = [];
 let saisiesData = {};
-let pendingNum  = null;
+let pendingNum      = null;
+let pendingIncomplet = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   buildFeuillets();
-  chargerDonnees();
+  chargerDonnees().then(() => demarrerAutoRefresh());
 });
 
 function buildFeuillets() {
@@ -743,28 +754,69 @@ function buildFeuillets() {
   });
 }
 
-async function chargerDonnees() {
+async function chargerDonnees(silent = false) {
   try {
     const data = await apiGet('init');
+
+    // Mémoriser l'équipe sélectionnée pour ne pas perturber la saisie en cours
+    const selEquipe = document.getElementById('selEquipe');
+    const selectedNum = selEquipe ? selEquipe.value : '';
+
     equipesData = data.equipes || [];
     saisiesData = {};
-    (data.saisies || []).forEach(s => saisiesData[s.num] = s);
-
-    const sel = document.getElementById('selEquipe');
-    sel.innerHTML = '<option value="">— Choisir une équipe —</option>';
-    equipesData.forEach(e => {
-      const o = document.createElement('option');
-      o.value = e.num;
-      o.textContent = `${e.num} — ${e.nom}  ·  ${e.etab}`;
-      sel.appendChild(o);
+    // Une équipe est "saisie" seulement si elle a au moins une réponse renseignée
+    (data.saisies || []).forEach(s => {
+      const aDesReponses = (s.reponses || []).some(r => r && r.trim() !== '');
+      if (aDesReponses) saisiesData[s.num] = s;
     });
 
+    // Reconstruire le select uniquement au premier chargement
+    if (!silent) {
+      selEquipe.innerHTML = '<option value="">— Choisir une équipe —</option>';
+      equipesData.forEach(e => {
+        const o = document.createElement('option');
+        o.value = e.num;
+        o.textContent = `${e.num} — ${e.nom}  ·  ${e.etab}`;
+        selEquipe.appendChild(o);
+      });
+      // Restaurer la sélection
+      if (selectedNum) selEquipe.value = selectedNum;
+    }
+
     majBadge();
-    document.getElementById('loadingOverlay').classList.add('hidden');
+
+    // Mettre à jour le tableau réponses si l'onglet est visible
+    if (document.getElementById('panel-reponses').classList.contains('active')) {
+      renderReponses();
+    }
+
+    if (!silent) {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+    }
+
+    // Indicateur discret de dernière actualisation
+    const ts = document.getElementById('lastUpdate');
+    if (ts) {
+      const now = new Date();
+      ts.textContent = 'Actualisé à ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+    }
+
   } catch (e) {
-    document.getElementById('loadingOverlay').classList.add('hidden');
-    toast('Erreur de chargement : ' + e.message, 'err');
+    if (!silent) {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      toast('Erreur de chargement : ' + e.message, 'err');
+    }
   }
+}
+
+// Actualisation automatique toutes les 30 secondes
+let autoRefreshInterval = null;
+
+function demarrerAutoRefresh() {
+  if (autoRefreshInterval) clearInterval(autoRefreshInterval);
+  autoRefreshInterval = setInterval(() => {
+    chargerDonnees(true); // silent = true, pas de rebuild du select
+  }, 30000);
 }
 
 async function apiGet(action) {
@@ -774,11 +826,9 @@ async function apiGet(action) {
 }
 
 async function apiPost(payload) {
-  const res = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
+  // Passage par GET pour éviter les blocages CORS sur POST
+  const data = encodeURIComponent(JSON.stringify(payload));
+  const res = await fetch(`${API_URL}?action=save&data=${data}`);
   if (!res.ok) throw new Error('HTTP ' + res.status);
   return res.json();
 }
@@ -850,12 +900,27 @@ function enregistrer() {
   const num = document.getElementById('selEquipe').value;
   if (!num) { toast('Sélectionnez une équipe', 'wrn'); return; }
 
+  // Vérifier que les 30 questions sont remplies
+  const nbSaisis = Object.keys(reps).filter(q => reps[q]).length;
+  if (nbSaisis < 30) {
+    const manquantes = 30 - nbSaisis;
+    const eq = equipesData.find(e => e.num === num);
+    document.getElementById('modalTxt').innerHTML =
+      `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> n'a que <strong>${nbSaisis} / 30</strong> réponses saisies.<br><br>
+       Il manque <strong>${manquantes} réponse${manquantes > 1 ? 's' : ''}</strong>. Voulez-vous enregistrer quand même ?`;
+    pendingNum = num;
+    pendingIncomplet = true;
+    document.getElementById('overlay').classList.add('on');
+    return;
+  }
+
   if (saisiesData[num]) {
     const eq = equipesData.find(e => e.num === num);
     document.getElementById('modalTxt').innerHTML =
       `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> a déjà été saisie.<br><br>
        Voulez-vous écraser les données existantes ?`;
     pendingNum = num;
+    pendingIncomplet = false;
     document.getElementById('overlay').classList.add('on');
     return;
   }
@@ -864,12 +929,29 @@ function enregistrer() {
 
 function confirmer() {
   document.getElementById('overlay').classList.remove('on');
-  if (pendingNum) soumettre(pendingNum);
+  const num = pendingNum;
+  const incomplet = pendingIncomplet;
   pendingNum = null;
+  pendingIncomplet = false;
+  if (!num) return;
+
+  // Si incomplet ET déjà saisie, on enchaîne la vérification écrasement
+  if (incomplet && saisiesData[num]) {
+    const eq = equipesData.find(e => e.num === num);
+    document.getElementById('modalTxt').innerHTML =
+      `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> a déjà été saisie.<br><br>
+       Voulez-vous écraser les données existantes ?`;
+    pendingNum = num;
+    pendingIncomplet = false;
+    document.getElementById('overlay').classList.add('on');
+    return;
+  }
+  soumettre(num);
 }
 function annuler() {
   document.getElementById('overlay').classList.remove('on');
   pendingNum = null;
+  pendingIncomplet = false;
 }
 
 async function soumettre(num) {
@@ -901,7 +983,7 @@ async function soumettre(num) {
 
 function showTabReponses() {
   showTab('reponses');
-  renderReponses();
+  chargerDonnees(true); // rechargement forcé depuis le serveur
 }
 
 function renderReponses() {
