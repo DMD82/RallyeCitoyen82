@@ -1,1 +1,471 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bonus / Malus — Rallye Citoyen 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
+  :root {
+    --navy:    #1a2744;
+    --navy-lt: #243358;
+    --gold:    #b8932a;
+    --gold-lt: #f5ead4;
+    --bg:      #f2f0eb;
+    --bg2:     #e8e5de;
+    --white:   #ffffff;
+    --text:    #1a1e2e;
+    --text2:   #4a5068;
+    --text3:   #8a90a8;
+    --border:  #dcd8ce;
+    --border2: #c8c4b8;
+    --green:   #1a5a32;
+    --green-lt:#e8f5ed;
+    --red:     #8b1a1a;
+    --red-lt:  #f5e8e8;
+    --shadow:  rgba(26,39,68,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── HEADER ── */
+  header { background: var(--navy); padding: 20px 24px 18px; position: relative; overflow: hidden; }
+  header::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 12px); pointer-events: none; }
+  .header-inner { display: flex; align-items: center; gap: 14px; max-width: 780px; margin: 0 auto; }
+  .header-logo { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+  .header-text { flex: 1; }
+  .header-back { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .15s; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .header-back:hover { color: rgba(232,208,144,0.8); }
+  .header-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: rgba(232,208,144,0.7); margin-bottom: 3px; }
+  .header-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 18px; color: var(--white); }
+
+  /* ── NAV WRAP ── */
+  .nav-wrap { background: var(--white); border-bottom: 1px solid var(--border); }
+  nav { display: flex; align-items: center; padding: 0 20px; max-width: 780px; margin: 0 auto; }
+  .tab { padding: 11px 16px; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s; display: flex; align-items: center; gap: 8px; }
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+  .tab .n { background: var(--bg2); border: 1px solid var(--border); color: var(--text3); font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 600; transition: all .15s; }
+  .tab.active .n { background: var(--navy); color: var(--white); border-color: var(--navy); }
+  .nav-spacer { flex: 1; }
+  .nav-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+  .btn-refresh { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; font-size: 11px; cursor: pointer; color: var(--text3); transition: all .15s; }
+  .btn-refresh:hover { border-color: var(--navy); color: var(--navy); }
+
+  /* ── MAIN ── */
+  main { flex: 1; max-width: 780px; margin: 0 auto; padding: 20px 20px 60px; width: 100%; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── SECTION ── */
+  .section { background: var(--white); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
+  .section-head { padding: 10px 16px; background: var(--bg2); border-bottom: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--text3); }
+  .section-body { padding: 16px; }
+
+  /* ── SELECT ── */
+  .select-wrap { position: relative; }
+  .select-wrap select { width: 100%; padding: 11px 36px 11px 14px; background: var(--bg); border: 1.5px solid var(--border2); border-radius: 10px; color: var(--text); font-family: 'Source Sans 3', sans-serif; font-size: 15px; font-weight: 600; appearance: none; cursor: pointer; transition: border-color .15s; }
+  .select-wrap select:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,39,68,0.08); }
+  .select-wrap::after { content: '▾'; position: absolute; right: 13px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 13px; pointer-events: none; }
+
+  /* ── GRILLE VALEURS ── */
+  .valeurs-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 4px; }
+  @media (max-width: 500px) { .valeurs-grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .val-btn {
+    padding: 14px 8px;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all .15s;
+    text-align: center;
+    line-height: 1;
+  }
+  .val-btn.neg { background: var(--red-lt); color: var(--red); border-color: rgba(139,26,26,0.2); }
+  .val-btn.neg:hover { background: var(--red); color: white; border-color: var(--red); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(139,26,26,0.25); }
+  .val-btn.pos { background: var(--green-lt); color: var(--green); border-color: rgba(26,90,50,0.2); }
+  .val-btn.pos:hover { background: var(--green); color: white; border-color: var(--green); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(26,90,50,0.25); }
+  .val-btn.selected { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  .val-btn.neg.selected { background: var(--red); color: white; border-color: var(--red); }
+  .val-btn.pos.selected { background: var(--green); color: white; border-color: var(--green); }
+  .val-sub { font-size: 10px; font-weight: 400; margin-top: 4px; opacity: 0.7; font-family: 'Source Sans 3', sans-serif; }
+
+  /* ── MOTIF ── */
+  .motif-input { width: 100%; padding: 10px 14px; background: var(--bg); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--text); transition: border-color .15s; }
+  .motif-input:focus { outline: none; border-color: var(--navy); }
+  .motif-input::placeholder { color: var(--text3); }
+
+  /* ── RÉSUMÉ ── */
+  .resume-bar { background: var(--navy); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .resume-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 3px; }
+  .resume-val { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 22px; }
+  .resume-val.pos { color: #5ecf8a; }
+  .resume-val.neg { color: #e07070; }
+  .resume-val.zero { color: rgba(255,255,255,0.3); }
+  .resume-equipe { font-size: 14px; color: rgba(255,255,255,0.6); font-style: italic; }
+
+  /* ── BOUTONS ── */
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .btn { padding: 10px 18px; border: 1.5px solid var(--border2); border-radius: 10px; background: var(--white); color: var(--text); font-family: 'Source Sans 3', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 7px; box-shadow: 0 1px 4px var(--shadow); }
+  .btn:hover { box-shadow: 0 3px 10px var(--shadow); transform: translateY(-1px); }
+  .btn.primary { background: var(--navy); border-color: var(--navy); color: white; font-weight: 700; }
+  .btn.primary:hover { background: var(--navy-lt); }
+  .btn.danger { border-color: #e0c0c0; color: var(--red); }
+  .btn.danger:hover { background: var(--red-lt); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; box-shadow: none; }
+
+  /* ── TABLEAU HISTORIQUE ── */
+  .tbl-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
+  .tbl-head { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--text3); }
+  .tbl-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); background: var(--white); border: 1px solid var(--border); padding: 2px 8px; border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--bg); }
+  th { padding: 8px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); text-align: left; border-bottom: 1px solid var(--border); font-weight: 600; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+  .eq-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--navy); }
+  .val-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 3px 10px; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 14px; }
+  .val-chip.pos { background: var(--green-lt); color: var(--green); }
+  .val-chip.neg { background: var(--red-lt); color: var(--red); }
+  .total-chip { background: var(--navy); color: white; padding: 2px 10px; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 13px; }
+  .empty { padding: 36px; text-align: center; color: var(--text3); font-style: italic; font-size: 13px; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 11px 22px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 999; transition: transform .25s ease; letter-spacing: .04em; box-shadow: 0 8px 30px rgba(26,39,68,0.25); white-space: nowrap; }
+  .toast.on { transform: translateX(-50%) translateY(0); }
+  .toast.ok  { background: var(--green); }
+  .toast.err { background: var(--red); }
+  .toast.wrn { background: var(--gold); color: var(--navy); }
+
+  .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: rot .6s linear infinite; }
+  @keyframes rot { to { transform: rotate(360deg); } }
+
+  .loading-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+  .loading-overlay.hidden { display: none; }
+  .loading-logo { width: 64px; height: 64px; object-fit: contain; }
+  .loading-txt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .12em; color: var(--text3); text-transform: uppercase; }
+  .spin-dark { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border2); border-top-color: var(--navy); border-radius: 50%; animation: rot .6s linear infinite; }
+
+  .field-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+  .field-wrap { margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <img src="LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
+  <div class="spin-dark"></div>
+  <div class="loading-txt">Chargement…</div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <img src="LogoRC2026.png" class="header-logo" alt="" onerror="this.style.display='none'">
+    <div class="header-text">
+      <div class="header-label">Rallye Citoyen 2026 · PC Organisation</div>
+      <div class="header-title">Bonus / Malus</div>
+    </div>
+    <a class="header-back" href="index.html">← Accueil</a>
+  </div>
+</header>
+
+<div class="nav-wrap">
+  <nav>
+    <div class="tab active" id="tab-saisie" onclick="showTab('saisie')">Saisie</div>
+    <div class="tab" id="tab-historique" onclick="showTabHistorique()">
+      Historique <span class="n" id="badgeN">0</span>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-info">
+      <span id="lastUpdate">—</span>
+      <button class="btn-refresh" onclick="chargerDonnees(true)">↻</button>
+    </div>
+  </nav>
+</div>
+
+<main>
+
+  <!-- ═══ SAISIE ═══ -->
+  <div class="panel active" id="panel-saisie">
+
+    <div class="section">
+      <div class="section-head">Équipe</div>
+      <div class="section-body">
+        <div class="select-wrap">
+          <select id="selEquipe" onchange="onEquipeChange()">
+            <option value="">— Choisir une équipe —</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">Valeur du bonus / malus</div>
+      <div class="section-body">
+        <div class="valeurs-grid" id="valeursGrid"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">Motif (optionnel)</div>
+      <div class="section-body">
+        <input type="text" class="motif-input" id="motif"
+          placeholder="Ex: Tenue irréprochable, Retard au départ…">
+      </div>
+    </div>
+
+    <div class="resume-bar">
+      <div>
+        <div class="resume-label">Attribution</div>
+        <div class="resume-equipe" id="resumeEquipe">Aucune équipe sélectionnée</div>
+      </div>
+      <div class="resume-val zero" id="resumeVal">—</div>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary" id="btnSave" onclick="enregistrer()">✓ Attribuer</button>
+      <button class="btn" onclick="reset()">↺ Réinitialiser</button>
+    </div>
+
+  </div>
+
+  <!-- ═══ HISTORIQUE ═══ -->
+  <div class="panel" id="panel-historique">
+    <div class="tbl-wrap">
+      <div class="tbl-head">
+        Historique des attributions
+        <span class="tbl-cnt" id="tblCnt">0</span>
+      </div>
+      <div id="tblBody"><div class="empty">Aucune attribution pour le moment</div></div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_URL = 'METTRE_URL_APPS_SCRIPT_ICI';
+
+const VALEURS = [
+  { val: -5, label: '-5', sub: 'Grave' },
+  { val: -2, label: '-2', sub: 'Modéré' },
+  { val: -1, label: '-1', sub: 'Léger' },
+  { val: +1, label: '+1', sub: 'Léger' },
+  { val: +2, label: '+2', sub: 'Bien' },
+  { val: +5, label: '+5', sub: 'Excellent' }
+];
+
+let equipesData  = [];
+let historique   = [];
+let selectedVal  = null;
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  buildValeurs();
+  chargerDonnees();
+});
+
+function buildValeurs() {
+  const grid = document.getElementById('valeursGrid');
+  VALEURS.forEach(v => {
+    const btn = document.createElement('button');
+    btn.className = 'val-btn ' + (v.val < 0 ? 'neg' : 'pos');
+    btn.dataset.val = v.val;
+    btn.innerHTML = `${v.val > 0 ? '+' : ''}${v.label}<div class="val-sub">${v.sub}</div>`;
+    btn.onclick = () => selectVal(v.val, btn);
+    grid.appendChild(btn);
+  });
+}
+
+async function chargerDonnees(silent = false) {
+  try {
+    const data = await apiGet('initBonusMalus');
+    equipesData = data.equipes || [];
+    historique  = data.historique || [];
+
+    if (!silent) {
+      const sel = document.getElementById('selEquipe');
+      const prev = sel.value;
+      sel.innerHTML = '<option value="">— Choisir une équipe —</option>';
+      equipesData.forEach(e => {
+        const o = document.createElement('option');
+        o.value = e.num;
+        o.textContent = `${e.num} — ${e.nom}  ·  ${e.etab}`;
+        sel.appendChild(o);
+      });
+      if (prev) sel.value = prev;
+    }
+
+    majBadge();
+    if (document.getElementById('panel-historique').classList.contains('active')) {
+      renderHistorique();
+    }
+
+    const ts = document.getElementById('lastUpdate');
+    if (ts) {
+      const now = new Date();
+      ts.textContent = 'Actualisé à ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+    }
+
+    if (!silent) document.getElementById('loadingOverlay').classList.add('hidden');
+  } catch (e) {
+    if (!silent) {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      toast('Erreur : ' + e.message, 'err');
+    }
+  }
+}
+
+// Auto-refresh 30s
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => setInterval(() => chargerDonnees(true), 30000), 5000);
+});
+
+// ── SÉLECTION VALEUR ──
+function selectVal(val, btn) {
+  document.querySelectorAll('.val-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedVal = val;
+  updateResume();
+}
+
+function onEquipeChange() { updateResume(); }
+
+function updateResume() {
+  const num = document.getElementById('selEquipe').value;
+  const eq  = equipesData.find(e => e.num === num);
+  const rv  = document.getElementById('resumeVal');
+  const re  = document.getElementById('resumeEquipe');
+
+  re.textContent = eq ? `${eq.num} — ${eq.nom}` : 'Aucune équipe sélectionnée';
+
+  if (selectedVal !== null) {
+    rv.textContent = (selectedVal > 0 ? '+' : '') + selectedVal;
+    rv.className = 'resume-val ' + (selectedVal > 0 ? 'pos' : 'neg');
+  } else {
+    rv.textContent = '—';
+    rv.className = 'resume-val zero';
+  }
+}
+
+// ── ENREGISTREMENT ──
+async function enregistrer() {
+  const num = document.getElementById('selEquipe').value;
+  if (!num) { toast('Sélectionnez une équipe', 'wrn'); return; }
+  if (selectedVal === null) { toast('Sélectionnez une valeur', 'wrn'); return; }
+
+  const motif = document.getElementById('motif').value.trim();
+  const btn   = document.getElementById('btnSave');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Enregistrement…';
+
+  try {
+    const data = encodeURIComponent(JSON.stringify({
+      numEquipe: num,
+      valeur:    selectedVal,
+      motif:     motif
+    }));
+    const res = await apiGet(`saveBonusMalus&data=${data}`);
+
+    btn.disabled = false;
+    btn.innerHTML = '✓ Attribuer';
+
+    if (res.success) {
+      const eq = equipesData.find(e => e.num === num);
+      toast(`${selectedVal > 0 ? '+' : ''}${selectedVal} attribué à l'équipe ${num}`, 'ok');
+      historique.unshift({
+        num, nom: eq ? eq.nom : '', valeur: selectedVal,
+        motif, total: res.nouveauTotal,
+        horodatage: new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' })
+      });
+      majBadge();
+      reset();
+    } else {
+      toast('Erreur : ' + res.message, 'err');
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = '✓ Attribuer';
+    toast('Erreur réseau : ' + e.message, 'err');
+  }
+}
+
+// ── HISTORIQUE ──
+function showTabHistorique() {
+  showTab('historique');
+  chargerDonnees(true);
+  renderHistorique();
+}
+
+function renderHistorique() {
+  const tbl  = document.getElementById('tblBody');
+  const cnt  = document.getElementById('tblCnt');
+  cnt.textContent = historique.length;
+
+  if (!historique.length) {
+    tbl.innerHTML = '<div class="empty">Aucune attribution pour le moment</div>';
+    return;
+  }
+
+  let h = `<table><thead><tr>
+    <th>Heure</th><th>Équipe</th><th>Valeur</th><th>Motif</th><th>Total comportement</th>
+  </tr></thead><tbody>`;
+
+  historique.forEach(h2 => {
+    const isPos = h2.valeur > 0;
+    h += `<tr>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${h2.horodatage || '—'}</td>
+      <td><span class="eq-num">${h2.num}</span><br><span style="font-size:11px;color:var(--text3)">${h2.nom}</span></td>
+      <td><span class="val-chip ${isPos ? 'pos' : 'neg'}">${isPos ? '+' : ''}${h2.valeur}</span></td>
+      <td style="font-size:13px;color:var(--text2);font-style:italic">${h2.motif || '—'}</td>
+      <td><span class="total-chip">${h2.total !== undefined ? h2.total : '—'}</span></td>
+    </tr>`;
+  });
+
+  h += '</tbody></table>';
+  document.getElementById('tblBody').innerHTML = h;
+}
+
+// ── UTILITAIRES ──
+function reset() {
+  document.getElementById('selEquipe').value = '';
+  document.getElementById('motif').value = '';
+  selectedVal = null;
+  document.querySelectorAll('.val-btn').forEach(b => b.classList.remove('selected'));
+  updateResume();
+}
+
+function majBadge() {
+  document.getElementById('badgeN').textContent = historique.length;
+}
+
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+async function apiGet(action) {
+  const res = await fetch(`${API_URL}?action=${action}`);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '');
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 3000);
+}
+</script>
+</body>
+</html>
