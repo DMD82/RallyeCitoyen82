@@ -44,7 +44,6 @@
     overflow: hidden;
   }
 
-  /* Motif de fond subtil */
   header::before {
     content: '';
     position: absolute;
@@ -90,7 +89,6 @@
     margin-bottom: 14px;
   }
 
-  /* Thème */
   .theme-wrap {
     display: inline-block;
     border: 1px solid rgba(184,147,42,0.4);
@@ -134,16 +132,8 @@
     text-transform: uppercase;
   }
 
-  .meta-pill.date {
-    background: var(--gold);
-    color: var(--navy);
-  }
-
-  .meta-pill.lieu {
-    background: rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.65);
-    border: 1px solid rgba(255,255,255,0.15);
-  }
+  .meta-pill.date { background: var(--gold); color: var(--navy); }
+  .meta-pill.lieu { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.15); }
 
   /* ── MAIN ── */
   main {
@@ -311,7 +301,6 @@
 
 <header>
   <div class="logo-wrap">
-    <!-- ⚠️ Remplacez par le nom exact de votre fichier logo sur GitHub -->
     <img src="LogoRC2026.png"
          alt="Logo Rallye Citoyen 2026"
          onerror="this.style.display='none'">
@@ -334,6 +323,7 @@
 
   <div class="grid">
 
+    <!-- Fil Rouge -->
     <a class="tile" href="fil-rouge.html">
       <div class="tile-top">
         <span class="tile-num">01</span>
@@ -345,37 +335,40 @@
       <div class="tile-cta">Accéder →</div>
     </a>
 
-    <a class="tile disabled" href="bonus-malus.html">
+    <!-- Bonus / Malus -->
+    <a class="tile" href="bonus-malus.html">
       <div class="tile-top">
         <span class="tile-num">02</span>
-        <span class="tile-badge badge-soon">Disponible</span>
+        <span class="tile-badge badge-ready">Disponible</span>
       </div>
       <div class="tile-icon">⚖️</div>
       <div class="tile-title">Bonus / Malus</div>
       <div class="tile-desc">Attribution des ajustements de points par équipe</div>
-      <div class="tile-cta">Accéder/div>
+      <div class="tile-cta">Accéder →</div>
     </a>
 
-    <a class="tile disabled" href="#">
+    <!-- Résultats -->
+    <a class="tile" href="resultats.html">
       <div class="tile-top">
         <span class="tile-num">03</span>
-        <span class="tile-badge badge-soon">À venir</span>
+        <span class="tile-badge badge-ready">Disponible</span>
       </div>
       <div class="tile-icon">📊</div>
       <div class="tile-title">Résultats</div>
       <div class="tile-desc">Scores en temps réel par équipe et par atelier</div>
-      <div class="tile-cta">Bientôt disponible</div>
+      <div class="tile-cta">Accéder →</div>
     </a>
 
-    <a class="tile disabled" href="#">
+    <!-- Classement -->
+    <a class="tile" href="classement.html">
       <div class="tile-top">
         <span class="tile-num">04</span>
-        <span class="tile-badge badge-soon">À venir</span>
+        <span class="tile-badge badge-ready">Disponible</span>
       </div>
       <div class="tile-icon">🏆</div>
       <div class="tile-title">Classement</div>
       <div class="tile-desc">Classement général, comportement et prix spéciaux en direct</div>
-      <div class="tile-cta">Bientôt disponible</div>
+      <div class="tile-cta">Accéder →</div>
     </a>
 
   </div>
