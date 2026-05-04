@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Résultats — Rallye Citoyen 2026</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+  :root {
+    --navy:    #1a2744;
+    --navy-lt: #243358;
+    --gold:    #b8932a;
+    --gold-lt: #f5ead4;
+    --gold-mid:#e8d090;
+    --bg:      #f2f0eb;
+    --bg2:     #e8e5de;
+    --white:   #ffffff;
+    --text:    #1a1e2e;
+    --text2:   #4a5068;
+    --text3:   #8a90a8;
+    --border:  #dcd8ce;
+    --border2: #c8c4b8;
+    --green:   #1a5a32;
+    --green-lt:#e8f5ed;
+    --red:     #8b1a1a;
+    --red-lt:  #f5e8e8;
+    --shadow:  rgba(26,39,68,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── HEADER ── */
+  header { background: var(--navy); padding: 20px 24px 18px; position: relative; overflow: hidden; }
+  header::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 12px); pointer-events: none; }
+  .header-inner { display: flex; align-items: center; gap: 14px; max-width: 1100px; margin: 0 auto; width: 100%; }
+  .header-logo { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+  .header-text { flex: 1; }
+  .header-back { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .15s; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .header-back:hover { color: rgba(232,208,144,0.8); }
+  .header-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: rgba(232,208,144,0.7); margin-bottom: 3px; }
+  .header-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 18px; color: var(--white); }
+
+  /* ── NAV ── */
+  .nav-wrap { background: var(--white); border-bottom: 1px solid var(--border); }
+  nav { display: flex; align-items: center; padding: 0 20px; max-width: 1100px; margin: 0 auto; }
+  .nav-spacer { flex: 1; }
+  .nav-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+  .btn-refresh { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 12px; cursor: pointer; color: var(--text3); transition: all .15s; }
+  .btn-refresh:hover { border-color: var(--navy); color: var(--navy); }
+  .stat-pill { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--border); color: var(--text2); }
+
+  /* ── MAIN ── */
+  main { flex: 1; max-width: 1100px; margin: 0 auto; padding: 20px 20px 60px; width: 100%; }
+
+  /* ── RECHERCHE + FILTRE ── */
+  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .search-wrap { position: relative; flex: 1; min-width: 200px; }
+  .search-wrap input { width: 100%; padding: 9px 14px 9px 36px; background: var(--white); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--text); transition: border-color .15s; }
+  .search-wrap input:focus { outline: none; border-color: var(--navy); }
+  .search-wrap::before { content: '🔍'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; }
+  .filter-select { padding: 9px 14px; background: var(--white); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'Source Sans 3', sans-serif; font-size: 13px; color: var(--text2); cursor: pointer; }
+  .filter-select:focus { outline: none; border-color: var(--navy); }
+
+  /* ── TABLEAU ── */
+  .tbl-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
+  .tbl-header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--text3); }
+  .tbl-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: var(--white); border: 1px solid var(--border); padding: 2px 8px; border-radius: 10px; }
+
+  .tbl-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; min-width: 800px; }
+  thead tr { background: var(--bg); position: sticky; top: 0; z-index: 1; }
+  th {
+    padding: 9px 12px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--text3); text-align: center;
+    border-bottom: 1px solid var(--border); font-weight: 600;
+    cursor: pointer; user-select: none; white-space: nowrap;
+    transition: color .15s;
+  }
+  th:first-child { text-align: left; }
+  th:hover { color: var(--navy); }
+  th.sort-asc::after  { content: ' ↑'; color: var(--gold); }
+  th.sort-desc::after { content: ' ↓'; color: var(--gold); }
+
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; text-align: center; }
+  td:first-child { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+
+  .eq-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--navy); font-size: 13px; }
+  .eq-nom { font-size: 13px; font-weight: 600; color: var(--text); }
+  .eq-etab { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  .score-cell { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; }
+  .score-cell.ateliers { color: var(--navy); }
+  .score-cell.filrouge { color: #6b2f8a; }
+  .score-cell.comport  { color: var(--green); }
+  .score-cell.total    { color: var(--text2); }
+
+  .pond-chip {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 44px; padding: 4px 10px; border-radius: 10px;
+    font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 14px;
+    background: var(--navy); color: var(--gold-mid);
+  }
+
+  .nb-chip { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text3); }
+
+  .cd-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: rgba(26,39,68,0.1); color: var(--navy); margin-left: 4px; }
+
+  /* Barre de progression pour les ateliers */
+  .prog-wrap { display: flex; align-items: center; gap: 8px; justify-content: center; }
+  .prog-bar { flex: 1; max-width: 60px; height: 4px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--navy); border-radius: 2px; transition: width .3s; }
+
+  /* ── ÉTAT VIDE / CHARGEMENT ── */
+  .state-box { padding: 48px; text-align: center; }
+  .state-icon { font-size: 36px; margin-bottom: 12px; }
+  .state-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 16px; color: var(--navy); margin-bottom: 6px; }
+  .state-desc { font-size: 13px; color: var(--text3); line-height: 1.5; }
+
+  .spin-dark { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border2); border-top-color: var(--navy); border-radius: 50%; animation: rot .6s linear infinite; }
+  @keyframes rot { to { transform: rotate(360deg); } }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 11px 22px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 999; transition: transform .25s ease; letter-spacing: .04em; box-shadow: 0 8px 30px rgba(26,39,68,0.25); white-space: nowrap; }
+  .toast.on { transform: translateX(-50%) translateY(0); }
+  .toast.err { background: var(--red); }
+  .toast.wrn { background: var(--gold); color: var(--navy); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <img src="LogoRC2026.png" class="header-logo" alt="" onerror="this.style.display='none'">
+    <div class="header-text">
+      <div class="header-label">Rallye Citoyen 2026 · PC Organisation</div>
+      <div class="header-title">Résultats</div>
+    </div>
+    <a class="header-back" href="index.html">← Accueil</a>
+  </div>
+</header>
+
+<div class="nav-wrap">
+  <nav>
+    <div class="nav-spacer"></div>
+    <div class="nav-info">
+      <span id="lastUpdate">—</span>
+      <button class="btn-refresh" onclick="chargerDonnees()">↻ Actualiser</button>
+    </div>
+  </nav>
+</div>
+
+<main>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Rechercher une équipe…" oninput="filtrer()">
+    </div>
+    <select class="filter-select" id="filterNiveau" onchange="filtrer()">
+      <option value="">Tous niveaux</option>
+      <option value="collège">Collège</option>
+      <option value="lycée">Lycée</option>
+    </select>
+    <select class="filter-select" id="filterCD" onchange="filtrer()">
+      <option value="">Toutes équipes</option>
+      <option value="cd">Classes de défense</option>
+      <option value="hors">Hors classe de défense</option>
+    </select>
+    <span class="stat-pill" id="statPill">— équipes</span>
+  </div>
+
+  <div class="tbl-wrap">
+    <div class="tbl-header">
+      Scores par équipe
+      <span class="tbl-cnt" id="tblCnt">0</span>
+    </div>
+    <div class="tbl-scroll">
+      <div id="tblBody">
+        <div class="state-box">
+          <div class="spin-dark" style="margin:0 auto 12px"></div>
+          <div class="state-desc">Chargement des résultats…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API_URL = 'METTRE_URL_APPS_SCRIPT_ICI';
+
+let tousResultats  = [];
+let resultatsAffiches = [];
+let sortCol        = 'notePonderee';
+let sortDir        = 'desc';
+let autoRefresh    = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  chargerDonnees();
+  autoRefresh = setInterval(chargerDonnees, 30000);
+});
+
+async function chargerDonnees() {
+  try {
+    const data = await apiGet('getResultats');
+
+    if (data.message) {
+      document.getElementById('tblBody').innerHTML = `
+        <div class="state-box">
+          <div class="state-icon">⚠️</div>
+          <div class="state-title">Données non disponibles</div>
+          <div class="state-desc">${data.message}</div>
+        </div>`;
+      return;
+    }
+
+    tousResultats = data.resultats || [];
+    filtrer();
+
+    const now = new Date();
+    document.getElementById('lastUpdate').textContent =
+      'Actualisé à ' + now.getHours().toString().padStart(2,'0') + ':' +
+      now.getMinutes().toString().padStart(2,'0') + ':' +
+      now.getSeconds().toString().padStart(2,'0');
+
+  } catch (e) {
+    toast('Erreur : ' + e.message, 'err');
+  }
+}
+
+function filtrer() {
+  const search   = document.getElementById('searchInput').value.toLowerCase();
+  const niveau   = document.getElementById('filterNiveau').value.toLowerCase();
+  const filterCD = document.getElementById('filterCD').value;
+
+  resultatsAffiches = tousResultats.filter(r => {
+    const matchSearch = !search ||
+      r.num.includes(search) ||
+      r.nom.toLowerCase().includes(search) ||
+      r.etab.toLowerCase().includes(search);
+
+    const matchNiveau = !niveau || r.niveau.toLowerCase().includes(niveau);
+
+    const estCD = r.classeDefense &&
+      r.classeDefense.toString().trim().toLowerCase() !== '' &&
+      r.classeDefense.toString().trim().toLowerCase() !== 'non' &&
+      r.classeDefense.toString().trim().toLowerCase() !== 'pas encore';
+
+    const matchCD = !filterCD ||
+      (filterCD === 'cd' && estCD) ||
+      (filterCD === 'hors' && !estCD);
+
+    return matchSearch && matchNiveau && matchCD;
+  });
+
+  trier();
+}
+
+function trier(col) {
+  if (col) {
+    if (sortCol === col) {
+      sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+    } else {
+      sortCol = col;
+      sortDir = 'desc';
+    }
+  }
+
+  resultatsAffiches.sort((a, b) => {
+    const va = a[sortCol] !== undefined ? a[sortCol] : 0;
+    const vb = b[sortCol] !== undefined ? b[sortCol] : 0;
+    const diff = typeof va === 'string'
+      ? va.localeCompare(vb)
+      : vb - va;
+    return sortDir === 'desc' ? diff : -diff;
+  });
+
+  renderTable();
+}
+
+function renderTable() {
+  const body = document.getElementById('tblBody');
+  const cnt  = document.getElementById('tblCnt');
+  const stat = document.getElementById('statPill');
+
+  cnt.textContent  = resultatsAffiches.length;
+  stat.textContent = resultatsAffiches.length + ' équipe' + (resultatsAffiches.length > 1 ? 's' : '');
+
+  if (!resultatsAffiches.length) {
+    body.innerHTML = `
+      <div class="state-box">
+        <div class="state-icon">🔍</div>
+        <div class="state-title">Aucun résultat</div>
+        <div class="state-desc">Modifiez les filtres ou attendez les premières saisies.</div>
+      </div>`;
+    return;
+  }
+
+  // Max ateliers pour la barre de progression
+  const maxAtelier = Math.max(...resultatsAffiches.map(r => r.totalAtelier), 1);
+
+  const thClass = (col) => col === sortCol
+    ? ('sort-' + sortDir)
+    : '';
+
+  let h = `<table>
+    <thead><tr>
+      <th onclick="trier('num')" class="${thClass('num')}">Équipe</th>
+      <th onclick="trier('totalAtelier')" class="${thClass('totalAtelier')}">Ateliers</th>
+      <th onclick="trier('filRouge')" class="${thClass('filRouge')}">Fil Rouge</th>
+      <th onclick="trier('comportement')" class="${thClass('comportement')}">Comportement</th>
+      <th onclick="trier('totalGlobal')" class="${thClass('totalGlobal')}">Total brut</th>
+      <th onclick="trier('notePonderee')" class="${thClass('notePonderee')}">Note pondérée</th>
+      <th onclick="trier('nbAteliers')" class="${thClass('nbAteliers')}">Nb ateliers</th>
+    </tr></thead><tbody>`;
+
+  resultatsAffiches.forEach(r => {
+    const estCD = r.classeDefense &&
+      r.classeDefense.toString().trim().toLowerCase() !== '' &&
+      r.classeDefense.toString().trim().toLowerCase() !== 'non' &&
+      r.classeDefense.toString().trim().toLowerCase() !== 'pas encore';
+
+    const pct = Math.round((r.totalAtelier / maxAtelier) * 100);
+
+    h += `<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="eq-num">${r.num}</span>
+          ${estCD ? `<span class="cd-badge">CD</span>` : ''}
+        </div>
+        <div class="eq-nom">${r.nom}</div>
+        <div class="eq-etab">${r.etab}</div>
+      </td>
+      <td>
+        <div class="prog-wrap">
+          <span class="score-cell ateliers">${r.totalAtelier}</span>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%"></div></div>
+        </div>
+      </td>
+      <td><span class="score-cell filrouge">${r.filRouge} / 30</span></td>
+      <td><span class="score-cell comport">${r.totalComportement}</span></td>
+      <td><span class="score-cell total">${r.totalGlobal}</span></td>
+      <td><span class="pond-chip">${r.notePonderee}</span></td>
+      <td><span class="nb-chip">${r.nbAteliers}</span></td>
+    </tr>`;
+  });
+
+  h += '</tbody></table>';
+  body.innerHTML = h;
+}
+
+async function apiGet(action) {
+  const res = await fetch(`${API_URL}?action=${action}`);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '');
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 3000);
+}
+</script>
+</body>
+</html>
