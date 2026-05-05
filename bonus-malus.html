@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bonus / Malus — Rallye Citoyen 2026</title>
+<script src="config.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
@@ -220,6 +221,23 @@
       </div>
     </div>
 
+
+    <!-- Boutons réinitialisation globale -->
+    <div class="section" style="border-color:#e0c0c0;margin-top:14px;">
+      <div class="section-head" style="color:var(--red)">⚠ Réinitialisation globale</div>
+      <div class="section-body" style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn danger" onclick="demanderReset('bonusmalus')">
+          🗑 Réinitialiser tous les Bonus/Malus
+        </button>
+        <button class="btn danger" onclick="demanderReset('filrouge')">
+          🗑 Réinitialiser tout le Fil Rouge
+        </button>
+        <button class="btn danger" onclick="demanderReset('all')" style="border-color:#8b1a1a;background:#fdf0f0;">
+          ⚠ Tout réinitialiser
+        </button>
+      </div>
+    </div>
+
     <div class="resume-bar">
       <div>
         <div class="resume-label">Attribution</div>
@@ -250,12 +268,7 @@
 
 <div class="toast" id="toast"></div>
 
-  
-<script src="config.js"></script>
-
-  
 <script>
-
 const VALEURS = [
   { val: -5, label: '-5', sub: 'Grave' },
   { val: -2, label: '-2', sub: 'Modéré' },
@@ -462,6 +475,69 @@ async function apiGet(action) {
   return res.json();
 }
 
+
+// ── RÉINITIALISATION GLOBALE ──
+let resetCible = null;
+
+function demanderReset(cible) {
+  resetCible = cible;
+  const labels = {
+    filrouge:   'Toutes les réponses du Fil Rouge (Saisie Fil Rouge + scores)',
+    bonusmalus: 'Tous les Bonus/Malus (colonne Comportement remise à 3)',
+    all:        'TOUT — Fil Rouge ET Bonus/Malus'
+  };
+  document.getElementById('modalResetTxt').innerHTML =
+    `Vous allez réinitialiser :<br><br>
+     <strong>${labels[cible]}</strong><br><br>
+     Cette action est <strong>irréversible</strong>. Saisissez le mot de passe pour confirmer.`;
+  document.getElementById('resetMdp').value = '';
+  document.getElementById('resetErreur').textContent = '';
+  document.getElementById('overlayReset').classList.add('on');
+  setTimeout(() => document.getElementById('resetMdp').focus(), 100);
+}
+
+function annulerReset() {
+  document.getElementById('overlayReset').classList.remove('on');
+  resetCible = null;
+}
+
+async function confirmerReset() {
+  const mdp = document.getElementById('resetMdp').value.trim();
+  if (!mdp) {
+    document.getElementById('resetErreur').textContent = 'Veuillez saisir le mot de passe.';
+    return;
+  }
+
+  const btn = document.getElementById('btnConfirmReset');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>';
+
+  try {
+    const data = encodeURIComponent(JSON.stringify({
+      cible: resetCible,
+      motDePasse: mdp
+    }));
+    const res = await apiGet(`resetGlobal&data=${data}`);
+
+    btn.disabled = false;
+    btn.innerHTML = 'Réinitialiser';
+
+    if (res.success) {
+      document.getElementById('overlayReset').classList.remove('on');
+      toast('✓ ' + res.message, 'ok');
+      resetCible = null;
+      // Recharger les données
+      chargerDonnees(true);
+    } else {
+      document.getElementById('resetErreur').textContent = '❌ ' + res.message;
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = 'Réinitialiser';
+    document.getElementById('resetErreur').textContent = 'Erreur réseau : ' + e.message;
+  }
+}
+
 function toast(msg, type) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -470,5 +546,23 @@ function toast(msg, type) {
   setTimeout(() => t.classList.remove('on'), 3000);
 }
 </script>
+
+<!-- Modal réinitialisation globale -->
+<div class="overlay" id="overlayReset">
+  <div class="modal">
+    <div class="modal-title" style="color:var(--red)">⚠ Réinitialisation globale</div>
+    <div class="modal-body" id="modalResetTxt"></div>
+    <div style="margin-bottom:16px">
+      <input type="password" id="resetMdp" placeholder="Mot de passe…"
+        style="width:100%;padding:10px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);background:var(--bg);transition:border-color .15s;"
+        onkeydown="if(event.key==='Enter')confirmerReset()">
+      <div id="resetErreur" style="color:var(--red);font-size:12px;margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="annulerReset()">Annuler</button>
+      <button class="btn danger" onclick="confirmerReset()" id="btnConfirmReset">Réinitialiser</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
