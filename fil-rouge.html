@@ -3,112 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fil Rouge — Rallye Citoyen 2026</title>
+<title>Bonus / Malus — Rallye Citoyen 2026</title>
 <script src="config.js"></script>
-<!-- <script src="nav.js"></script>  -->
+<script src="nav.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
   :root {
-    --navy:     #1a2744;
-    --navy-lt:  #243358;
-    --gold:     #b8932a;
-    --gold-lt:  #f5ead4;
-    --gold-mid: #e8d090;
-    --bg:       #f2f0eb;
-    --bg2:      #e8e5de;
-    --white:    #ffffff;
-    --text:     #1a1e2e;
-    --text2:    #4a5068;
-    --text3:    #8a90a8;
-    --border:   #dcd8ce;
-    --border2:  #c8c4b8;
-    --green:    #1a5a32;
-    --red:      #8b1a1a;
-    --shadow:   rgba(26,39,68,0.08);
-
-    /* Feuillets */
-    --f1: #1a2744; --f1-lt: #e8edf5;
-    --f2: #6b1a1a; --f2-lt: #f5e8e8;
-    --f3: #1a5a32; --f3-lt: #e8f5ed;
-    --f4: #5a3e10; --f4-lt: #f5eed8;
-    --f5: #3a1a5a; --f5-lt: #ede8f5;
+    --navy:    #1a2744;
+    --navy-lt: #243358;
+    --gold:    #b8932a;
+    --gold-lt: #f5ead4;
+    --bg:      #f2f0eb;
+    --bg2:     #e8e5de;
+    --white:   #ffffff;
+    --text:    #1a1e2e;
+    --text2:   #4a5068;
+    --text3:   #8a90a8;
+    --border:  #dcd8ce;
+    --border2: #c8c4b8;
+    --green:   #1a5a32;
+    --green-lt:#e8f5ed;
+    --red:     #8b1a1a;
+    --red-lt:  #f5e8e8;
+    --shadow:  rgba(26,39,68,0.08);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
-  body {
-    font-family: 'Source Sans 3', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+  /* ── HEADER ── */
+  header { background: var(--navy); padding: 20px 24px 18px; position: relative; overflow: hidden; }
+  header::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 12px); pointer-events: none; }
+  .header-inner { display: flex; align-items: center; gap: 14px; max-width: 780px; margin: 0 auto; }
+  .header-logo { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+  .header-text { flex: 1; }
+  .header-back { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .15s; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .header-back:hover { color: rgba(232,208,144,0.8); }
+  .header-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: rgba(232,208,144,0.7); margin-bottom: 3px; }
+  .header-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 18px; color: var(--white); }
 
-  
-
-  
-
-  
-
-  
-
-  
-  
-
-  
-
-  
-
-  /* ── NAV ── */
-  nav {
-    background: var(--white);
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    padding: 0 20px;
-    max-width: 780px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  /* Trick pour étendre la bordure full width */
-  .nav-wrap {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .tab {
-    padding: 11px 16px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: var(--text3);
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    transition: color .15s, border-color .15s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
+  /* ── NAV WRAP ── */
+  .nav-wrap { background: var(--white); border-bottom: 1px solid var(--border); }
+  nav { display: flex; align-items: center; padding: 0 20px; max-width: 780px; margin: 0 auto; }
+  .tab { padding: 11px 16px; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s; display: flex; align-items: center; gap: 8px; }
   .tab:hover { color: var(--text2); }
   .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
-
-  .tab .n {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    color: var(--text3);
-    font-size: 10px;
-    padding: 1px 6px;
-    border-radius: 10px;
-    font-weight: 600;
-    transition: all .15s;
-  }
+  .tab .n { background: var(--bg2); border: 1px solid var(--border); color: var(--text3); font-size: 10px; padding: 1px 6px; border-radius: 10px; font-weight: 600; transition: all .15s; }
   .tab.active .n { background: var(--navy); color: var(--white); border-color: var(--navy); }
+  .nav-spacer { flex: 1; }
+  .nav-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+  .btn-refresh { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; font-size: 11px; cursor: pointer; color: var(--text3); transition: all .15s; }
+  .btn-refresh:hover { border-color: var(--navy); color: var(--navy); }
 
   /* ── MAIN ── */
   main { flex: 1; max-width: 780px; margin: 0 auto; padding: 20px 20px 60px; width: 100%; }
@@ -116,453 +62,120 @@
   .panel.active { display: block; }
 
   /* ── SECTION ── */
-  .section {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    margin-bottom: 14px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-
-  .section-head {
-    padding: 10px 16px;
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: .15em;
-    text-transform: uppercase;
-    color: var(--text3);
-  }
-
+  .section { background: var(--white); border: 1px solid var(--border); border-radius: 16px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
+  .section-head { padding: 10px 16px; background: var(--bg2); border-bottom: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--text3); }
   .section-body { padding: 16px; }
 
-  /* ── SELECT ÉQUIPE ── */
+  /* ── SELECT ── */
   .select-wrap { position: relative; }
-  .select-wrap select {
-    width: 100%;
-    padding: 11px 36px 11px 14px;
-    background: var(--bg);
-    border: 1.5px solid var(--border2);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    appearance: none;
-    cursor: pointer;
-    transition: border-color .15s, box-shadow .15s;
-  }
-  .select-wrap select:focus {
-    outline: none;
-    border-color: var(--navy);
-    box-shadow: 0 0 0 3px rgba(26,39,68,0.08);
-  }
-  .select-wrap::after {
-    content: '▾';
-    position: absolute; right: 13px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--text3); font-size: 13px; pointer-events: none;
-  }
+  .select-wrap select { width: 100%; padding: 11px 36px 11px 14px; background: var(--bg); border: 1.5px solid var(--border2); border-radius: 10px; color: var(--text); font-family: 'Source Sans 3', sans-serif; font-size: 15px; font-weight: 600; appearance: none; cursor: pointer; transition: border-color .15s; }
+  .select-wrap select:focus { outline: none; border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,39,68,0.08); }
+  .select-wrap::after { content: '▾'; position: absolute; right: 13px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 13px; pointer-events: none; }
 
-  .equipe-meta {
-    margin-top: 8px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    color: var(--text3);
-    min-height: 16px;
-    letter-spacing: .03em;
-  }
-  .equipe-meta.warn { color: var(--gold); font-weight: 600; }
+  /* ── GRILLE VALEURS ── */
+  .valeurs-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 4px; }
+  @media (max-width: 500px) { .valeurs-grid { grid-template-columns: repeat(3, 1fr); } }
 
-  /* ── FEUILLET ── */
-  .feuillet {
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-
-  .feuillet-head {
-    padding: 10px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .feuillet-head.f1 { background: var(--f1); }
-  .feuillet-head.f2 { background: var(--f2); }
-  .feuillet-head.f3 { background: var(--f3); }
-  .feuillet-head.f4 { background: var(--f4); }
-  .feuillet-head.f5 { background: var(--f5); }
-
-  .feuillet-label {
-    font-family: 'Libre Baskerville', serif;
-    font-weight: 700;
-    font-size: 14px;
-    color: rgba(255,255,255,0.95);
-    letter-spacing: .01em;
-  }
-
-  .feuillet-score {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.5);
-    background: rgba(0,0,0,0.2);
-    padding: 3px 10px;
+  .val-btn {
+    padding: 14px 8px;
     border-radius: 12px;
-    letter-spacing: .04em;
-  }
-
-  .feuillet-body {
-    background: var(--white);
-    padding: 14px 16px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-  @media (max-width: 520px) { .feuillet-body { grid-template-columns: 1fr; } }
-
-  /* ── QUESTION ── */
-  .q-row { display: flex; align-items: flex-start; gap: 8px; }
-  .q-id {
+    border: 2px solid transparent;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    color: var(--text3);
-    min-width: 24px;
-    padding-top: 2px;
-    letter-spacing: .02em;
-    font-weight: 600;
-  }
-  .q-body { flex: 1; }
-  .q-text { font-size: 12px; color: var(--text2); margin-bottom: 7px; line-height: 1.35; font-weight: 400; }
-  .q-btns { display: flex; gap: 5px; }
-
-  .cbtn {
-    width: 30px; height: 30px;
-    background: var(--bg);
-    border: 1.5px solid var(--border2);
-    border-radius: 8px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600;
-    font-size: 13px;
-    color: var(--text3);
+    font-weight: 700;
+    font-size: 18px;
     cursor: pointer;
-    transition: all .12s;
-    display: flex; align-items: center; justify-content: center;
+    transition: all .15s;
+    text-align: center;
+    line-height: 1;
   }
-  .cbtn:hover { border-color: var(--navy); color: var(--navy); background: var(--bg2); }
+  .val-btn.neg { background: var(--red-lt); color: var(--red); border-color: rgba(139,26,26,0.2); }
+  .val-btn.neg:hover { background: var(--red); color: white; border-color: var(--red); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(139,26,26,0.25); }
+  .val-btn.pos { background: var(--green-lt); color: var(--green); border-color: rgba(26,90,50,0.2); }
+  .val-btn.pos:hover { background: var(--green); color: white; border-color: var(--green); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(26,90,50,0.25); }
+  .val-btn.selected { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+  .val-btn.neg.selected { background: var(--red); color: white; border-color: var(--red); }
+  .val-btn.pos.selected { background: var(--green); color: white; border-color: var(--green); }
+  .val-sub { font-size: 10px; font-weight: 400; margin-top: 4px; opacity: 0.7; font-family: 'Source Sans 3', sans-serif; }
 
-  /* Couleurs sélection par feuillet */
-  .cbtn.on.f1 { background: var(--f1); border-color: var(--f1); color: white; }
-  .cbtn.on.f2 { background: var(--f2); border-color: var(--f2); color: white; }
-  .cbtn.on.f3 { background: var(--f3); border-color: var(--f3); color: white; }
-  .cbtn.on.f4 { background: var(--f4); border-color: var(--f4); color: white; }
-  .cbtn.on.f5 { background: var(--f5); border-color: var(--f5); color: white; }
+  /* ── MOTIF ── */
+  .motif-input { width: 100%; padding: 10px 14px; background: var(--bg); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--text); transition: border-color .15s; }
+  .motif-input:focus { outline: none; border-color: var(--navy); }
+  .motif-input::placeholder { color: var(--text3); }
 
-  /* ── SCORE BAR ── */
-  .score-bar {
-    background: var(--navy);
-    border-radius: 16px;
-    padding: 14px 20px;
-    display: flex; align-items: center; justify-content: space-between;
-    margin-bottom: 14px;
-    box-shadow: 0 4px 16px rgba(26,39,68,0.2);
-  }
-  .score-left { }
-  .score-label {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 2px;
-  }
-  .score-detail {
-    font-size: 12px;
-    color: rgba(255,255,255,0.35);
-    font-style: italic;
-  }
-  .score-val {
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600;
-    font-size: 26px;
-    color: var(--gold-mid);
-    letter-spacing: .04em;
-  }
+  /* ── RÉSUMÉ ── */
+  .resume-bar { background: var(--navy); border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .resume-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 3px; }
+  .resume-val { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 22px; }
+  .resume-val.pos { color: #5ecf8a; }
+  .resume-val.neg { color: #e07070; }
+  .resume-val.zero { color: rgba(255,255,255,0.3); }
+  .resume-equipe { font-size: 14px; color: rgba(255,255,255,0.6); font-style: italic; }
 
   /* ── BOUTONS ── */
   .actions { display: flex; gap: 10px; flex-wrap: wrap; }
-  .btn {
-    padding: 10px 18px;
-    border: 1.5px solid var(--border2);
-    border-radius: 10px;
-    background: var(--white);
-    color: var(--text);
-    font-family: 'Source Sans 3', sans-serif;
-    font-weight: 600;
-    font-size: 14px;
-    cursor: pointer;
-    transition: all .15s;
-    display: flex; align-items: center; gap: 7px;
-    box-shadow: 0 1px 4px var(--shadow);
-  }
-  .btn:hover { border-color: var(--border2); box-shadow: 0 3px 10px var(--shadow); transform: translateY(-1px); }
+  .btn { padding: 10px 18px; border: 1.5px solid var(--border2); border-radius: 10px; background: var(--white); color: var(--text); font-family: 'Source Sans 3', sans-serif; font-weight: 600; font-size: 14px; cursor: pointer; transition: all .15s; display: flex; align-items: center; gap: 7px; box-shadow: 0 1px 4px var(--shadow); }
+  .btn:hover { box-shadow: 0 3px 10px var(--shadow); transform: translateY(-1px); }
   .btn.primary { background: var(--navy); border-color: var(--navy); color: white; font-weight: 700; }
-  .btn.primary:hover { background: var(--navy-lt); border-color: var(--navy-lt); }
+  .btn.primary:hover { background: var(--navy-lt); }
   .btn.danger { border-color: #e0c0c0; color: var(--red); }
-  .btn.danger:hover { background: #fdf0f0; }
+  .btn.danger:hover { background: var(--red-lt); }
   .btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; box-shadow: none; }
 
-  /* ── MODAL ── */
-  .overlay {
-    position: fixed; inset: 0;
-    background: rgba(26,39,68,0.5);
-    backdrop-filter: blur(4px);
-    z-index: 200; display: none;
-    align-items: center; justify-content: center; padding: 20px;
-  }
-  .overlay.on { display: flex; }
-  .modal {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 28px;
-    max-width: 400px; width: 100%;
-    box-shadow: 0 20px 60px rgba(26,39,68,0.2);
-  }
-  .modal-title {
-    font-family: 'Libre Baskerville', serif;
-    font-weight: 700; font-size: 18px;
-    color: var(--navy); margin-bottom: 10px;
-  }
-  .modal-body { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 22px; font-weight: 300; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  /* ── TABLEAU HISTORIQUE ── */
+  .tbl-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
+  .tbl-head { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--text3); }
+  .tbl-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); background: var(--white); border: 1px solid var(--border); padding: 2px 8px; border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--bg); }
+  th { padding: 8px 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); text-align: left; border-bottom: 1px solid var(--border); font-weight: 600; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+  .eq-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--navy); }
+  .val-chip { display: inline-flex; align-items: center; justify-content: center; min-width: 48px; padding: 3px 10px; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 14px; }
+  .val-chip.pos { background: var(--green-lt); color: var(--green); }
+  .val-chip.neg { background: var(--red-lt); color: var(--red); }
+  .total-chip { background: var(--navy); color: white; padding: 2px 10px; border-radius: 8px; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 13px; }
+  .empty { padding: 36px; text-align: center; color: var(--text3); font-style: italic; font-size: 13px; }
 
   /* ── TOAST ── */
-  .toast {
-    position: fixed; bottom: 24px; left: 50%;
-    transform: translateX(-50%) translateY(70px);
-    background: var(--navy);
-    color: white;
-    padding: 11px 22px;
-    border-radius: 30px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    z-index: 999;
-    transition: transform .25s ease;
-    letter-spacing: .04em;
-    box-shadow: 0 8px 30px rgba(26,39,68,0.25);
-    white-space: nowrap;
-  }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 11px 22px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 999; transition: transform .25s ease; letter-spacing: .04em; box-shadow: 0 8px 30px rgba(26,39,68,0.25); white-space: nowrap; }
   .toast.on { transform: translateX(-50%) translateY(0); }
   .toast.ok  { background: var(--green); }
   .toast.err { background: var(--red); }
   .toast.wrn { background: var(--gold); color: var(--navy); }
 
-  /* ── SPINNER ── */
-  .spin {
-    display: inline-block; width: 14px; height: 14px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: rot .6s linear infinite;
-  }
+  .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: rot .6s linear infinite; }
   @keyframes rot { to { transform: rotate(360deg); } }
 
-  /* ── TABLEAU RÉPONSES ── */
-  .tbl-wrap {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-  .tbl-head {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600; font-size: 10px;
-    letter-spacing: .15em; text-transform: uppercase;
-    color: var(--text3);
-  }
-  .tbl-cnt {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px; color: var(--text3);
-    background: var(--white); border: 1px solid var(--border);
-    padding: 2px 8px; border-radius: 10px;
-  }
-
-  table { width: 100%; border-collapse: collapse; }
-  thead tr { background: var(--bg); }
-  th {
-    padding: 8px 12px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
-    color: var(--text3); text-align: center;
-    border-bottom: 1px solid var(--border);
-    font-weight: 600;
-  }
-  th:first-child { text-align: left; }
-  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--bg); }
-
-  .eq-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; color: var(--navy); }
-  .eq-nom { font-size: 11px; color: var(--text3); margin-top: 2px; }
-
-  .chip {
-    display: inline-flex; align-items: center; justify-content: center;
-    width: 26px; height: 26px; border-radius: 8px;
-    font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px;
-  }
-  .chip.f1 { background: var(--f1-lt); color: var(--f1); }
-  .chip.f2 { background: var(--f2-lt); color: var(--f2); }
-  .chip.f3 { background: var(--f3-lt); color: var(--f3); }
-  .chip.f4 { background: var(--f4-lt); color: var(--f4); }
-  .chip.f5 { background: var(--f5-lt); color: var(--f5); }
-  .chip.tot { background: var(--navy); color: white; width: auto; padding: 0 10px; border-radius: 12px; }
-
-  .btn-det {
-    background: var(--bg); border: 1px solid var(--border);
-    border-radius: 8px; padding: 4px 10px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
-    color: var(--text3); cursor: pointer; letter-spacing: .04em;
-    transition: all .12s;
-  }
-  .btn-det:hover { border-color: var(--navy); color: var(--navy); background: var(--white); }
-
-  .empty {
-    padding: 36px; text-align: center; color: var(--text3);
-    font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .06em;
-    font-style: italic;
-  }
-
-  /* ── DÉTAIL ── */
-  .detail-wrap {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-top: 12px;
-    box-shadow: 0 2px 8px var(--shadow);
-  }
-  .detail-hd {
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    padding: 10px 16px;
-    display: flex; align-items: center; justify-content: space-between;
-    font-family: 'IBM Plex Mono', monospace;
-    font-weight: 600; font-size: 10px;
-    letter-spacing: .12em; text-transform: uppercase; color: var(--text3);
-  }
-  .detail-close {
-    background: none; border: none; color: var(--text3);
-    font-size: 18px; cursor: pointer; line-height: 1;
-    width: 28px; height: 28px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    transition: all .15s;
-  }
-  .detail-close:hover { background: var(--border); color: var(--text); }
-
-  .detail-feuillet { padding: 12px 16px; border-bottom: 1px solid var(--border); }
-  .detail-feuillet:last-child { border-bottom: none; }
-  .detail-f-label {
-    font-family: 'Libre Baskerville', serif;
-    font-size: 13px; font-weight: 700;
-    margin-bottom: 10px;
-  }
-  .detail-f-label.f1 { color: var(--f1); }
-  .detail-f-label.f2 { color: var(--f2); }
-  .detail-f-label.f3 { color: var(--f3); }
-  .detail-f-label.f4 { color: var(--f4); }
-  .detail-f-label.f5 { color: var(--f5); }
-
-  .detail-qs { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
-  @media (max-width: 480px) { .detail-qs { grid-template-columns: repeat(3, 1fr); } }
-
-  .dq {
-    border-radius: 10px; padding: 6px 4px; text-align: center;
-    border: 1px solid transparent;
-  }
-  .dq .dn {
-    font-family: 'IBM Plex Mono', monospace; font-size: 9px;
-    color: var(--text3); margin-bottom: 3px; letter-spacing: .04em;
-  }
-  .dq .dr { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 17px; }
-  .dq .dc { font-family: 'IBM Plex Mono', monospace; font-size: 10px; margin-top: 2px; font-weight: 600; }
-
-  .dq.ok  { background: #e8f5ed; border-color: #b8dfc4; }
-  .dq.ok .dr { color: var(--green); }
-  .dq.ko  { background: #f5e8e8; border-color: #e0b8b8; }
-  .dq.ko .dr { color: var(--red); }
-  .dq.ko .dc { color: var(--green); }
-  .dq.na  { background: var(--bg); border-color: var(--border); }
-  .dq.na .dr { color: var(--text3); }
-
-  /* ── LOADING ── */
-  .loading-overlay {
-    position: fixed; inset: 0;
-    background: var(--bg);
-    z-index: 1000;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 16px;
-  }
+  .loading-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 300; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
   .loading-overlay.hidden { display: none; }
-  .loading-logo { width: 64px; height: 64px; object-fit: contain; margin-bottom: 4px; }
-  .loading-txt {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px; letter-spacing: .12em;
-    color: var(--text3); text-transform: uppercase;
-  }
-  .spin-dark {
-    display: inline-block; width: 20px; height: 20px;
-    border: 2px solid var(--border2);
-    border-top-color: var(--navy);
-    border-radius: 50%;
-    animation: rot .6s linear infinite;
-  }
+  .loading-logo { width: 64px; height: 64px; object-fit: contain; }
+  .loading-txt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .12em; color: var(--text3); text-transform: uppercase; }
+  .spin-dark { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border2); border-top-color: var(--navy); border-radius: 50%; animation: rot .6s linear infinite; }
+
+  .field-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+  .field-wrap { margin-bottom: 16px; }
 </style>
 </head>
 <body>
 
-<!-- Écran de chargement -->
 <div class="loading-overlay" id="loadingOverlay">
   <img src="LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
-  <div class="spin-dark" id="loadingSpinner"></div>
-  <div class="loading-txt" id="loadingTxt">Chargement des équipes…</div>
-  <button id="loadingRetry" onclick="chargerDonnees()"
-    style="display:none;margin-top:8px;padding:8px 20px;background:var(--navy);color:white;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;letter-spacing:.06em;">
-    ↺ Réessayer
-  </button>
+  <div class="spin-dark"></div>
+  <div class="loading-txt">Chargement…</div>
 </div>
 
-<!-- Header -->
-<!-- Nav -->
 <div class="nav-wrap">
   <nav>
-    <div class="tab active" id="tab-saisie" onclick="showTab('saisie')">
-      Saisie
+    <div class="tab active" id="tab-saisie" onclick="showTab('saisie')">Saisie</div>
+    <div class="tab" id="tab-historique" onclick="showTabHistorique()">
+      Historique <span class="n" id="badgeN">0</span>
     </div>
-    <div class="tab" id="tab-reponses" onclick="showTabReponses()">
-      Réponses <span class="n" id="badgeN">0</span>
-    </div>
-    <div class="tab" id="tab-corrige" onclick="showTab('corrige')">
-      Corrigé
-    </div>
-    <div style="flex:1"></div>
-    <div style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.06em;display:flex;align-items:center;gap:6px;">
+    <div class="nav-spacer"></div>
+    <div class="nav-info">
       <span id="lastUpdate">—</span>
-      <button onclick="chargerDonnees(true)" title="Actualiser maintenant"
-        style="background:none;border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--text3);transition:all .15s;"
-        onmouseover="this.style.borderColor='var(--navy)';this.style.color='var(--navy)'"
-        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">
-        ↻
-      </button>
+      <button class="btn-refresh" onclick="chargerDonnees(true)">↻</button>
     </div>
   </nav>
 </div>
@@ -573,429 +186,247 @@
   <div class="panel active" id="panel-saisie">
 
     <div class="section">
-      <div class="section-head">Sélection de l'équipe</div>
+      <div class="section-head">Équipe</div>
       <div class="section-body">
         <div class="select-wrap">
           <select id="selEquipe" onchange="onEquipeChange()">
             <option value="">— Choisir une équipe —</option>
           </select>
         </div>
-        <div class="equipe-meta" id="equipeMeta"></div>
       </div>
     </div>
 
-    <div id="feuillets"></div>
-
-    <div class="score-bar">
-      <div class="score-left">
-        <div class="score-label">Score fil rouge</div>
-        <div class="score-detail" id="scoreDetail">Sélectionnez une équipe</div>
+    <div class="section">
+      <div class="section-head">Valeur du bonus / malus</div>
+      <div class="section-body">
+        <div class="valeurs-grid" id="valeursGrid"></div>
       </div>
-      <div class="score-val" id="scoreVal">— / 30</div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">Motif (optionnel)</div>
+      <div class="section-body">
+        <input type="text" class="motif-input" id="motif"
+          placeholder="Ex: Tenue irréprochable, Retard au départ…">
+      </div>
     </div>
 
 
 
+
+    <div class="resume-bar">
+      <div>
+        <div class="resume-label">Attribution</div>
+        <div class="resume-equipe" id="resumeEquipe">Aucune équipe sélectionnée</div>
+      </div>
+      <div class="resume-val zero" id="resumeVal">—</div>
+    </div>
 
     <div class="actions">
-      <button class="btn primary" id="btnSave" onclick="enregistrer()">✓ Enregistrer</button>
-      <button class="btn" onclick="nouvelleEquipe()">↺ Nouvelle équipe</button>
-      <button class="btn danger" id="btnRaz" onclick="demanderRaz()" style="display:none">⊘ Remettre à zéro</button>
-      <button class="btn danger" onclick="toutEffacer()">✕ Effacer</button>
+      <button class="btn primary" id="btnSave" onclick="enregistrer()">✓ Attribuer</button>
+      <button class="btn" onclick="reset()">↺ Réinitialiser</button>
     </div>
 
   </div>
 
-  <!-- ═══ RÉPONSES ═══ -->
-  <div class="panel" id="panel-reponses">
+  <!-- ═══ HISTORIQUE ═══ -->
+  <div class="panel" id="panel-historique">
     <div class="tbl-wrap">
       <div class="tbl-head">
-        Équipes saisies
+        Historique des attributions
         <span class="tbl-cnt" id="tblCnt">0</span>
       </div>
-      <div id="tblBody"><div class="empty">Aucune saisie pour le moment</div></div>
+      <div id="tblBody"><div class="empty">Aucune attribution pour le moment</div></div>
     </div>
-    <div id="detailZone"></div>
-
-    <!-- Réinitialisation Fil Rouge -->
+    <!-- Réinitialisation Bonus/Malus -->
     <div style="margin-top:16px;background:var(--white);border:1px solid #e0c0c0;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);">
       <div style="padding:9px 16px;background:var(--bg2);border-bottom:1px solid #e0c0c0;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--red);">⚠ Réinitialisation</div>
       <div style="padding:14px 16px;">
-        <button class="btn danger" onclick="demanderReset('filrouge')">
-          🗑 Réinitialiser tout le Fil Rouge
+        <button class="btn danger" onclick="demanderReset('bonusmalus')">
+          🗑 Réinitialiser tous les Bonus / Malus
         </button>
       </div>
     </div>
   </div>
 
-
-  <!-- ═══ CORRIGÉ ═══ -->
-  <div class="panel" id="panel-corrige">
-    <div id="corrigeContent"></div>
-  </div>
 </main>
-
-<!-- Modal confirmation -->
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <div class="modal-title" id="modalTitle">Confirmation</div>
-    <div class="modal-body" id="modalTxt"></div>
-    <div class="modal-actions">
-      <button class="btn" onclick="annuler()">Annuler</button>
-      <button class="btn danger" id="btnConfirmer" onclick="confirmer()">Confirmer</button>
-    </div>
-  </div>
-</div>
-
-<!-- Modal RAZ -->
-<div class="overlay" id="overlayRaz">
-  <div class="modal">
-    <div class="modal-title" style="color:var(--red)">⊘ Remise à zéro</div>
-    <div class="modal-body" id="modalRazTxt"></div>
-    <div class="modal-actions">
-      <button class="btn" onclick="annulerRaz()">Annuler</button>
-      <button class="btn danger" id="btnConfirmRaz" onclick="confirmerRaz()">Remettre à zéro</button>
-    </div>
-  </div>
-</div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-if (typeof MDP_RESET === 'undefined') {
-  var MDP_RESET = 'SemperParatiDMD82!';
-}
-// ⚠️ METTRE À JOUR AVEC L'URL DE VOTRE DÉPLOIEMENT APPS SCRIPT
-const REP_OFF = [
-  "B","B","C","C","B","C",
-  "C","B","C","B","C","C",
-  "B","C","B","B","C","C",
-  "B","B","B","C","C","B",
-  "C","A","B","C","C","B"
+const VALEURS = [
+  { val: -5, label: '-5', sub: 'Grave' },
+  { val: -2, label: '-2', sub: 'Modéré' },
+  { val: -1, label: '-1', sub: 'Léger' },
+  { val: +1, label: '+1', sub: 'Léger' },
+  { val: +2, label: '+2', sub: 'Bien' },
+  { val: +5, label: '+5', sub: 'Excellent' }
 ];
 
-const FEUILLETS = [
-  { id:1, label:"Feuillet I — Soigner",            cls:"f1", qs:["Geneviève de Galard à Diên Biên Phu","Valérie André — double spécialité","Caducée — domaine d'utilisation","Fondateur de la Croix-Rouge","Position PLS","Lettre S en alphabet OTAN"] },
-  { id:2, label:"Feuillet II — Secourir",           cls:"f2", qs:["Bataille commémorée en 2026 (110 ans)","Numéro d'urgence européen","Mission NE faisant PAS partie du SDIS","Réaction face à un email de phishing","Qui peut utiliser un DAE ?","Sanction douanière — liquide non déclaré"] },
-  { id:3, label:"Feuillet III — Servir",            cls:"f3", qs:["Légion d'Honneur — qui peut la recevoir ?","JDC — affirmation vraie","Bleuet de France — occasions","Rôle d'un porte-drapeau","Citoyens engagés volontairement dans les armées","Verdun 1916 — nombre de victimes"] },
-  { id:4, label:"Feuillet IV — Courage & Héritage", cls:"f4", qs:["Code Morse — décodage","André Maginot — grade en 1914","Marie Curie — contribution 14-18","Eau potable utilisable sur Terre","Médaille Militaire — à qui ?","SMV — public cible"] },
-  { id:5, label:"Feuillet V — Mission Finale",      cls:"f5", qs:["SIERRA-OSCAR-INDIA-GOLF-NOVEMBER-ECHO-ROMEO","SNU — public concerné","Urgence médicale grave — quel numéro ?","EPIDE — objectif principal","1re femme générale de l'armée française","Synthèse — esprit du triptyque citoyen"] }
-];
+let equipesData  = [];
+let historique   = [];
+let selectedVal  = null;
 
-const reps      = {};
-let equipesData = [];
-let saisiesData = {};
-let pendingNum      = null;
-let pendingIncomplet = false;
-
+// ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
-  buildFeuillets();
-  chargerDonnees().then(() => demarrerAutoRefresh());
+  buildValeurs();
+  chargerDonnees();
 });
 
-function buildFeuillets() {
-  const wrap = document.getElementById('feuillets');
-  FEUILLETS.forEach(f => {
-    const d = document.createElement('div');
-    d.className = 'feuillet';
-    d.innerHTML = `
-      <div class="feuillet-head ${f.cls}">
-        <span class="feuillet-label">${f.label}</span>
-        <span class="feuillet-score" id="cnt${f.id}">0 / 6</span>
-      </div>
-      <div class="feuillet-body" id="grid${f.id}"></div>`;
-    wrap.appendChild(d);
-
-    const grid = d.querySelector(`#grid${f.id}`);
-    f.qs.forEach((txt, i) => {
-      const q = (f.id - 1) * 6 + i + 1;
-      const r = document.createElement('div');
-      r.className = 'q-row';
-      r.innerHTML = `
-        <div class="q-id">Q${String(q).padStart(2,'0')}</div>
-        <div class="q-body">
-          <div class="q-text">${txt}</div>
-          <div class="q-btns">
-            ${['A','B','C'].map(l => `
-              <button class="cbtn" data-q="${q}" data-f="${f.cls}" data-v="${l}"
-                onclick="pick(${q},'${l}','${f.cls}',this)">${l}</button>`).join('')}
-          </div>
-        </div>`;
-      grid.appendChild(r);
-    });
+function buildValeurs() {
+  const grid = document.getElementById('valeursGrid');
+  VALEURS.forEach(v => {
+    const btn = document.createElement('button');
+    btn.className = 'val-btn ' + (v.val < 0 ? 'neg' : 'pos');
+    btn.dataset.val = v.val;
+    btn.innerHTML = `${v.val > 0 ? '+' : ''}${v.label}<div class="val-sub">${v.sub}</div>`;
+    btn.onclick = () => selectVal(v.val, btn);
+    grid.appendChild(btn);
   });
 }
 
 async function chargerDonnees(silent = false) {
   try {
-    const data = await apiGet('init');
-
-    // Mémoriser l'équipe sélectionnée pour ne pas perturber la saisie en cours
-    const selEquipe = document.getElementById('selEquipe');
-    const selectedNum = selEquipe ? selEquipe.value : '';
-
+    const data = await apiGet('initBonusMalus');
     equipesData = data.equipes || [];
-    saisiesData = {};
-    // Une équipe est "saisie" seulement si elle a au moins une réponse renseignée
-    (data.saisies || []).forEach(s => {
-      const aDesReponses = (s.reponses || []).some(r => r && r.trim() !== '');
-      if (aDesReponses) saisiesData[s.num] = s;
-    });
+    historique  = data.historique || [];
 
-    // Reconstruire le select uniquement au premier chargement
     if (!silent) {
-      selEquipe.innerHTML = '<option value="">— Choisir une équipe —</option>';
+      const sel = document.getElementById('selEquipe');
+      const prev = sel.value;
+      sel.innerHTML = '<option value="">— Choisir une équipe —</option>';
       equipesData.forEach(e => {
         const o = document.createElement('option');
         o.value = e.num;
         o.textContent = `${e.num} — ${e.nom}  ·  ${e.etab}`;
-        selEquipe.appendChild(o);
+        sel.appendChild(o);
       });
-      // Restaurer la sélection
-      if (selectedNum) selEquipe.value = selectedNum;
+      if (prev) sel.value = prev;
     }
 
     majBadge();
-
-    // Mettre à jour le tableau réponses si l'onglet est visible
-    if (document.getElementById('panel-reponses').classList.contains('active')) {
-      renderReponses();
+    if (document.getElementById('panel-historique').classList.contains('active')) {
+      renderHistorique();
     }
 
-    // Masquer l'overlay dans TOUS les cas (silent ou non) au premier chargement
-    const overlay = document.getElementById('loadingOverlay');
-    if (overlay && !overlay.classList.contains('hidden')) {
-      overlay.classList.add('hidden');
-    }
-
-    // Indicateur discret de dernière actualisation
     const ts = document.getElementById('lastUpdate');
     if (ts) {
       const now = new Date();
       ts.textContent = 'Actualisé à ' + now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
     }
 
+    if (!silent) document.getElementById('loadingOverlay').classList.add('hidden');
   } catch (e) {
     if (!silent) {
-      // Afficher l'erreur dans l'overlay plutôt que de le masquer
-      document.getElementById('loadingSpinner').style.display = 'none';
-      document.getElementById('loadingTxt').textContent = '⚠ ' + e.message;
-      document.getElementById('loadingTxt').style.color = '#e07070';
-      document.getElementById('loadingRetry').style.display = 'block';
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      toast('Erreur : ' + e.message, 'err');
     }
   }
 }
 
-// Actualisation automatique toutes les 30 secondes
-let autoRefreshInterval = null;
+// Auto-refresh 30s
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => setInterval(() => chargerDonnees(true), 30000), 5000);
+});
 
-function demarrerAutoRefresh() {
-  if (autoRefreshInterval) clearInterval(autoRefreshInterval);
-  autoRefreshInterval = setInterval(() => {
-    chargerDonnees(true); // silent = true, pas de rebuild du select
-  }, 30000);
+// ── SÉLECTION VALEUR ──
+function selectVal(val, btn) {
+  document.querySelectorAll('.val-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedVal = val;
+  updateResume();
 }
 
-async function apiGet(action) {
-  const res = await fetch(`${API_URL}?action=${action}`);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
-}
+function onEquipeChange() { updateResume(); }
 
-async function apiPost(payload) {
-  // Passage par GET pour éviter les blocages CORS sur POST
-  const data = encodeURIComponent(JSON.stringify(payload));
-  const res = await fetch(`${API_URL}?action=save&data=${data}`);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
-}
+function updateResume() {
+  const num = document.getElementById('selEquipe').value;
+  const eq  = equipesData.find(e => e.num === num);
+  const rv  = document.getElementById('resumeVal');
+  const re  = document.getElementById('resumeEquipe');
 
-function onEquipeChange() {
-  const num  = document.getElementById('selEquipe').value;
-  const meta = document.getElementById('equipeMeta');
-  if (!num) {
-    meta.textContent = '';
-    meta.className = 'equipe-meta';
-    resetReps(true);
-    document.getElementById('scoreVal').textContent = '— / 30';
-    document.getElementById('scoreDetail').textContent = 'Sélectionnez une équipe';
-    return;
-  }
+  re.textContent = eq ? `${eq.num} — ${eq.nom}` : 'Aucune équipe sélectionnée';
 
-  const eq = equipesData.find(e => e.num === num);
-  const btnRaz = document.getElementById('btnRaz');
-  if (saisiesData[num]) {
-    meta.textContent = '⚠ Déjà saisie — sera écrasée si vous enregistrez';
-    meta.className = 'equipe-meta warn';
-    chargerReponsesExistantes(saisiesData[num]);
-    if (btnRaz) btnRaz.style.display = '';
+  if (selectedVal !== null) {
+    rv.textContent = (selectedVal > 0 ? '+' : '') + selectedVal;
+    rv.className = 'resume-val ' + (selectedVal > 0 ? 'pos' : 'neg');
   } else {
-    meta.textContent = eq ? eq.etab : '';
-    meta.className = 'equipe-meta';
-    resetReps(true);
-    if (btnRaz) btnRaz.style.display = 'none';
+    rv.textContent = '—';
+    rv.className = 'resume-val zero';
   }
 }
 
-function chargerReponsesExistantes(s) {
-  resetReps(true);
-  (s.reponses || []).forEach((r, i) => {
-    if (!r) return;
-    const q  = i + 1;
-    const fc = FEUILLETS[Math.ceil(q / 6) - 1].cls;
-    reps[q]  = r;
-    const b  = document.querySelector(`.cbtn[data-q="${q}"][data-v="${r}"]`);
-    if (b) b.classList.add('on', fc);
-  });
-  updateAll();
-}
-
-function pick(q, val, fc, btn) {
-  document.querySelectorAll(`.cbtn[data-q="${q}"]`).forEach(b => {
-    b.classList.remove('on', 'f1', 'f2', 'f3', 'f4', 'f5');
-  });
-  btn.classList.add('on', fc);
-  reps[q] = val;
-  updateAll();
-}
-
-function updateAll() {
-  FEUILLETS.forEach(f => {
-    let n = 0;
-    for (let i = 1; i <= 6; i++) { if (reps[(f.id-1)*6+i]) n++; }
-    document.getElementById('cnt' + f.id).textContent = n + ' / 6';
-  });
-  let correct = 0, saisis = 0;
-  for (let q = 1; q <= 30; q++) {
-    if (reps[q]) {
-      saisis++;
-      if (reps[q] === REP_OFF[q-1]) correct++;
-    }
-  }
-  document.getElementById('scoreVal').textContent = String(correct).padStart(2,'0') + ' / 30';
-  document.getElementById('scoreDetail').textContent = saisis + ' réponse' + (saisis > 1 ? 's' : '') + ' saisie' + (saisis > 1 ? 's' : '');
-}
-
-function enregistrer() {
+// ── ENREGISTREMENT ──
+async function enregistrer() {
   const num = document.getElementById('selEquipe').value;
   if (!num) { toast('Sélectionnez une équipe', 'wrn'); return; }
+  if (selectedVal === null) { toast('Sélectionnez une valeur', 'wrn'); return; }
 
-  // Vérifier que les 30 questions sont remplies
-  const nbSaisis = Object.keys(reps).filter(q => reps[q]).length;
-  if (nbSaisis < 30) {
-    const manquantes = 30 - nbSaisis;
-    const eq = equipesData.find(e => e.num === num);
-    document.getElementById('modalTxt').innerHTML =
-      `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> n'a que <strong>${nbSaisis} / 30</strong> réponses saisies.<br><br>
-       Il manque <strong>${manquantes} réponse${manquantes > 1 ? 's' : ''}</strong>. Voulez-vous enregistrer quand même ?`;
-    document.getElementById('btnConfirmer').textContent = 'Enregistrer quand même';
-    pendingNum = num;
-    pendingIncomplet = true;
-    document.getElementById('overlay').classList.add('on');
-    return;
-  }
-
-  if (saisiesData[num]) {
-    const eq = equipesData.find(e => e.num === num);
-    document.getElementById('modalTxt').innerHTML =
-      `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> a déjà été saisie.<br><br>
-       Voulez-vous écraser les données existantes ?`;
-    document.getElementById('btnConfirmer').textContent = 'Écraser et corriger';
-    pendingNum = num;
-    pendingIncomplet = false;
-    document.getElementById('overlay').classList.add('on');
-    return;
-  }
-  soumettre(num);
-}
-
-function confirmer() {
-  document.getElementById('overlay').classList.remove('on');
-  const num = pendingNum;
-  const incomplet = pendingIncomplet;
-  pendingNum = null;
-  pendingIncomplet = false;
-  if (!num) return;
-
-  // Si incomplet ET déjà saisie, on enchaîne la vérification écrasement
-  if (incomplet && saisiesData[num]) {
-    const eq = equipesData.find(e => e.num === num);
-    document.getElementById('modalTxt').innerHTML =
-      `L'équipe <strong>${num} — ${eq ? eq.nom : ''}</strong> a déjà été saisie.<br><br>
-       Voulez-vous écraser les données existantes ?`;
-    document.getElementById('btnConfirmer').textContent = 'Écraser et corriger';
-    pendingNum = num;
-    pendingIncomplet = false;
-    document.getElementById('overlay').classList.add('on');
-    return;
-  }
-  soumettre(num);
-}
-function annuler() {
-  document.getElementById('overlay').classList.remove('on');
-  pendingNum = null;
-  pendingIncomplet = false;
-}
-
-async function soumettre(num) {
-  const arr = [];
-  for (let q = 1; q <= 30; q++) arr.push(reps[q] || '');
-
-  const btn = document.getElementById('btnSave');
+  const motif = document.getElementById('motif').value.trim();
+  const btn   = document.getElementById('btnSave');
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span> Enregistrement…';
 
   try {
-    const res = await apiPost({ action: 'save', numEquipe: num, reponses: arr });
+    const data = encodeURIComponent(JSON.stringify({
+      numEquipe: num,
+      valeur:    selectedVal,
+      motif:     motif
+    }));
+    const res = await apiGet(`saveBonusMalus&data=${data}`);
+
     btn.disabled = false;
-    btn.innerHTML = '✓ Enregistrer';
+    btn.innerHTML = '✓ Attribuer';
+
     if (res.success) {
-      toast('Équipe ' + num + ' enregistrée', 'ok');
-      saisiesData[num] = { num, reponses: arr, ...res.scores };
+      const eq = equipesData.find(e => e.num === num);
+      toast(`${selectedVal > 0 ? '+' : ''}${selectedVal} attribué à l'équipe ${num}`, 'ok');
+      historique.unshift({
+        num, nom: eq ? eq.nom : '', valeur: selectedVal,
+        motif, total: res.nouveauTotal,
+        horodatage: new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' })
+      });
       majBadge();
-      setTimeout(nouvelleEquipe, 1200);
+      reset();
     } else {
       toast('Erreur : ' + res.message, 'err');
     }
   } catch (e) {
     btn.disabled = false;
-    btn.innerHTML = '✓ Enregistrer';
+    btn.innerHTML = '✓ Attribuer';
     toast('Erreur réseau : ' + e.message, 'err');
   }
 }
 
-function showTabReponses() {
-  showTab('reponses');
-  chargerDonnees(true); // rechargement forcé depuis le serveur
+// ── HISTORIQUE ──
+function showTabHistorique() {
+  showTab('historique');
+  chargerDonnees(true);
+  renderHistorique();
 }
 
-function renderReponses() {
-  const saisies = Object.values(saisiesData).sort((a,b) => parseInt(a.num) - parseInt(b.num));
-  document.getElementById('tblCnt').textContent = saisies.length;
+function renderHistorique() {
+  const tbl  = document.getElementById('tblBody');
+  const cnt  = document.getElementById('tblCnt');
+  cnt.textContent = historique.length;
 
-  if (!saisies.length) {
-    document.getElementById('tblBody').innerHTML = '<div class="empty">Aucune équipe saisie pour le moment</div>';
+  if (!historique.length) {
+    tbl.innerHTML = '<div class="empty">Aucune attribution pour le moment</div>';
     return;
   }
 
   let h = `<table><thead><tr>
-    <th style="text-align:left">Équipe</th>
-    <th>F1</th><th>F2</th><th>F3</th><th>F4</th><th>F5</th>
-    <th>Total</th><th></th>
+    <th>Heure</th><th>Équipe</th><th>Valeur</th><th>Motif</th><th>Total comportement</th>
   </tr></thead><tbody>`;
 
-  saisies.forEach(s => {
-    const eq  = equipesData.find(e => e.num === s.num);
-    const sc  = calcScores(s.reponses || []);
-    const tot = sc.reduce((a,b) => a+b, 0);
+  historique.forEach(h2 => {
+    const isPos = h2.valeur > 0;
     h += `<tr>
-      <td>
-        <div class="eq-num">${s.num}</div>
-        <div class="eq-nom">${eq ? eq.nom : '—'}</div>
-      </td>
-      ${sc.map((v,i) => `<td style="text-align:center"><span class="chip f${i+1}">${v}</span></td>`).join('')}
-      <td style="text-align:center"><span class="chip tot">${tot}</span></td>
-      <td><button class="btn-det" onclick="detail('${s.num}')">Détail</button></td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${h2.horodatage || '—'}</td>
+      <td><span class="eq-num">${h2.num}</span><br><span style="font-size:11px;color:var(--text3)">${h2.nom}</span></td>
+      <td><span class="val-chip ${isPos ? 'pos' : 'neg'}">${isPos ? '+' : ''}${h2.valeur}</span></td>
+      <td style="font-size:13px;color:var(--text2);font-style:italic">${h2.motif || '—'}</td>
+      <td><span class="total-chip">${h2.total !== undefined ? h2.total : '—'}</span></td>
     </tr>`;
   });
 
@@ -1003,119 +434,17 @@ function renderReponses() {
   document.getElementById('tblBody').innerHTML = h;
 }
 
-function detail(num) {
-  const s  = saisiesData[num];
-  const eq = equipesData.find(e => e.num === num);
-  const rr = s.reponses || [];
-
-  let h = `<div class="detail-wrap">
-    <div class="detail-hd">
-      <span>Détail — Équipe ${num}${eq ? ' · ' + eq.nom : ''}</span>
-      <button class="detail-close" onclick="document.getElementById('detailZone').innerHTML=''">✕</button>
-    </div>`;
-
-  FEUILLETS.forEach(f => {
-    h += `<div class="detail-feuillet">
-      <div class="detail-f-label ${f.cls}">${f.label}</div>
-      <div class="detail-qs">`;
-    for (let i = 1; i <= 6; i++) {
-      const q   = (f.id-1)*6+i;
-      const rep = rr[q-1] || '';
-      const off = REP_OFF[q-1];
-      const cls = !rep ? 'na' : rep === off ? 'ok' : 'ko';
-      h += `<div class="dq ${cls}">
-        <div class="dn">Q${String(q).padStart(2,'0')}</div>
-        <div class="dr">${rep || '—'}</div>
-        ${cls === 'ko' ? `<div class="dc">${off}</div>` : ''}
-      </div>`;
-    }
-    h += `</div></div>`;
-  });
-
-  h += '</div>';
-  const z = document.getElementById('detailZone');
-  z.innerHTML = h;
-  z.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}
-
-function calcScores(rr) {
-  const s = [0,0,0,0,0];
-  rr.forEach((r,i) => { if (r && r === REP_OFF[i]) s[Math.floor(i/6)]++; });
-  return s;
-}
-
-function resetReps(clearBtns) {
-  for (let q = 1; q <= 30; q++) delete reps[q];
-  if (clearBtns) document.querySelectorAll('.cbtn.on').forEach(b => {
-    b.classList.remove('on','f1','f2','f3','f4','f5');
-  });
-  updateAll();
-}
-
-function nouvelleEquipe() {
+// ── UTILITAIRES ──
+function reset() {
   document.getElementById('selEquipe').value = '';
-  document.getElementById('equipeMeta').textContent = '';
-  document.getElementById('equipeMeta').className = 'equipe-meta';
-  document.getElementById('scoreVal').textContent = '— / 30';
-  document.getElementById('scoreDetail').textContent = 'Sélectionnez une équipe';
-  const btnRaz = document.getElementById('btnRaz');
-  if (btnRaz) btnRaz.style.display = 'none';
-  resetReps(true);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function toutEffacer() {
-  if (confirm('Effacer la saisie en cours ?')) nouvelleEquipe();
-}
-
-function demanderRaz() {
-  const num = document.getElementById('selEquipe').value;
-  if (!num) return;
-  const eq = equipesData.find(e => e.num === num);
-  document.getElementById('modalRazTxt').innerHTML =
-    `Vous allez supprimer toutes les réponses et remettre les scores à zéro pour l'équipe :<br><br>
-     <strong>${num} — ${eq ? eq.nom : ''}</strong><br><br>
-     Cette action est irréversible.`;
-  document.getElementById('overlayRaz').classList.add('on');
-}
-
-function annulerRaz() {
-  document.getElementById('overlayRaz').classList.remove('on');
-}
-
-async function confirmerRaz() {
-  const num = document.getElementById('selEquipe').value;
-  document.getElementById('overlayRaz').classList.remove('on');
-
-  const btn = document.getElementById('btnRaz');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spin"></span>';
-
-  try {
-    const data = encodeURIComponent(JSON.stringify({ numEquipe: num }));
-    const res  = await apiGet(`resetFilRouge&data=${data}`);
-    btn.disabled = false;
-    btn.innerHTML = '⊘ Remettre à zéro';
-
-    if (res.success) {
-      toast(`Équipe ${num} remise à zéro`, 'ok');
-      delete saisiesData[num];
-      majBadge();
-      nouvelleEquipe();
-      chargerDonnees(true);
-    } else {
-      toast('Erreur : ' + res.message, 'err');
-    }
-  } catch (e) {
-    btn.disabled = false;
-    btn.innerHTML = '⊘ Remettre à zéro';
-    toast('Erreur réseau : ' + e.message, 'err');
-  }
+  document.getElementById('motif').value = '';
+  selectedVal = null;
+  document.querySelectorAll('.val-btn').forEach(b => b.classList.remove('selected'));
+  updateResume();
 }
 
 function majBadge() {
-  const n = Object.keys(saisiesData).length;
-  document.getElementById('badgeN').textContent = n;
+  document.getElementById('badgeN').textContent = historique.length;
 }
 
 function showTab(name) {
@@ -1123,7 +452,12 @@ function showTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
-  if (name === 'corrige') buildCorrige();
+}
+
+async function apiGet(action) {
+  const res = await fetch(`${API_URL}?action=${action}`);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
 }
 
 
@@ -1152,23 +486,10 @@ function annulerReset() {
   resetCible = null;
 }
 
-function toggleVoirMdpReset() {
-  const input = document.getElementById('resetMdp');
-  const btn   = document.getElementById('btnVoirReset');
-  if (!input || !btn) return;
-  if (input.type === 'password') {
-    input.type = 'text';
-    btn.style.color = 'var(--navy)';
-  } else {
-    input.type = 'password';
-    btn.style.color = 'var(--text3)';
-  }
-}
-
 async function confirmerReset() {
   const mdp = document.getElementById('resetMdp').value.trim();
   if (!mdp) {
-    document.getElementById('resetErreur').textContent = '⚠ Veuillez saisir le mot de passe.';
+    document.getElementById('resetErreur').textContent = 'Veuillez saisir le mot de passe.';
     return;
   }
 
@@ -1202,51 +523,6 @@ async function confirmerReset() {
   }
 }
 
-
-function buildCorrige() {
-  const wrap = document.getElementById('corrigeContent');
-  if (wrap.innerHTML) return; // déjà construit
-
-  const FEUILLETS_LABELS = [
-    { label: 'Feuillet I — Soigner',            couleur: 'f1' },
-    { label: 'Feuillet II — Secourir',           couleur: 'f2' },
-    { label: 'Feuillet III — Servir',            couleur: 'f3' },
-    { label: 'Feuillet IV — Courage & Héritage', couleur: 'f4' },
-    { label: 'Feuillet V — Mission Finale',      couleur: 'f5' },
-  ];
-
-  let h = '';
-
-  FEUILLETS.forEach((f, fi) => {
-    h += `<div class="feuillet">
-      <div class="feuillet-head ${f.cls}">
-        <span class="feuillet-label">${f.label}</span>
-        <span class="feuillet-score">${f.qs.length} / ${f.qs.length}</span>
-      </div>
-      <div class="feuillet-body" style="grid-template-columns:1fr 1fr;">`;
-
-    f.qs.forEach((q, qi) => {
-      const qNum   = fi * 6 + qi + 1;
-      const rep    = REP_OFF[qNum - 1];
-      h += `<div class="q-row">
-        <div class="q-id">Q${String(qNum).padStart(2,'0')}</div>
-        <div class="q-body">
-          <div class="q-text">${q}</div>
-          <div class="q-btns">
-            ${['A','B','C'].map(l => `
-              <button class="cbtn${l === rep ? ' on ' + f.cls : ''}"
-                style="cursor:default;${l === rep ? '' : 'opacity:.35;'}">${l}</button>`).join('')}
-          </div>
-        </div>
-      </div>`;
-    });
-
-    h += `</div></div>`;
-  });
-
-  wrap.innerHTML = h;
-}
-
 function toast(msg, type) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -1262,16 +538,9 @@ function toast(msg, type) {
     <div class="modal-title" style="color:var(--red)">⚠ Réinitialisation globale</div>
     <div class="modal-body" id="modalResetTxt"></div>
     <div style="margin-bottom:16px">
-      <div style="position:relative;">
-        <input type="password" id="resetMdp" placeholder="Mot de passe…"
-          style="width:100%;padding:10px 44px 10px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);background:var(--bg);transition:border-color .15s;"
-          onkeydown="if(event.key==='Enter')confirmerReset()">
-        <button onclick="toggleVoirMdpReset()" type="button"
-          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;display:flex;align-items:center;"
-          id="btnVoirReset" title="Afficher/masquer">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-        </button>
-      </div>
+      <input type="password" id="resetMdp" placeholder="Mot de passe…"
+        style="width:100%;padding:10px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);background:var(--bg);transition:border-color .15s;"
+        onkeydown="if(event.key==='Enter')confirmerReset()">
       <div id="resetErreur" style="color:var(--red);font-size:12px;margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;"></div>
     </div>
     <div class="modal-actions">
