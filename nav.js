@@ -10,6 +10,7 @@ const NAV_PAGES = [
   { href: 'resultats.html',   icon: '📊', label: 'Résultats',     id: 'resultats'   },
   { href: 'classement.html',  icon: '🏆', label: 'Classement',    id: 'classement'  },
   { href: 'passages.html',    icon: '📍', label: 'Passages',      id: 'passages'    },
+  { href: 'admin.html',       icon: '⚙️', label: 'Admin',          id: 'admin'       },
 ];
 
 function getCurrentPage() {
