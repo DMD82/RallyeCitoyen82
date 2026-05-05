@@ -74,7 +74,7 @@
 
   /* Trick pour étendre la bordure full width */
   .nav-wrap {
-    background: var(--white);
+    background: var(--bg2);
     border-bottom: 1px solid var(--border);
   }
 
@@ -533,8 +533,12 @@
 <!-- Écran de chargement -->
 <div class="loading-overlay" id="loadingOverlay">
   <img src="LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
-  <div class="spin-dark"></div>
-  <div class="loading-txt">Chargement des équipes…</div>
+  <div class="spin-dark" id="loadingSpinner"></div>
+  <div class="loading-txt" id="loadingTxt">Chargement des équipes…</div>
+  <button id="loadingRetry" onclick="chargerDonnees()"
+    style="display:none;margin-top:8px;padding:8px 20px;background:var(--navy);color:white;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;letter-spacing:.06em;">
+    ↺ Réessayer
+  </button>
 </div>
 
 <!-- Header -->
@@ -769,8 +773,11 @@ async function chargerDonnees(silent = false) {
 
   } catch (e) {
     if (!silent) {
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      toast('Erreur de chargement : ' + e.message, 'err');
+      // Afficher l'erreur dans l'overlay plutôt que de le masquer
+      document.getElementById('loadingSpinner').style.display = 'none';
+      document.getElementById('loadingTxt').textContent = '⚠ ' + e.message;
+      document.getElementById('loadingTxt').style.color = '#e07070';
+      document.getElementById('loadingRetry').style.display = 'block';
     }
   }
 }
