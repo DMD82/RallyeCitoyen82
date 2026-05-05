@@ -9,3 +9,6 @@
   
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbw_SF2icG5-5-idflzd4lUtk5PO6G5ToIDwfRlZCyOOIyxy0BwT-t4Ovh2ySsQ2969E/exec';
+
+const MDP_RESET = 'SemperParatiDMD82!';  // fil rouge + bonus/malus
+const MDP_ADMIN = 'SemperParatiDMD82!';  // page admin
