@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passages Ateliers — Rallye Citoyen 2026</title>
+<script src="config.js"></script>
+<script src="nav.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+  :root {
+    --navy:    #1a2744;
+    --navy-lt: #243358;
+    --gold:    #b8932a;
+    --gold-lt: #f5ead4;
+    --gold-mid:#e8d090;
+    --bg:      #f2f0eb;
+    --bg2:     #e8e5de;
+    --white:   #ffffff;
+    --text:    #1a1e2e;
+    --text2:   #4a5068;
+    --text3:   #8a90a8;
+    --border:  #dcd8ce;
+    --border2: #c8c4b8;
+    --green:   #1a5a32;
+    --green-lt:#e8f5ed;
+    --red:     #8b1a1a;
+    --shadow:  rgba(26,39,68,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* ── HEADER ── */
+  header { background: var(--navy); padding: 20px 24px 18px; position: relative; overflow: hidden; }
+  header::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 12px); pointer-events: none; }
+  .header-inner { display: flex; align-items: center; gap: 14px; max-width: 1100px; margin: 0 auto; width: 100%; }
+  .header-logo { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
+  .header-text { flex: 1; }
+  .header-back { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .15s; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+  .header-back:hover { color: rgba(232,208,144,0.8); }
+  .header-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: rgba(232,208,144,0.7); margin-bottom: 3px; }
+  .header-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 18px; color: var(--white); }
+
+  /* ── NAV ── */
+  .nav-wrap { background: var(--white); border-bottom: 1px solid var(--border); }
+  nav { display: flex; align-items: center; padding: 0 20px; max-width: 1100px; margin: 0 auto; }
+  .tab { padding: 11px 16px; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s; }
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+  .nav-spacer { flex: 1; }
+  .nav-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+  .btn-refresh { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 12px; cursor: pointer; color: var(--text3); transition: all .15s; }
+  .btn-refresh:hover { border-color: var(--navy); color: var(--navy); }
+
+  /* ── MAIN ── */
+  main { flex: 1; max-width: 1100px; margin: 0 auto; padding: 20px 20px 60px; width: 100%; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── TOOLBAR ── */
+  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .search-wrap { position: relative; flex: 1; min-width: 200px; }
+  .search-wrap input { width: 100%; padding: 9px 14px 9px 36px; background: var(--white); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--text); transition: border-color .15s; }
+  .search-wrap input:focus { outline: none; border-color: var(--navy); }
+  .search-wrap::before { content: '🔍'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; }
+
+  .sort-btns { display: flex; gap: 6px; }
+  .sort-btn { padding: 8px 14px; background: var(--white); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); cursor: pointer; transition: all .15s; }
+  .sort-btn:hover { border-color: var(--navy); color: var(--navy); }
+  .sort-btn.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+
+  .stat-pill { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--border); color: var(--text2); white-space: nowrap; }
+
+  /* ── VUE COMPTAGE — TABLEAU ── */
+  .tbl-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
+  .tbl-header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--text3); }
+  .tbl-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: var(--white); border: 1px solid var(--border); padding: 2px 8px; border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--bg); }
+  th { padding: 9px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); text-align: center; border-bottom: 1px solid var(--border); font-weight: 600; }
+  th:first-child { text-align: left; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; text-align: center; }
+  td:first-child { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+
+  .atelier-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px; color: var(--text3); }
+  .atelier-nom { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 1px; }
+
+  /* Barre de progression passages */
+  .prog-wrap { display: flex; align-items: center; gap: 10px; justify-content: center; }
+  .prog-bar { flex: 1; max-width: 80px; height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+  .prog-fill.high   { background: var(--green); }
+  .prog-fill.medium { background: var(--gold); }
+  .prog-fill.low    { background: #e0c0c0; }
+
+  .passages-num { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 15px; color: var(--navy); min-width: 28px; }
+  .moy-chip { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 8px; background: var(--bg2); color: var(--text2); }
+
+  /* ── VUE CARTES ── */
+  .cartes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+
+  .carte {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: box-shadow .2s, transform .2s;
+  }
+  .carte:hover { box-shadow: 0 6px 20px var(--shadow); transform: translateY(-2px); }
+
+  .carte-head {
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .carte-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: .1em; margin-bottom: 3px; }
+  .carte-nom { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 13px; color: var(--navy); line-height: 1.3; }
+  .carte-badge { flex-shrink: 0; }
+  .passages-badge {
+    font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 16px;
+    background: var(--navy); color: var(--gold-mid);
+    padding: 4px 10px; border-radius: 8px;
+    min-width: 40px; text-align: center;
+  }
+
+  .carte-stats {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 16px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    color: var(--text3);
+  }
+  .carte-stat strong { color: var(--text2); font-weight: 600; }
+
+  .carte-equipes { padding: 10px 14px; }
+  .equipes-liste { display: flex; flex-wrap: wrap; gap: 5px; }
+  .eq-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 6px;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text2);
+    cursor: default;
+    transition: all .12s;
+  }
+  .eq-tag:hover { background: var(--navy); color: var(--white); border-color: var(--navy); }
+  .eq-tag title { display: none; }
+  .carte-empty { font-size: 12px; color: var(--text3); font-style: italic; }
+
+  /* ── ÉTATS ── */
+  .state-box { padding: 48px; text-align: center; }
+  .state-icon { font-size: 36px; margin-bottom: 12px; }
+  .state-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 16px; color: var(--navy); margin-bottom: 6px; }
+  .state-desc { font-size: 13px; color: var(--text3); line-height: 1.5; }
+  .spin-dark { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border2); border-top-color: var(--navy); border-radius: 50%; animation: rot .6s linear infinite; }
+  @keyframes rot { to { transform: rotate(360deg); } }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 11px 22px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 999; transition: transform .25s ease; letter-spacing: .04em; box-shadow: 0 8px 30px rgba(26,39,68,0.25); white-space: nowrap; }
+  .toast.on { transform: translateX(-50%) translateY(0); }
+  .toast.err { background: var(--red); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <img src="LogoRC2026.png" class="header-logo" alt="" onerror="this.style.display='none'">
+    <div class="header-text">
+      <div class="header-label">Rallye Citoyen 2026 · PC Organisation</div>
+      <div class="header-title">Passages par atelier</div>
+    </div>
+    <a class="header-back" href="index.html">← Accueil</a>
+  </div>
+</header>
+
+<div class="nav-wrap">
+  <nav>
+    <div class="tab active" id="tab-comptage" onclick="showTab('comptage')">Comptage</div>
+    <div class="tab" id="tab-detail" onclick="showTabDetail()">Détail par atelier</div>
+    <div class="nav-spacer"></div>
+    <div class="nav-info">
+      <span id="lastUpdate">—</span>
+      <button class="btn-refresh" onclick="chargerDonnees()">↻ Actualiser</button>
+    </div>
+  </nav>
+</div>
+
+<main>
+
+  <!-- ═══ COMPTAGE ═══ -->
+  <div class="panel active" id="panel-comptage">
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <input type="text" id="searchComptage" placeholder="Rechercher un atelier…" oninput="filtrerComptage()">
+      </div>
+      <div class="sort-btns">
+        <button class="sort-btn active" id="sort-num" onclick="trierComptage('num')">N° atelier</button>
+        <button class="sort-btn" id="sort-passages" onclick="trierComptage('passages')">Passages ↓</button>
+      </div>
+      <span class="stat-pill" id="statComptage">— ateliers</span>
+    </div>
+
+    <div class="tbl-wrap">
+      <div class="tbl-header">
+        Passages par atelier
+        <span class="tbl-cnt" id="cntComptage">0</span>
+      </div>
+      <div id="bodyComptage">
+        <div class="state-box">
+          <div class="spin-dark" style="margin:0 auto 12px"></div>
+          <div class="state-desc">Chargement…</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ DÉTAIL PAR ATELIER ═══ -->
+  <div class="panel" id="panel-detail">
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <input type="text" id="searchDetail" placeholder="Rechercher un atelier ou une équipe…" oninput="filtrerDetail()">
+      </div>
+      <div class="sort-btns">
+        <button class="sort-btn active" id="sort-detail-num" onclick="trierDetail('num')">N° atelier</button>
+        <button class="sort-btn" id="sort-detail-passages" onclick="trierDetail('passages')">Passages ↓</button>
+      </div>
+      <span class="stat-pill" id="statDetail">— ateliers</span>
+    </div>
+
+    <div id="bodyDetail">
+      <div class="state-box">
+        <div class="state-desc">Chargement…</div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let ateliersData   = [];
+let sortComptage   = 'num';
+let sortDetail     = 'num';
+let maxPassages    = 0;
+
+document.addEventListener('DOMContentLoaded', () => {
+  chargerDonnees();
+  setInterval(chargerDonnees, 30000);
+});
+
+async function chargerDonnees() {
+  try {
+    const data = await apiGet('getPassages');
+
+    if (data.message) {
+      const msg = `<div class="state-box"><div class="state-icon">⚠️</div><div class="state-desc">${data.message}</div></div>`;
+      document.getElementById('bodyComptage').innerHTML = msg;
+      document.getElementById('bodyDetail').innerHTML   = msg;
+      return;
+    }
+
+    ateliersData = data.ateliers || [];
+    maxPassages  = Math.max(...ateliersData.map(a => a.passages), 1);
+
+    filtrerComptage();
+    if (document.getElementById('panel-detail').classList.contains('active')) {
+      filtrerDetail();
+    }
+
+    const now = new Date();
+    document.getElementById('lastUpdate').textContent =
+      'Actualisé à ' + now.getHours().toString().padStart(2,'0') + ':' +
+      now.getMinutes().toString().padStart(2,'0') + ':' +
+      now.getSeconds().toString().padStart(2,'0');
+
+  } catch(e) {
+    toast('Erreur : ' + e.message, 'err');
+  }
+}
+
+// ── COMPTAGE ────────────────────────────────────────────
+function trierComptage(col) {
+  sortComptage = col;
+  document.querySelectorAll('#panel-comptage .sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sort-' + col).classList.add('active');
+  filtrerComptage();
+}
+
+function filtrerComptage() {
+  const search = document.getElementById('searchComptage').value.toLowerCase();
+  let data = ateliersData.filter(a =>
+    !search ||
+    a.numAtelier.includes(search) ||
+    a.nomAtelier.toLowerCase().includes(search)
+  );
+
+  data = sortComptage === 'passages'
+    ? [...data].sort((a, b) => b.passages - a.passages || parseInt(a.numAtelier) - parseInt(b.numAtelier))
+    : [...data].sort((a, b) => parseInt(a.numAtelier) - parseInt(b.numAtelier));
+
+  renderComptage(data);
+}
+
+function renderComptage(data) {
+  document.getElementById('cntComptage').textContent  = data.length;
+  document.getElementById('statComptage').textContent = data.length + ' atelier' + (data.length > 1 ? 's' : '');
+
+  if (!data.length) {
+    document.getElementById('bodyComptage').innerHTML =
+      '<div class="state-box"><div class="state-desc">Aucun atelier trouvé.</div></div>';
+    return;
+  }
+
+  // Calcul total passages
+  const totalPassages = data.reduce((s, a) => s + a.passages, 0);
+
+  let h = `<table><thead><tr>
+    <th style="text-align:left">Atelier</th>
+    <th>Passages</th>
+    <th>Note moy.</th>
+    <th>% du max</th>
+  </tr></thead><tbody>`;
+
+  data.forEach(a => {
+    const pct      = Math.round((a.passages / maxPassages) * 100);
+    const progCls  = pct >= 70 ? 'high' : pct >= 40 ? 'medium' : 'low';
+
+    h += `<tr>
+      <td>
+        <div class="atelier-num">Atelier ${a.numAtelier}</div>
+        <div class="atelier-nom">${a.nomAtelier}</div>
+      </td>
+      <td>
+        <div class="prog-wrap">
+          <span class="passages-num">${a.passages}</span>
+          <div class="prog-bar">
+            <div class="prog-fill ${progCls}" style="width:${pct}%"></div>
+          </div>
+        </div>
+      </td>
+      <td><span class="moy-chip">${a.moyenneNote} / 10</span></td>
+      <td>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3)">${pct}%</span>
+      </td>
+    </tr>`;
+  });
+
+  h += `</tbody></table>
+    <div style="padding:10px 14px;background:var(--bg);border-top:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);text-align:right">
+      Total passages : <strong style="color:var(--navy)">${totalPassages}</strong>
+      &nbsp;·&nbsp; Moy. par atelier : <strong style="color:var(--navy)">${data.length ? Math.round(totalPassages/data.length*10)/10 : 0}</strong>
+    </div>`;
+
+  document.getElementById('bodyComptage').innerHTML = h;
+}
+
+// ── DÉTAIL ───────────────────────────────────────────────
+function showTabDetail() {
+  showTab('detail');
+  filtrerDetail();
+}
+
+function trierDetail(col) {
+  sortDetail = col;
+  document.querySelectorAll('#panel-detail .sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sort-detail-' + col).classList.add('active');
+  filtrerDetail();
+}
+
+function filtrerDetail() {
+  const search = document.getElementById('searchDetail').value.toLowerCase();
+
+  let data = ateliersData.filter(a => {
+    if (!search) return true;
+    if (a.numAtelier.includes(search) || a.nomAtelier.toLowerCase().includes(search)) return true;
+    // Chercher aussi dans les équipes
+    return a.equipes.some(e =>
+      e.num.includes(search) ||
+      e.nom.toLowerCase().includes(search) ||
+      e.etab.toLowerCase().includes(search)
+    );
+  });
+
+  data = sortDetail === 'passages'
+    ? [...data].sort((a, b) => b.passages - a.passages || parseInt(a.numAtelier) - parseInt(b.numAtelier))
+    : [...data].sort((a, b) => parseInt(a.numAtelier) - parseInt(b.numAtelier));
+
+  document.getElementById('statDetail').textContent = data.length + ' atelier' + (data.length > 1 ? 's' : '');
+
+  renderDetail(data, search);
+}
+
+function renderDetail(data, search) {
+  if (!data.length) {
+    document.getElementById('bodyDetail').innerHTML =
+      '<div class="state-box"><div class="state-desc">Aucun atelier trouvé.</div></div>';
+    return;
+  }
+
+  let h = '<div class="cartes-grid">';
+
+  data.forEach(a => {
+    // Filtrer les équipes si recherche active
+    const equipes = search
+      ? a.equipes.filter(e =>
+          e.num.includes(search) ||
+          e.nom.toLowerCase().includes(search) ||
+          e.etab.toLowerCase().includes(search) ||
+          a.numAtelier.includes(search) ||
+          a.nomAtelier.toLowerCase().includes(search)
+        )
+      : a.equipes;
+
+    h += `<div class="carte">
+      <div class="carte-head">
+        <div>
+          <div class="carte-num">Atelier ${a.numAtelier}</div>
+          <div class="carte-nom">${a.nomAtelier}</div>
+        </div>
+        <div class="carte-badge">
+          <div class="passages-badge">${a.passages}</div>
+        </div>
+      </div>
+      <div class="carte-stats">
+        <span>Note moy. <strong>${a.moyenneNote}/10</strong></span>
+        <span>${a.passages} passage${a.passages > 1 ? 's' : ''}</span>
+      </div>
+      <div class="carte-equipes">`;
+
+    if (equipes.length) {
+      h += '<div class="equipes-liste">';
+      equipes.forEach(e => {
+        h += `<span class="eq-tag" title="${e.nom} · ${e.etab} · Note: ${e.note}/10">${e.num}</span>`;
+      });
+      h += '</div>';
+    } else {
+      h += '<div class="carte-empty">Aucune équipe</div>';
+    }
+
+    h += `</div></div>`;
+  });
+
+  h += '</div>';
+  document.getElementById('bodyDetail').innerHTML = h;
+}
+
+// ── UTILITAIRES ──────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+async function apiGet(action) {
+  const res = await fetch(`${API_URL}?action=${action}`);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '');
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 3000);
+}
+</script>
+</body>
+</html>
