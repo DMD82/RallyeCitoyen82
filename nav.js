@@ -29,14 +29,14 @@ function injectNav() {
       box-shadow: 0 2px 16px rgba(0,0,0,0.3);
     }
     .gn-top {
-      display: flex; align-items: center; gap: 12px;
-      padding: 10px 20px; max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 16px; max-width: 1200px; margin: 0 auto;
       border-bottom: 1px solid rgba(255,255,255,0.07);
     }
-    .gn-logo { width: 34px; height: 34px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)); }
+    .gn-logo { width: 30px; height: 30px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.3)); }
     .gn-brand { flex: 1; min-width: 0; }
     .gn-brand-sup { font-family: 'IBM Plex Mono', monospace; font-size: 9px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: rgba(255,255,255,0.3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .gn-brand-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 14px; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gn-brand-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 13px; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .gn-date { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .06em; background: #b8932a; color: #1a2744; padding: 3px 10px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
     .gn-ham { display: none; flex-direction: column; gap: 4px; background: none; border: 1px solid rgba(255,255,255,0.18); border-radius: 6px; padding: 6px 7px; cursor: pointer; flex-shrink: 0; transition: border-color .15s; }
     .gn-ham:hover { border-color: rgba(255,255,255,0.45); }
@@ -46,7 +46,7 @@ function injectNav() {
     .gn-ham.open span:nth-child(3) { transform: rotate(-45deg) translate(4px,-4px); }
     .gn-bar { display: flex; overflow-x: auto; scrollbar-width: none; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
     .gn-bar::-webkit-scrollbar { display: none; }
-    .gn-a { display: flex; align-items: center; gap: 6px; padding: 8px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: rgba(255,255,255,0.4); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; flex-shrink: 0; transition: color .15s, border-color .15s; }
+    .gn-a { display: flex; align-items: center; gap: 5px; padding: 8px 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase; color: rgba(255,255,255,0.4); text-decoration: none; border-bottom: 2px solid transparent; white-space: nowrap; flex-shrink: 0; transition: color .15s, border-color .15s; overflow: visible; }
     .gn-a:hover { color: rgba(255,255,255,0.75); }
     .gn-a.active { color: #ffffff; border-bottom-color: #b8932a; }
     .gn-a-icon { font-size: 13px; }
@@ -57,7 +57,7 @@ function injectNav() {
     .gn-mob-a:hover { background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.8); }
     .gn-mob-a.active { color: #b8932a; background: rgba(184,147,42,0.07); }
     .gn-mob-icon { font-size: 16px; }
-    @media (max-width: 680px) {
+    @media (max-width: 860px) {
       .gn-ham { display: flex; }
       .gn-bar { display: none; }
       .gn-mob { display: flex; }
