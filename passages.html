@@ -291,7 +291,7 @@ async function chargerDonnees() {
 
     if (data.message) {
       const msg = `<div class="state-box"><div class="state-icon">⚠️</div><div class="state-desc">${data.message}</div></div>`;
-      document.getElementById('bodyComptage').innerHTML = msg;
+      document.getElementById('bodyAteliers').innerHTML = msg;
       document.getElementById('bodyDetail').innerHTML   = msg;
       return;
     }
@@ -319,13 +319,13 @@ async function chargerDonnees() {
 // ── COMPTAGE ────────────────────────────────────────────
 function trierAteliers(col) {
   sortComptage = col;
-  document.querySelectorAll('#panel-comptage .sort-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('#panel-ateliers .sort-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('sort-' + col).classList.add('active');
   filtrerAteliers();
 }
 
 function filtrerAteliers() {
-  const search = document.getElementById('searchComptage').value.toLowerCase();
+  const search = document.getElementById('searchAteliers').value.toLowerCase();
   let data = ateliersData.filter(a =>
     !search ||
     a.numAtelier.includes(search) ||
@@ -340,11 +340,11 @@ function filtrerAteliers() {
 }
 
 function renderAteliers(data) {
-  document.getElementById('cntComptage').textContent  = data.length;
-  document.getElementById('statComptage').textContent = data.length + ' atelier' + (data.length > 1 ? 's' : '');
+  document.getElementById('cntAteliers').textContent  = data.length;
+  document.getElementById('statAteliers').textContent = data.length + ' atelier' + (data.length > 1 ? 's' : '');
 
   if (!data.length) {
-    document.getElementById('bodyComptage').innerHTML =
+    document.getElementById('bodyAteliers').innerHTML =
       '<div class="state-box"><div class="state-desc">Aucun atelier trouvé.</div></div>';
     return;
   }
@@ -425,7 +425,7 @@ function renderAteliers(data) {
       &nbsp;·&nbsp; Moy. par atelier : <strong style="color:var(--navy)">${data.length ? Math.round(totalPassages/data.length*10)/10 : 0}</strong>
     </div>`;
 
-  document.getElementById('bodyComptage').innerHTML = h;
+  document.getElementById('bodyAteliers').innerHTML = h;
 }
 
 function toggleDetail(id, row) {
