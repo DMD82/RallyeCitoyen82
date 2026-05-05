@@ -164,6 +164,37 @@
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 11px 22px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 999; transition: transform .25s ease; letter-spacing: .04em; box-shadow: 0 8px 30px rgba(26,39,68,0.25); white-space: nowrap; }
   .toast.on { transform: translateX(-50%) translateY(0); }
   .toast.err { background: var(--red); }
+
+  /* ── LIGNES DÉPLIABLES ── */
+  .atelier-row { cursor: pointer; transition: background .15s; }
+  .atelier-row:hover td { background: #eef0f8 !important; }
+  .atelier-row.open td { background: #e8edf5 !important; }
+  .toggle-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 4px;
+    background: var(--bg2); border: 1px solid var(--border);
+    font-size: 10px; font-weight: 700; color: var(--text3);
+    transition: all .2s; flex-shrink: 0; margin-right: 8px;
+    font-family: monospace; cursor: pointer;
+  }
+  .atelier-row.open .toggle-icon { background: var(--navy); color: white; border-color: var(--navy); }
+  .detail-row { display: none; }
+  .detail-row.visible { display: table-row; }
+  .detail-inner { background: #f8f9fd; border-top: 1px solid var(--border); }
+  .detail-inner table { min-width: unset; margin: 0; }
+  .detail-inner thead tr { background: #eef0f8; }
+  .detail-inner th { padding: 6px 12px; font-size: 9px; background: #eef0f8; }
+  .detail-inner td { padding: 7px 12px; font-size: 12px; background: #f8f9fd; border-bottom: 1px solid var(--border); }
+  .detail-inner tr:last-child td { border-bottom: none; }
+  .detail-inner tr:hover td { background: #eef0f8 !important; }
+  .note-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .note-bar { flex: 1; max-width: 60px; height: 5px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+  .note-bar-fill { height: 100%; border-radius: 3px; }
+  .note-bar-fill.high   { background: var(--green); }
+  .note-bar-fill.medium { background: var(--gold); }
+  .note-bar-fill.low    { background: #e0a0a0; }
+  .note-val { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px; color: var(--navy); }
+
 </style>
 </head>
 <body>
@@ -318,7 +349,7 @@ function renderComptage(data) {
       <th style="text-align:left">Atelier</th>
       <th>Passages</th>
       <th>Note moy.</th>
-      <th>% du max</th>
+
     </tr></thead><tbody>`;
 
   data.forEach(a => {
@@ -343,7 +374,7 @@ function renderComptage(data) {
         </div>
       </td>
       <td><span class="moy-chip">${a.moyenneNote} / 10</span></td>
-      <td><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3)">${pct}%</span></td>
+
     </tr>`;
 
     const equipesTri = [...a.equipes].sort((x, y) => y.note - x.note);
