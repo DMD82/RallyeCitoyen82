@@ -156,9 +156,15 @@
     <img src="LogoRC2026.png" class="login-logo" alt="" onerror="this.style.display='none'">
     <div class="login-title">Administration</div>
     <div class="login-sub">Accès restreint · Rallye Citoyen 2026</div>
-    <input type="password" class="login-input" id="loginMdp"
-      placeholder="Mot de passe"
-      onkeydown="if(event.key==='Enter')seConnecter()">
+    <div style="position:relative;margin-bottom:12px;">
+      <input type="password" class="login-input" id="loginMdp"
+        placeholder="Mot de passe"
+        onkeydown="if(event.key==='Enter')seConnecter()"
+        style="padding-right:44px;">
+      <button onclick="toggleVoirMdp()" type="button"
+        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text3);line-height:1;"
+        id="btnVoirMdp" title="Afficher/masquer">👁</button>
+    </div>
     <button class="login-btn" onclick="seConnecter()">Accéder</button>
     <div class="login-err" id="loginErr"></div>
   </div>
@@ -282,21 +288,45 @@
 <script>
 // ── MOT DE PASSE ADMIN (côté client — sécurité de base) ──
 // Le vrai contrôle est côté serveur dans Code_central.gs
-const ADMIN_PASSWORD = 'ADMIN2026';
+// MDP chargé depuis config.js (variable MDP_ADMIN)
 let authenticated    = false;
 
 // ── CONNEXION ──
 function seConnecter() {
   const mdp = document.getElementById('loginMdp').value.trim();
-  if (mdp === ADMIN_PASSWORD) {
+  const err = document.getElementById('loginErr');
+
+  if (!mdp) {
+    err.textContent = '⚠ Veuillez saisir le mot de passe.';
+    return;
+  }
+
+  if (mdp === MDP_ADMIN) {
     authenticated = true;
-    document.getElementById('loginScreen').style.display  = 'none';
+    err.textContent = '';
+    document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminContent').classList.add('visible');
     log('Connexion réussie', 'info');
   } else {
-    document.getElementById('loginErr').textContent = '❌ Mot de passe incorrect.';
+    err.textContent = '❌ Mot de passe incorrect.';
     document.getElementById('loginMdp').value = '';
     document.getElementById('loginMdp').focus();
+    // Petite animation shake
+    const input = document.getElementById('loginMdp');
+    input.style.borderColor = 'var(--red)';
+    setTimeout(() => input.style.borderColor = '', 1500);
+  }
+}
+
+function toggleVoirMdp() {
+  const input = document.getElementById('loginMdp');
+  const btn   = document.getElementById('btnVoirMdp');
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    btn.textContent = '👁';
   }
 }
 
@@ -314,7 +344,7 @@ async function lancer(action, params = {}) {
   log(`▶ Lancement : ${action}…`, 'info');
 
   try {
-    const data = encodeURIComponent(JSON.stringify({ action, ...params, motDePasse: ADMIN_PASSWORD }));
+    const data = encodeURIComponent(JSON.stringify({ action, ...params, motDePasse: MDP_ADMIN }));
     const res  = await fetch(`${API_URL}?action=adminAction&data=${data}`);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
@@ -335,7 +365,7 @@ async function lancer(action, params = {}) {
 // ── CONFIRMATION AVANT ACTION DESTRUCTIVE ──
 function confirmerAction(action, params, message) {
   if (!confirm(`⚠️ ${message}\n\nCette action est irréversible.`)) return;
-  lancer(action, { ...params, motDePasse: ADMIN_PASSWORD });
+  lancer(action, { ...params, motDePasse: MDP_ADMIN });
 }
 
 // ── LOG ──
