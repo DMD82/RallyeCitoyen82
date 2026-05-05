@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fil Rouge — Rallye Citoyen 2026</title>
 <script src="config.js"></script>
+<script src="nav.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
@@ -595,17 +596,6 @@
 </div>
 
 <!-- Header -->
-<header>
-  <div class="header-inner">
-    <img src="LogoRC2026.png" class="header-logo" alt="" onerror="this.style.display='none'">
-    <div class="header-text">
-      <div class="header-label">Rallye Citoyen 2026 · PC Organisation</div>
-      <div class="header-title">Fil Rouge</div>
-    </div>
-    <a class="header-back" href="index.html">← Accueil</a>
-  </div>
-</header>
-
 <!-- Nav -->
 <div class="nav-wrap">
   <nav>
@@ -659,15 +649,7 @@
     </div>
 
 
-    <!-- Réinitialisation Fil Rouge -->
-    <div class="section" style="border-color:#e0c0c0;">
-      <div class="section-head" style="color:var(--red)">⚠ Réinitialisation</div>
-      <div class="section-body">
-        <button class="btn danger" onclick="demanderReset('filrouge')">
-          🗑 Réinitialiser tout le Fil Rouge
-        </button>
-      </div>
-    </div>
+
 
     <div class="actions">
       <button class="btn primary" id="btnSave" onclick="enregistrer()">✓ Enregistrer</button>
@@ -688,6 +670,16 @@
       <div id="tblBody"><div class="empty">Aucune saisie pour le moment</div></div>
     </div>
     <div id="detailZone"></div>
+
+    <!-- Réinitialisation Fil Rouge -->
+    <div style="margin-top:16px;background:var(--white);border:1px solid #e0c0c0;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);">
+      <div style="padding:9px 16px;background:var(--bg2);border-bottom:1px solid #e0c0c0;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--red);">⚠ Réinitialisation</div>
+      <div style="padding:14px 16px;">
+        <button class="btn danger" onclick="demanderReset('filrouge')">
+          🗑 Réinitialiser tout le Fil Rouge
+        </button>
+      </div>
+    </div>
   </div>
 
 
