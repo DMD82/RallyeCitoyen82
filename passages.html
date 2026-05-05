@@ -42,7 +42,7 @@
   
 
   /* ── NAV ── */
-  .nav-wrap { background: var(--white); border-bottom: 1px solid var(--border); }
+  .nav-wrap { background: var(--bg2); border-bottom: 1px solid var(--border); }
   nav { display: flex; align-items: center; padding: 0 20px; max-width: 1100px; margin: 0 auto; }
   .tab { padding: 11px 16px; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s; }
   .tab:hover { color: var(--text2); }
@@ -201,8 +201,8 @@
 
 <div class="nav-wrap">
   <nav>
-    <div class="tab active" id="tab-comptage" onclick="showTab('comptage')">Comptage</div>
-    <div class="tab" id="tab-detail" onclick="showTabDetail()">Détail par atelier</div>
+    <div class="tab active" id="tab-ateliers" onclick="showTab('ateliers')">Ateliers</div>
+    <div class="tab" id="tab-equipes" onclick="showTabEquipes()">Équipes</div>
     <div class="nav-spacer"></div>
     <div class="nav-info">
       <span id="lastUpdate">—</span>
@@ -214,25 +214,25 @@
 <main>
 
   <!-- ═══ COMPTAGE ═══ -->
-  <div class="panel active" id="panel-comptage">
+  <div class="panel active" id="panel-ateliers">
 
     <div class="toolbar">
       <div class="search-wrap">
-        <input type="text" id="searchComptage" placeholder="Rechercher un atelier…" oninput="filtrerComptage()">
+        <input type="text" id="searchAteliers" placeholder="Rechercher un atelier…" oninput="filtrerAteliers()">
       </div>
       <div class="sort-btns">
-        <button class="sort-btn active" id="sort-num" onclick="trierComptage('num')">N° atelier</button>
-        <button class="sort-btn" id="sort-passages" onclick="trierComptage('passages')">Passages ↓</button>
+        <button class="sort-btn active" id="sort-atel-num" onclick="trierAteliers('num')">N° atelier</button>
+        <button class="sort-btn" id="sort-atel-passages" onclick="trierAteliers('passages')">Passages ↓</button>
       </div>
-      <span class="stat-pill" id="statComptage">— ateliers</span>
+      <span class="stat-pill" id="statAteliers">— ateliers</span>
     </div>
 
     <div class="tbl-wrap">
       <div class="tbl-header">
         Passages par atelier
-        <span class="tbl-cnt" id="cntComptage">0</span>
+        <span class="tbl-cnt" id="cntAteliers">0</span>
       </div>
-      <div id="bodyComptage">
+      <div id="bodyAteliers">
         <div class="state-box">
           <div class="spin-dark" style="margin:0 auto 12px"></div>
           <div class="state-desc">Chargement…</div>
@@ -242,23 +242,29 @@
 
   </div>
 
-  <!-- ═══ DÉTAIL PAR ATELIER ═══ -->
-  <div class="panel" id="panel-detail">
+  <!-- ═══ ÉQUIPES ═══ -->
+  <div class="panel" id="panel-equipes">
 
     <div class="toolbar">
       <div class="search-wrap">
-        <input type="text" id="searchDetail" placeholder="Rechercher un atelier ou une équipe…" oninput="filtrerDetail()">
+        <input type="text" id="searchEquipes" placeholder="Rechercher une équipe…" oninput="filtrerEquipes()">
       </div>
       <div class="sort-btns">
-        <button class="sort-btn active" id="sort-detail-num" onclick="trierDetail('num')">N° atelier</button>
-        <button class="sort-btn" id="sort-detail-passages" onclick="trierDetail('passages')">Passages ↓</button>
+        <button class="sort-btn active" id="sort-eq-num" onclick="trierEquipes('num')">N° équipe</button>
+        <button class="sort-btn" id="sort-eq-ateliers" onclick="trierEquipes('ateliers')">Nb ateliers ↓</button>
       </div>
-      <span class="stat-pill" id="statDetail">— ateliers</span>
+      <span class="stat-pill" id="statEquipes">— équipes</span>
     </div>
 
-    <div id="bodyDetail">
-      <div class="state-box">
-        <div class="state-desc">Chargement…</div>
+    <div class="tbl-wrap">
+      <div class="tbl-header">
+        Ateliers visités par équipe — cliquer pour voir le détail
+        <span class="tbl-cnt" id="cntEquipes">0</span>
+      </div>
+      <div id="bodyEquipes">
+        <div class="state-box">
+          <div class="state-desc">Chargement…</div>
+        </div>
       </div>
     </div>
 
@@ -293,9 +299,10 @@ async function chargerDonnees() {
     ateliersData = data.ateliers || [];
     maxPassages  = Math.max(...ateliersData.map(a => a.passages), 1);
 
-    filtrerComptage();
-    if (document.getElementById('panel-detail').classList.contains('active')) {
-      filtrerDetail();
+    filtrerAteliers();
+    if (document.getElementById('panel-equipes').classList.contains('active')) {
+      buildEquipesData();
+      filtrerEquipes();
     }
 
     const now = new Date();
@@ -310,14 +317,14 @@ async function chargerDonnees() {
 }
 
 // ── COMPTAGE ────────────────────────────────────────────
-function trierComptage(col) {
+function trierAteliers(col) {
   sortComptage = col;
   document.querySelectorAll('#panel-comptage .sort-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('sort-' + col).classList.add('active');
-  filtrerComptage();
+  filtrerAteliers();
 }
 
-function filtrerComptage() {
+function filtrerAteliers() {
   const search = document.getElementById('searchComptage').value.toLowerCase();
   let data = ateliersData.filter(a =>
     !search ||
@@ -332,7 +339,7 @@ function filtrerComptage() {
   renderComptage(data);
 }
 
-function renderComptage(data) {
+function renderAteliers(data) {
   document.getElementById('cntComptage').textContent  = data.length;
   document.getElementById('statComptage').textContent = data.length + ' atelier' + (data.length > 1 ? 's' : '');
 
@@ -437,96 +444,152 @@ function toggleDetail(id, row) {
 }
 
 
-function showTabDetail() {
-  showTab('detail');
-  filtrerDetail();
+
+// ── VUE ÉQUIPES ─────────────────────────────────────────
+let equipesView = [];  // données construites depuis ateliersData
+let sortEquipes = 'num';
+
+function showTabEquipes() {
+  showTab('equipes');
+  buildEquipesData();
+  filtrerEquipes();
 }
 
-function trierDetail(col) {
-  sortDetail = col;
-  document.querySelectorAll('#panel-detail .sort-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('sort-detail-' + col).classList.add('active');
-  filtrerDetail();
-}
+function buildEquipesData() {
+  // Construire la vue inverse : équipe → liste des ateliers visités
+  const map = new Map();
 
-function filtrerDetail() {
-  const search = document.getElementById('searchDetail').value.toLowerCase();
-
-  let data = ateliersData.filter(a => {
-    if (!search) return true;
-    if (a.numAtelier.includes(search) || a.nomAtelier.toLowerCase().includes(search)) return true;
-    // Chercher aussi dans les équipes
-    return a.equipes.some(e =>
-      e.num.includes(search) ||
-      e.nom.toLowerCase().includes(search) ||
-      e.etab.toLowerCase().includes(search)
-    );
+  ateliersData.forEach(a => {
+    a.equipes.forEach(e => {
+      if (!map.has(e.num)) {
+        map.set(e.num, {
+          num:     e.num,
+          nom:     e.nom,
+          etab:    e.etab,
+          ateliers: []
+        });
+      }
+      map.get(e.num).ateliers.push({
+        numAtelier:  a.numAtelier,
+        nomAtelier:  a.nomAtelier,
+        note:        e.note,
+        comport:     e.comport
+      });
+    });
   });
 
-  data = sortDetail === 'passages'
-    ? [...data].sort((a, b) => b.passages - a.passages || parseInt(a.numAtelier) - parseInt(b.numAtelier))
-    : [...data].sort((a, b) => parseInt(a.numAtelier) - parseInt(b.numAtelier));
-
-  document.getElementById('statDetail').textContent = data.length + ' atelier' + (data.length > 1 ? 's' : '');
-
-  renderDetail(data, search);
+  equipesView = Array.from(map.values());
 }
 
-function renderDetail(data, search) {
+function trierEquipes(col) {
+  sortEquipes = col;
+  document.querySelectorAll('#panel-equipes .sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sort-eq-' + (col === 'num' ? 'num' : 'ateliers')).classList.add('active');
+  filtrerEquipes();
+}
+
+function filtrerEquipes() {
+  if (!equipesView.length) buildEquipesData();
+  const search = document.getElementById('searchEquipes').value.toLowerCase();
+
+  let data = equipesView.filter(e =>
+    !search ||
+    e.num.includes(search) ||
+    e.nom.toLowerCase().includes(search) ||
+    e.etab.toLowerCase().includes(search)
+  );
+
+  data = sortEquipes === 'ateliers'
+    ? [...data].sort((a, b) => b.ateliers.length - a.ateliers.length || parseInt(a.num) - parseInt(b.num))
+    : [...data].sort((a, b) => parseInt(a.num) - parseInt(b.num));
+
+  renderEquipes(data);
+}
+
+function renderEquipes(data) {
+  document.getElementById('cntEquipes').textContent  = data.length;
+  document.getElementById('statEquipes').textContent = data.length + ' équipe' + (data.length > 1 ? 's' : '');
+
   if (!data.length) {
-    document.getElementById('bodyDetail').innerHTML =
-      '<div class="state-box"><div class="state-desc">Aucun atelier trouvé.</div></div>';
+    document.getElementById('bodyEquipes').innerHTML =
+      '<div class="state-box"><div class="state-desc">Aucune équipe trouvée.</div></div>';
     return;
   }
 
-  let h = '<div class="cartes-grid">';
+  let h = `<table>
+    <thead><tr>
+      <th style="text-align:left">Équipe</th>
+      <th>Nb ateliers</th>
+      <th>Moy. notes</th>
+    </tr></thead><tbody>`;
 
-  data.forEach(a => {
-    // Filtrer les équipes si recherche active
-    const equipes = search
-      ? a.equipes.filter(e =>
-          e.num.includes(search) ||
-          e.nom.toLowerCase().includes(search) ||
-          e.etab.toLowerCase().includes(search) ||
-          a.numAtelier.includes(search) ||
-          a.nomAtelier.toLowerCase().includes(search)
-        )
-      : a.equipes;
+  data.forEach(e => {
+    const id = 'eq-' + e.num;
+    const nbAteliers = e.ateliers.length;
+    const moy = nbAteliers > 0
+      ? Math.round((e.ateliers.reduce((s,a) => s + a.note, 0) / nbAteliers) * 10) / 10
+      : 0;
 
-    h += `<div class="carte">
-      <div class="carte-head">
-        <div>
-          <div class="carte-num">Atelier ${a.numAtelier}</div>
-          <div class="carte-nom">${a.nomAtelier}</div>
+    h += `<tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}', this)">
+      <td>
+        <div style="display:flex;align-items:center;">
+          <span class="toggle-icon" id="icon-${id}">▶</span>
+          <div>
+            <div class="atelier-num">${e.num}</div>
+            <div class="atelier-nom">${e.nom || '—'}</div>
+            <div style="font-size:11px;color:var(--text3)">${e.etab || ''}</div>
+          </div>
         </div>
-        <div class="carte-badge">
-          <div class="passages-badge">${a.passages}</div>
+      </td>
+      <td>
+        <div class="prog-wrap">
+          <span class="passages-num">${nbAteliers}</span>
+          <div class="prog-bar">
+            <div class="prog-fill ${nbAteliers >= 5 ? 'high' : nbAteliers >= 3 ? 'medium' : 'low'}"
+              style="width:${Math.round(nbAteliers/10*100)}%"></div>
+          </div>
         </div>
-      </div>
-      <div class="carte-stats">
-        <span>Note moy. <strong>${a.moyenneNote}/10</strong></span>
-        <span>${a.passages} passage${a.passages > 1 ? 's' : ''}</span>
-      </div>
-      <div class="carte-equipes">`;
+      </td>
+      <td><span class="moy-chip">${moy} / 10</span></td>
+    </tr>`;
 
-    if (equipes.length) {
-      h += '<div class="equipes-liste">';
-      equipes.forEach(e => {
-        h += `<span class="eq-tag" title="${e.nom} · ${e.etab} · Note: ${e.note}/10">${e.num}</span>`;
-      });
-      h += '</div>';
-    } else {
-      h += '<div class="carte-empty">Aucune équipe</div>';
-    }
+    // Détail des ateliers visités
+    const ateliersTri = [...e.ateliers].sort((a, b) => parseInt(a.numAtelier) - parseInt(b.numAtelier));
+    h += `<tr class="detail-row" id="detail-${id}">
+      <td colspan="3" style="padding:0;">
+        <div class="detail-inner">
+          <table><thead><tr>
+            <th style="text-align:left">N° atelier</th>
+            <th style="text-align:left">Nom atelier</th>
+            <th style="text-align:center">Note atelier</th>
+            <th style="text-align:center">Comportement</th>
+          </tr></thead><tbody>`;
 
-    h += `</div></div>`;
+    ateliersTri.forEach(a => {
+      const notePct = Math.round((a.note / 10) * 100);
+      const noteCls = a.note >= 7 ? 'high' : a.note >= 4 ? 'medium' : 'low';
+      h += `<tr>
+        <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${a.numAtelier}</span></td>
+        <td>${a.nomAtelier || '—'}</td>
+        <td style="text-align:center">
+          <div class="note-bar-wrap" style="justify-content:center">
+            <span class="note-val">${a.note}</span>
+            <div class="note-bar"><div class="note-bar-fill ${noteCls}" style="width:${notePct}%"></div></div>
+          </div>
+        </td>
+        <td style="text-align:center">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2)">${a.comport}</span>
+        </td>
+      </tr>`;
+    });
+
+    h += `</tbody></table></div></td></tr>`;
   });
 
-  h += '</div>';
-  document.getElementById('bodyDetail').innerHTML = h;
+  h += '</tbody></table>';
+  document.getElementById('bodyEquipes').innerHTML = h;
 }
 
-// ── UTILITAIRES ──────────────────────────────────────────
 function showTab(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
