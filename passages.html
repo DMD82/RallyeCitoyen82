@@ -292,7 +292,7 @@ async function chargerDonnees() {
     if (data.message) {
       const msg = `<div class="state-box"><div class="state-icon">⚠️</div><div class="state-desc">${data.message}</div></div>`;
       document.getElementById('bodyAteliers').innerHTML = msg;
-      document.getElementById('bodyDetail').innerHTML   = msg;
+      // bodyDetail supprimé
       return;
     }
 
@@ -320,7 +320,7 @@ async function chargerDonnees() {
 function trierAteliers(col) {
   sortComptage = col;
   document.querySelectorAll('#panel-ateliers .sort-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('sort-' + col).classList.add('active');
+  document.getElementById('sort-atel-' + col).classList.add('active');
   filtrerAteliers();
 }
 
@@ -336,7 +336,7 @@ function filtrerAteliers() {
     ? [...data].sort((a, b) => b.passages - a.passages || parseInt(a.numAtelier) - parseInt(b.numAtelier))
     : [...data].sort((a, b) => parseInt(a.numAtelier) - parseInt(b.numAtelier));
 
-  renderComptage(data);
+  renderAteliers(data);
 }
 
 function renderAteliers(data) {
