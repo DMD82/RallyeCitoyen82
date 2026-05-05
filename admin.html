@@ -162,8 +162,10 @@
         onkeydown="if(event.key==='Enter')seConnecter()"
         style="padding-right:44px;">
       <button onclick="toggleVoirMdp()" type="button"
-        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text3);line-height:1;"
-        id="btnVoirMdp" title="Afficher/masquer">👁</button>
+        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);line-height:1;padding:4px;display:flex;align-items:center;"
+        id="btnVoirMdp" title="Afficher/masquer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      </button>
     </div>
     <button class="login-btn" onclick="seConnecter()">Accéder</button>
     <div class="login-err" id="loginErr"></div>
@@ -288,7 +290,8 @@
 <script>
 // ── MOT DE PASSE ADMIN (côté client — sécurité de base) ──
 // Le vrai contrôle est côté serveur dans Code_central.gs
-// MDP chargé depuis config.js (variable MDP_ADMIN)
+// MDP depuis config.js — fallback si config.js non disponible
+// MDP_ADMIN chargé depuis config.js
 let authenticated    = false;
 
 // ── CONNEXION ──
@@ -321,13 +324,11 @@ function seConnecter() {
 function toggleVoirMdp() {
   const input = document.getElementById('loginMdp');
   const btn   = document.getElementById('btnVoirMdp');
-  if (input.type === 'password') {
-    input.type = 'text';
-    btn.textContent = '🙈';
-  } else {
-    input.type = 'password';
-    btn.textContent = '👁';
-  }
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  btn.innerHTML = isHidden
+    ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19M1 1l22 22"/></svg>'
+    : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 }
 
 function seDeconnecter() {
