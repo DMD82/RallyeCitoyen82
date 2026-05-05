@@ -4,259 +4,294 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Administration — Rallye Citoyen 2026</title>
-
 <script src="config.js"></script>
 <script src="nav.js"></script>
-
 <style>
-/* === (TON CSS INCHANGÉ — conservé tel quel) === */
-/* (je ne le répète pas ici pour lisibilité, mais garde EXACTEMENT ton CSS actuel) */
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+  :root {
+    --navy:#1a2744;--navy-lt:#243358;--gold:#b8932a;--gold-lt:#f5ead4;
+    --bg:#f2f0eb;--bg2:#e8e5de;--white:#ffffff;--text:#1a1e2e;--text2:#4a5068;
+    --text3:#8a90a8;--border:#dcd8ce;--border2:#c8c4b8;--green:#1a5a32;
+    --green-lt:#e8f5ed;--red:#8b1a1a;--red-lt:#f5e8e8;--shadow:rgba(26,39,68,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+  .login-screen{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .login-card{background:var(--white);border:1px solid var(--border);border-radius:20px;padding:36px 32px;max-width:360px;width:100%;box-shadow:0 8px 32px var(--shadow);text-align:center;}
+  .login-logo{width:72px;height:72px;object-fit:contain;margin-bottom:16px;filter:drop-shadow(0 4px 12px rgba(26,39,68,0.15));}
+  .login-title{font-family:'Libre Baskerville',serif;font-weight:700;font-size:20px;color:var(--navy);margin-bottom:6px;}
+  .login-sub{font-size:13px;color:var(--text3);margin-bottom:24px;font-style:italic;}
+  .login-input{width:100%;padding:12px 16px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:15px;color:var(--text);transition:border-color .15s;}
+  .login-input:focus{outline:none;border-color:var(--navy);}
+  .login-btn{width:100%;padding:12px;background:var(--navy);border:none;border-radius:10px;color:var(--white);font-family:'Source Sans 3',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:background .15s;margin-top:12px;}
+  .login-btn:hover{background:var(--navy-lt);}
+  .login-err{color:var(--red);font-size:12px;font-family:'IBM Plex Mono',monospace;margin-top:8px;min-height:16px;letter-spacing:.04em;}
+  .admin-content{display:none;flex:1;flex-direction:column;}
+  .admin-content.visible{display:flex;}
+  .admin-header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;max-width:900px;margin:0 auto;width:100%;}
+  .admin-title{font-family:'Libre Baskerville',serif;font-weight:700;font-size:16px;color:var(--white);display:flex;align-items:center;gap:10px;}
+  .admin-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;background:var(--red);color:var(--white);padding:2px 10px;border-radius:10px;text-transform:uppercase;}
+  .btn-logout{background:none;border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:5px 12px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,0.5);cursor:pointer;transition:all .15s;letter-spacing:.06em;}
+  .btn-logout:hover{border-color:rgba(255,255,255,0.5);color:var(--white);}
+  main{flex:1;max-width:900px;margin:0 auto;padding:24px 20px 60px;width:100%;}
+  .admin-section{margin-bottom:28px;}
+  .admin-section-title{font-family:'Libre Baskerville',serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  .admin-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
+  .action-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 2px 8px var(--shadow);transition:all .2s;}
+  .action-card:hover{box-shadow:0 6px 20px var(--shadow);transform:translateY(-2px);}
+  .action-card.danger{border-color:#e0c0c0;}
+  .action-card.danger:hover{border-color:var(--red);}
+  .card-icon{font-size:24px;margin-bottom:8px;}
+  .card-title{font-family:'Libre Baskerville',serif;font-weight:700;font-size:14px;color:var(--navy);margin-bottom:4px;}
+  .card-desc{font-size:12px;color:var(--text3);line-height:1.4;margin-bottom:14px;}
+  .btn{padding:9px 16px;border-radius:10px;font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:13px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--border2);background:var(--bg);color:var(--text);}
+  .btn:hover{box-shadow:0 3px 10px var(--shadow);transform:translateY(-1px);}
+  .btn.primary{background:var(--navy);border-color:var(--navy);color:white;font-weight:700;}
+  .btn.primary:hover{background:var(--navy-lt);}
+  .btn.danger{border-color:#e0c0c0;color:var(--red);}
+  .btn.danger:hover{background:var(--red-lt);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+  .log-wrap{background:#0e0f11;border-radius:12px;padding:14px 16px;margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:#5ecf8a;min-height:60px;max-height:200px;overflow-y:auto;line-height:1.6;}
+  .log-entry.err{color:#e07070;}
+  .log-entry.info{color:#8a90a8;}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:rot .6s linear infinite;}
+  @keyframes rot{to{transform:rotate(360deg);}}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--navy);color:white;padding:11px 22px;border-radius:30px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:999;transition:transform .25s ease;letter-spacing:.04em;box-shadow:0 8px 30px rgba(26,39,68,0.25);white-space:nowrap;}
+  .toast.on{transform:translateX(-50%) translateY(0);}
+  .toast.ok{background:var(--green);}
+  .toast.err{background:var(--red);}
 </style>
 </head>
-
 <body>
 
-<!-- ═══ ÉCRAN CONNEXION ═══ -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <img src="LogoRC2026.png" class="login-logo" alt="" onerror="this.style.display='none'">
     <div class="login-title">Administration</div>
     <div class="login-sub">Accès restreint · Rallye Citoyen 2026</div>
-
-    <div style="position:relative;margin-bottom:12px;">
+    <div style="position:relative;">
       <input type="password" class="login-input" id="loginMdp"
         placeholder="Mot de passe"
-        onkeydown="if(event.key==='Enter')seConnecter()"
-        style="padding-right:44px;">
-      <button onclick="toggleVoirMdp()" type="button"
-        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);"
-        id="btnVoirMdp">
-        👁
+        style="padding-right:44px;"
+        onkeydown="if(event.key==='Enter')seConnecter()">
+      <button onclick="toggleVoirMdp()" type="button" id="btnVoirMdp"
+        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;display:flex;align-items:center;"
+        title="Afficher/masquer">
+        <svg id="iconOeil" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
       </button>
     </div>
-
     <button class="login-btn" onclick="seConnecter()">Accéder</button>
     <div class="login-err" id="loginErr"></div>
   </div>
 </div>
 
-<!-- ═══ PAGE ADMIN ═══ -->
 <div class="admin-content" id="adminContent">
-
   <div style="background:var(--navy);padding:0">
     <div class="admin-header">
-      <div class="admin-title">
-        ⚙️ Administration
-        <span class="admin-badge">Accès restreint</span>
-      </div>
+      <div class="admin-title">⚙️ Administration <span class="admin-badge">Accès restreint</span></div>
       <button class="btn-logout" onclick="seDeconnecter()">Déconnexion</button>
     </div>
   </div>
 
   <main>
-
-    <!-- TRAITEMENT -->
     <div class="admin-section">
       <div class="admin-section-title">📊 Traitement des données</div>
-
       <div class="cards-grid">
-
         <div class="action-card">
-          <div class="card-title">Importer les notes</div>
+          <div class="card-icon">📥</div>
+          <div class="card-title">Importer les notes ateliers</div>
+          <div class="card-desc">Lance <code>importAtelierData()</code> — lit tous les formulaires et peuple "Note par Atelier".</div>
           <button class="btn primary" onclick="lancer('importAtelierData')">▶ Lancer</button>
         </div>
-
         <div class="action-card">
-          <div class="card-title">Calculer les scores</div>
+          <div class="card-icon">➕</div>
+          <div class="card-title">Calculer totaux et moyennes</div>
+          <div class="card-desc">Lance <code>calculateSumsAndAverages()</code> — peuple "Somme des Notes".</div>
           <button class="btn primary" onclick="lancer('calculateSumsAndAverages')">▶ Lancer</button>
         </div>
-
         <div class="action-card">
-          <div class="card-title">Générer classement</div>
+          <div class="card-icon">🏆</div>
+          <div class="card-title">Générer le classement</div>
+          <div class="card-desc">Lance <code>generateClassement()</code> — écrit le classement dans l'onglet "Classement".</div>
           <button class="btn primary" onclick="lancer('generateClassement')">▶ Lancer</button>
         </div>
-
         <div class="action-card">
-          <div class="card-title">Corriger Fil Rouge</div>
+          <div class="card-icon">✏️</div>
+          <div class="card-title">Corriger le Fil Rouge</div>
+          <div class="card-desc">Lance <code>corrigerFilRouge()</code> — recalcule les scores depuis les saisies.</div>
           <button class="btn primary" onclick="lancer('corrigerFilRouge')">▶ Lancer</button>
         </div>
-
+        <div class="action-card">
+          <div class="card-icon">🔄</div>
+          <div class="card-title">Mettre à jour les URLs ateliers</div>
+          <div class="card-desc">Lance <code>updateWorkshopRatings()</code> — synchronise les URLs dans l'onglet Ateliers.</div>
+          <button class="btn" onclick="lancer('updateWorkshopRatings')">▶ Lancer</button>
+        </div>
+        <div class="action-card">
+          <div class="card-icon">🚩</div>
+          <div class="card-title">Mettre à jour Fil Rouge (équipes)</div>
+          <div class="card-desc">Lance <code>updateFilRouge()</code> — synchronise les noms d'équipes dans Fil Rouge.</div>
+          <button class="btn" onclick="lancer('updateFilRouge')">▶ Lancer</button>
+        </div>
       </div>
     </div>
 
-    <!-- RESET -->
     <div class="admin-section">
-      <div class="admin-section-title">🧹 Réinitialisation</div>
-
+      <div class="admin-section-title">🧹 Réinitialisations</div>
       <div class="cards-grid">
-
         <div class="action-card danger">
-          <div class="card-title">Reset Fil Rouge</div>
-          <button class="btn danger"
-            onclick="confirmerAction('resetGlobal',{cible:'filrouge'},'Reset Fil Rouge ?')">
-            ⚠ Reset
-          </button>
+          <div class="card-icon">🗑</div>
+          <div class="card-title">Réinitialiser le Fil Rouge</div>
+          <div class="card-desc">Vide toutes les réponses et remet les scores à zéro.</div>
+          <button class="btn danger" onclick="confirmerAction('resetGlobal',{cible:'filrouge'},'Réinitialiser TOUT le Fil Rouge ?')">⚠ Réinitialiser</button>
         </div>
-
         <div class="action-card danger">
-          <div class="card-title">Reset Bonus/Malus</div>
-          <button class="btn danger"
-            onclick="confirmerAction('resetGlobal',{cible:'bonusmalus'},'Reset Bonus ?')">
-            ⚠ Reset
-          </button>
+          <div class="card-icon">🗑</div>
+          <div class="card-title">Réinitialiser les Bonus/Malus</div>
+          <div class="card-desc">Remet la colonne Comportement à 3 pour toutes les équipes.</div>
+          <button class="btn danger" onclick="confirmerAction('resetGlobal',{cible:'bonusmalus'},'Réinitialiser tous les Bonus/Malus ?')">⚠ Réinitialiser</button>
         </div>
-
         <div class="action-card danger">
-          <div class="card-title">Reset Note Atelier</div>
-          <button class="btn danger"
-            onclick="confirmerAction('resetNoteParAtelier',{},'Vider notes ?')">
-            ⚠ Reset
-          </button>
+          <div class="card-icon">🗑</div>
+          <div class="card-title">Réinitialiser Note par Atelier</div>
+          <div class="card-desc">Vide l'onglet "Note par Atelier".</div>
+          <button class="btn danger" onclick="confirmerAction('resetNoteParAtelier',{},'Vider Note par Atelier ?')">⚠ Réinitialiser</button>
         </div>
-
-        <div class="action-card danger">
-          <div class="card-title">RESET TOTAL</div>
-          <button class="btn danger"
-            onclick="confirmerAction('resetGlobal',{cible:'all'},'Tout supprimer ?')">
-            ☢️ FULL RESET
-          </button>
+        <div class="action-card danger" style="border-color:#8b1a1a;">
+          <div class="card-icon">☢️</div>
+          <div class="card-title">Tout réinitialiser</div>
+          <div class="card-desc">Vide Fil Rouge + Saisie Fil Rouge + Note par Atelier + Somme des Notes.</div>
+          <button class="btn danger" style="border-color:var(--red);background:var(--red-lt);"
+            onclick="confirmerAction('resetGlobal',{cible:'all'},'Tout réinitialiser ? Action irréversible.')">⚠⚠ Tout réinitialiser</button>
         </div>
-
       </div>
     </div>
 
-    <!-- LOG -->
     <div class="admin-section">
-      <div class="admin-section-title">📋 Journal</div>
-      <div class="log-wrap" id="logWrap"></div>
+      <div class="admin-section-title">📋 Journal d'exécution</div>
+      <div class="log-wrap" id="logWrap">
+        <div class="log-entry info">// En attente d'actions…</div>
+      </div>
     </div>
-
   </main>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-
-/* ───────────────────────────── */
-/* CONFIG */
-/* ───────────────────────────── */
-
-if (typeof MDP_ADMIN === 'undefined') {
-  var MDP_ADMIN = 'SemperParatiDMD82!';
+// MDP récupéré depuis config.js — fallback si non défini
+function getMdpAdmin() {
+  return (typeof MDP_ADMIN !== 'undefined') ? MDP_ADMIN : 'SemperParatiDMD82!';
 }
 
 let authenticated = false;
 
-
-/* ───────────────────────────── */
-/* AUTH */
-/* ───────────────────────────── */
-
 function seConnecter() {
   const mdp = document.getElementById('loginMdp').value;
+  const err = document.getElementById('loginErr');
 
-  if (mdp === MDP_ADMIN) {
+  if (!mdp) {
+    err.textContent = '⚠ Veuillez saisir le mot de passe.';
+    return;
+  }
+
+  if (mdp === getMdpAdmin()) {
     authenticated = true;
+    err.textContent = '';
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminContent').classList.add('visible');
-    log('Connexion OK');
+    log('Connexion réussie', 'info');
   } else {
-    log('Mot de passe incorrect', 'err');
+    err.textContent = '❌ Mot de passe incorrect.';
+    document.getElementById('loginMdp').value = '';
+    document.getElementById('loginMdp').focus();
+    document.getElementById('loginMdp').style.borderColor = 'var(--red)';
+    setTimeout(() => document.getElementById('loginMdp').style.borderColor = '', 1500);
   }
 }
 
 function seDeconnecter() {
   authenticated = false;
+  document.getElementById('loginMdp').value = '';
+  document.getElementById('loginErr').textContent = '';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('adminContent').classList.remove('visible');
 }
 
-
-/* ───────────────────────────── */
-/* ACTIONS */
-/* ───────────────────────────── */
-
-async function lancer(action, params = {}) {
-
-  if (!authenticated) return;
-
-  log(`▶ ${action}`);
-
-  try {
-
-    const payload = {
-      action,
-      ...params,
-      motDePasse: MDP_ADMIN
-    };
-
-    let endpoint = 'adminAction';
-
-    if (action === 'resetGlobal') endpoint = 'resetGlobal';
-    if (action === 'resetNoteParAtelier') endpoint = 'resetNoteParAtelier';
-
-    const url = `${API_URL}?action=${endpoint}&data=${encodeURIComponent(JSON.stringify(payload))}`;
-
-    const res = await fetch(url);
-
-    if (!res.ok) throw new Error(res.status);
-
-    const json = await res.json();
-
-    if (json.success) {
-      log(`✓ ${json.message || action}`);
-      toast('OK', 'ok');
-    } else {
-      log(`✗ ${json.message}`, 'err');
-      toast(json.message, 'err');
-    }
-
-  } catch (e) {
-    log(`Erreur : ${e.message}`, 'err');
-    toast(e.message, 'err');
+function toggleVoirMdp() {
+  const input = document.getElementById('loginMdp');
+  const icon  = document.getElementById('iconOeil');
+  if (input.type === 'password') {
+    input.type = 'text';
+    // Icône "œil barré"
+    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19M1 1l22 22"/>';
+    document.getElementById('btnVoirMdp').style.color = 'var(--navy)';
+  } else {
+    input.type = 'password';
+    // Icône "œil"
+    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    document.getElementById('btnVoirMdp').style.color = 'var(--text3)';
   }
 }
 
+async function lancer(action, params = {}) {
+  if (!authenticated) return;
+  log('▶ Lancement : ' + action + '…', 'info');
+  try {
+    const payload = { action, ...params, motDePasse: getMdpAdmin() };
+    let endpoint = 'adminAction';
+    if (action === 'resetGlobal') endpoint = 'resetGlobal';
+    if (action === 'resetNoteParAtelier') endpoint = 'resetNoteParAtelier';
+    const url = API_URL + '?action=' + endpoint + '&data=' + encodeURIComponent(JSON.stringify(payload));
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    if (json.success) {
+      log('✓ ' + (json.message || action), '');
+      toast('✓ ' + (json.message || action + ' terminé'), 'ok');
+    } else {
+      log('✗ ' + json.message, 'err');
+      toast('❌ ' + json.message, 'err');
+    }
+  } catch(e) {
+    log('✗ Erreur : ' + e.message, 'err');
+    toast('Erreur : ' + e.message, 'err');
+  }
+}
 
 function confirmerAction(action, params, message) {
-  if (!confirm(message)) return;
+  if (!confirm('⚠️ ' + message + '\n\nCette action est irréversible.')) return;
   lancer(action, params);
 }
 
-
-/* ───────────────────────────── */
-/* UI */
-/* ───────────────────────────── */
-
-function log(msg, type='') {
+function log(msg, type) {
   const wrap = document.getElementById('logWrap');
   const d = document.createElement('div');
-  d.className = 'log-entry ' + type;
-  d.textContent = msg;
+  d.className = 'log-entry ' + (type || '');
+  const now = new Date();
+  const ts = now.getHours().toString().padStart(2,'0') + ':' +
+             now.getMinutes().toString().padStart(2,'0') + ':' +
+             now.getSeconds().toString().padStart(2,'0');
+  d.textContent = '[' + ts + '] ' + msg;
   wrap.appendChild(d);
+  wrap.scrollTop = wrap.scrollHeight;
 }
 
 function toast(msg, type) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.className = 'toast ' + type + ' on';
-  setTimeout(()=>t.classList.remove('on'),3000);
+  t.className = 'toast ' + (type || '');
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 3000);
 }
-
-function toggleVoirMdp() {
-  const input = document.getElementById('loginMdp');
-  input.type = input.type === 'password' ? 'text' : 'password';
-}
-
-
-/* ───────────────────────────── */
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('loginMdp').focus();
 });
-
 </script>
-
 </body>
 </html>
