@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fil Rouge — Rallye Citoyen 2026</title>
 <script src="config.js"></script>
-<script src="nav.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
@@ -616,6 +615,9 @@
     <div class="tab" id="tab-reponses" onclick="showTabReponses()">
       Réponses <span class="n" id="badgeN">0</span>
     </div>
+    <div class="tab" id="tab-corrige" onclick="showTab('corrige')">
+      Corrigé
+    </div>
     <div style="flex:1"></div>
     <div style="padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.06em;display:flex;align-items:center;gap:6px;">
       <span id="lastUpdate">—</span>
@@ -657,18 +659,12 @@
     </div>
 
 
-    <!-- Boutons réinitialisation globale -->
+    <!-- Réinitialisation Fil Rouge -->
     <div class="section" style="border-color:#e0c0c0;">
-      <div class="section-head" style="color:var(--red)">⚠ Réinitialisation globale</div>
-      <div class="section-body" style="display:flex;gap:10px;flex-wrap:wrap;">
+      <div class="section-head" style="color:var(--red)">⚠ Réinitialisation</div>
+      <div class="section-body">
         <button class="btn danger" onclick="demanderReset('filrouge')">
           🗑 Réinitialiser tout le Fil Rouge
-        </button>
-        <button class="btn danger" onclick="demanderReset('bonusmalus')">
-          🗑 Réinitialiser tous les Bonus/Malus
-        </button>
-        <button class="btn danger" onclick="demanderReset('all')" style="border-color:#8b1a1a;background:#fdf0f0;">
-          ⚠ Tout réinitialiser
         </button>
       </div>
     </div>
@@ -694,6 +690,11 @@
     <div id="detailZone"></div>
   </div>
 
+
+  <!-- ═══ CORRIGÉ ═══ -->
+  <div class="panel" id="panel-corrige">
+    <div id="corrigeContent"></div>
+  </div>
 </main>
 
 <!-- Modal confirmation -->
@@ -1176,6 +1177,7 @@ function showTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-' + name).classList.add('active');
   document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'corrige') buildCorrige();
 }
 
 
@@ -1239,6 +1241,51 @@ async function confirmerReset() {
     btn.innerHTML = 'Réinitialiser';
     document.getElementById('resetErreur').textContent = 'Erreur réseau : ' + e.message;
   }
+}
+
+
+function buildCorrige() {
+  const wrap = document.getElementById('corrigeContent');
+  if (wrap.innerHTML) return; // déjà construit
+
+  const FEUILLETS_LABELS = [
+    { label: 'Feuillet I — Soigner',            couleur: 'f1' },
+    { label: 'Feuillet II — Secourir',           couleur: 'f2' },
+    { label: 'Feuillet III — Servir',            couleur: 'f3' },
+    { label: 'Feuillet IV — Courage & Héritage', couleur: 'f4' },
+    { label: 'Feuillet V — Mission Finale',      couleur: 'f5' },
+  ];
+
+  let h = '';
+
+  FEUILLETS.forEach((f, fi) => {
+    h += `<div class="feuillet">
+      <div class="feuillet-head ${f.cls}">
+        <span class="feuillet-label">${f.label}</span>
+        <span class="feuillet-score">${f.qs.length} / ${f.qs.length}</span>
+      </div>
+      <div class="feuillet-body" style="grid-template-columns:1fr 1fr;">`;
+
+    f.qs.forEach((q, qi) => {
+      const qNum   = fi * 6 + qi + 1;
+      const rep    = REP_OFF[qNum - 1];
+      h += `<div class="q-row">
+        <div class="q-id">Q${String(qNum).padStart(2,'0')}</div>
+        <div class="q-body">
+          <div class="q-text">${q}</div>
+          <div class="q-btns">
+            ${['A','B','C'].map(l => `
+              <button class="cbtn${l === rep ? ' on ' + f.cls : ''}"
+                style="cursor:default;${l === rep ? '' : 'opacity:.35;'}">${l}</button>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    });
+
+    h += `</div></div>`;
+  });
+
+  wrap.innerHTML = h;
 }
 
 function toast(msg, type) {
