@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bonus / Malus — Rallye Citoyen 2026</title>
 <script src="config.js"></script>
+<script src="nav.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
@@ -31,16 +32,14 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
-  /* ── HEADER ── */
-  header { background: var(--navy); padding: 20px 24px 18px; position: relative; overflow: hidden; }
-  header::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 12px); pointer-events: none; }
-  .header-inner { display: flex; align-items: center; gap: 14px; max-width: 780px; margin: 0 auto; }
-  .header-logo { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.3)); }
-  .header-text { flex: 1; }
-  .header-back { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.35); text-decoration: none; transition: color .15s; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
-  .header-back:hover { color: rgba(232,208,144,0.8); }
-  .header-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: rgba(232,208,144,0.7); margin-bottom: 3px; }
-  .header-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 18px; color: var(--white); }
+  
+  
+  
+  
+  
+  
+  
+  
 
   /* ── NAV WRAP ── */
   .nav-wrap { background: var(--white); border-bottom: 1px solid var(--border); }
@@ -155,6 +154,15 @@
 
   .field-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
   .field-wrap { margin-bottom: 16px; }
+
+  /* ── OVERLAY / MODAL ── */
+  .overlay { position: fixed; inset: 0; background: rgba(26,39,68,0.5); backdrop-filter: blur(4px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+  .overlay.on { display: flex; }
+  .modal { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 28px; max-width: 400px; width: 100%; box-shadow: 0 20px 60px rgba(26,39,68,0.2); }
+  .modal-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 18px; color: var(--navy); margin-bottom: 10px; }
+  .modal-body { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 16px; font-weight: 300; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+
 </style>
 </head>
 <body>
@@ -164,17 +172,6 @@
   <div class="spin-dark"></div>
   <div class="loading-txt">Chargement…</div>
 </div>
-
-<header>
-  <div class="header-inner">
-    <img src="LogoRC2026.png" class="header-logo" alt="" onerror="this.style.display='none'">
-    <div class="header-text">
-      <div class="header-label">Rallye Citoyen 2026 · PC Organisation</div>
-      <div class="header-title">Bonus / Malus</div>
-    </div>
-    <a class="header-back" href="index.html">← Accueil</a>
-  </div>
-</header>
 
 <div class="nav-wrap">
   <nav>
@@ -222,15 +219,7 @@
     </div>
 
 
-    <!-- Réinitialisation Bonus/Malus -->
-    <div class="section" style="border-color:#e0c0c0;margin-top:14px;">
-      <div class="section-head" style="color:var(--red)">⚠ Réinitialisation</div>
-      <div class="section-body">
-        <button class="btn danger" onclick="demanderReset('bonusmalus')">
-          🗑 Réinitialiser tous les Bonus / Malus
-        </button>
-      </div>
-    </div>
+
 
     <div class="resume-bar">
       <div>
@@ -255,6 +244,15 @@
         <span class="tbl-cnt" id="tblCnt">0</span>
       </div>
       <div id="tblBody"><div class="empty">Aucune attribution pour le moment</div></div>
+    </div>
+    <!-- Réinitialisation Bonus/Malus -->
+    <div style="margin-top:16px;background:var(--white);border:1px solid #e0c0c0;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);">
+      <div style="padding:9px 16px;background:var(--bg2);border-bottom:1px solid #e0c0c0;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--red);">⚠ Réinitialisation</div>
+      <div style="padding:14px 16px;">
+        <button class="btn danger" onclick="demanderReset('bonusmalus')">
+          🗑 Réinitialiser tous les Bonus / Malus
+        </button>
+      </div>
     </div>
   </div>
 
