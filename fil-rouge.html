@@ -508,7 +508,7 @@
   .loading-overlay {
     position: fixed; inset: 0;
     background: var(--bg);
-    z-index: 300;
+    z-index: 1000;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 16px;
   }
@@ -662,7 +662,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
-var MDP_RESET = 'SemperParatiDMD82!';
+if (typeof MDP_RESET === 'undefined') {
+  var MDP_RESET = 'SemperParatiDMD82!';
+}
 // ⚠️ METTRE À JOUR AVEC L'URL DE VOTRE DÉPLOIEMENT APPS SCRIPT
 const REP_OFF = [
   "B","B","C","C","B","C",
@@ -760,8 +762,10 @@ async function chargerDonnees(silent = false) {
       renderReponses();
     }
 
-    if (!silent) {
-      document.getElementById('loadingOverlay').classList.add('hidden');
+    // Masquer l'overlay dans TOUS les cas (silent ou non) au premier chargement
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay && !overlay.classList.contains('hidden')) {
+      overlay.classList.add('hidden');
     }
 
     // Indicateur discret de dernière actualisation
@@ -1149,13 +1153,16 @@ function annulerReset() {
 }
 
 function toggleVoirMdpReset() {
-  const input   = document.getElementById('resetMdp');
-  const btn     = document.getElementById('btnVoirReset');
-  const isHidden = input.type === 'password';
-  input.type = isHidden ? 'text' : 'password';
-  btn.innerHTML = isHidden
-    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19M1 1l22 22"/></svg>'
-    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const input = document.getElementById('resetMdp');
+  const btn   = document.getElementById('btnVoirReset');
+  if (!input || !btn) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.style.color = 'var(--navy)';
+  } else {
+    input.type = 'password';
+    btn.style.color = 'var(--text3)';
+  }
 }
 
 async function confirmerReset() {
