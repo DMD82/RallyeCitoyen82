@@ -42,7 +42,7 @@
   
 
   /* ── NAV WRAP ── */
-  .nav-wrap { background: var(--white); border-bottom: 1px solid var(--border); }
+  .nav-wrap { background: var(--bg2); border-bottom: 1px solid var(--border); }
   nav { display: flex; align-items: center; padding: 0 20px; max-width: 780px; margin: 0 auto; }
   .tab { padding: 11px 16px; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s; display: flex; align-items: center; gap: 8px; }
   .tab:hover { color: var(--text2); }
@@ -261,6 +261,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
+var MDP_RESET = 'SemperParatiDMD82!';
 const VALEURS = [
   { val: -5, label: '-5', sub: 'Grave' },
   { val: -2, label: '-2', sub: 'Modéré' },
@@ -494,10 +495,13 @@ function annulerReset() {
 }
 
 function toggleVoirMdpReset() {
-  const input = document.getElementById('resetMdp');
-  const btn   = document.getElementById('btnVoirReset');
-  input.type  = input.type === 'password' ? 'text' : 'password';
-  btn.textContent = input.type === 'password' ? '👁' : '🙈';
+  const input   = document.getElementById('resetMdp');
+  const btn     = document.getElementById('btnVoirReset');
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  btn.innerHTML = isHidden
+    ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19M1 1l22 22"/></svg>'
+    : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
 }
 
 async function confirmerReset() {
@@ -557,8 +561,10 @@ function toast(msg, type) {
           style="width:100%;padding:10px 44px 10px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);background:var(--bg);transition:border-color .15s;"
           onkeydown="if(event.key==='Enter')confirmerReset()">
         <button onclick="toggleVoirMdpReset()" type="button"
-          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--text3);line-height:1;"
-          id="btnVoirReset" title="Afficher/masquer">👁</button>
+          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;display:flex;align-items:center;"
+          id="btnVoirReset" title="Afficher/masquer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
       </div>
       <div id="resetErreur" style="color:var(--red);font-size:12px;margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;"></div>
     </div>
