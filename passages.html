@@ -311,38 +311,74 @@ function renderComptage(data) {
     return;
   }
 
-  // Calcul total passages
   const totalPassages = data.reduce((s, a) => s + a.passages, 0);
 
-  let h = `<table><thead><tr>
-    <th style="text-align:left">Atelier</th>
-    <th>Passages</th>
-    <th>Note moy.</th>
-    <th>% du max</th>
-  </tr></thead><tbody>`;
+  let h = `<table>
+    <thead><tr>
+      <th style="text-align:left">Atelier</th>
+      <th>Passages</th>
+      <th>Note moy.</th>
+      <th>% du max</th>
+    </tr></thead><tbody>`;
 
   data.forEach(a => {
-    const pct      = Math.round((a.passages / maxPassages) * 100);
-    const progCls  = pct >= 70 ? 'high' : pct >= 40 ? 'medium' : 'low';
+    const pct     = Math.round((a.passages / maxPassages) * 100);
+    const progCls = pct >= 70 ? 'high' : pct >= 40 ? 'medium' : 'low';
+    const id      = 'a-' + a.numAtelier;
 
-    h += `<tr>
+    h += `<tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}', this)">
       <td>
-        <div class="atelier-num">Atelier ${a.numAtelier}</div>
-        <div class="atelier-nom">${a.nomAtelier}</div>
+        <div style="display:flex;align-items:center;">
+          <span class="toggle-icon" id="icon-${id}">▶</span>
+          <div>
+            <div class="atelier-num">Atelier ${a.numAtelier}</div>
+            <div class="atelier-nom">${a.nomAtelier}</div>
+          </div>
+        </div>
       </td>
       <td>
         <div class="prog-wrap">
           <span class="passages-num">${a.passages}</span>
-          <div class="prog-bar">
-            <div class="prog-fill ${progCls}" style="width:${pct}%"></div>
-          </div>
+          <div class="prog-bar"><div class="prog-fill ${progCls}" style="width:${pct}%"></div></div>
         </div>
       </td>
       <td><span class="moy-chip">${a.moyenneNote} / 10</span></td>
-      <td>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3)">${pct}%</span>
-      </td>
+      <td><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3)">${pct}%</span></td>
     </tr>`;
+
+    const equipesTri = [...a.equipes].sort((x, y) => y.note - x.note);
+    let detail = `<tr class="detail-row" id="detail-${id}">
+      <td colspan="4" style="padding:0;">
+        <div class="detail-inner">
+          <table><thead><tr>
+            <th style="text-align:left">N°</th>
+            <th style="text-align:left">Équipe</th>
+            <th style="text-align:left">Établissement</th>
+            <th style="text-align:center">Note atelier</th>
+            <th style="text-align:center">Comportement</th>
+          </tr></thead><tbody>`;
+
+    equipesTri.forEach(e => {
+      const notePct = Math.round((e.note / 10) * 100);
+      const noteCls = e.note >= 7 ? 'high' : e.note >= 4 ? 'medium' : 'low';
+      detail += `<tr>
+        <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.num}</span></td>
+        <td>${e.nom || '—'}</td>
+        <td style="color:var(--text3);font-size:11px">${e.etab || '—'}</td>
+        <td style="text-align:center">
+          <div class="note-bar-wrap" style="justify-content:center">
+            <span class="note-val">${e.note}</span>
+            <div class="note-bar"><div class="note-bar-fill ${noteCls}" style="width:${notePct}%"></div></div>
+          </div>
+        </td>
+        <td style="text-align:center">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2)">${e.comport}</span>
+        </td>
+      </tr>`;
+    });
+
+    detail += `</tbody></table></div></td></tr>`;
+    h += detail;
   });
 
   h += `</tbody></table>
@@ -354,7 +390,22 @@ function renderComptage(data) {
   document.getElementById('bodyComptage').innerHTML = h;
 }
 
-// ── DÉTAIL ───────────────────────────────────────────────
+function toggleDetail(id, row) {
+  const detail = document.getElementById('detail-' + id);
+  const icon   = document.getElementById('icon-' + id);
+  const isOpen = detail.classList.contains('visible');
+  if (isOpen) {
+    detail.classList.remove('visible');
+    icon.textContent = '▶';
+    row.classList.remove('open');
+  } else {
+    detail.classList.add('visible');
+    icon.textContent = '▼';
+    row.classList.add('open');
+  }
+}
+
+
 function showTabDetail() {
   showTab('detail');
   filtrerDetail();
