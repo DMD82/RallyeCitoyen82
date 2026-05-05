@@ -1140,17 +1140,10 @@ function annulerReset() {
   resetCible = null;
 }
 
-function toggleVoirMdpReset() {
-  const input = document.getElementById('resetMdp');
-  const btn   = document.getElementById('btnVoirReset');
-  input.type  = input.type === 'password' ? 'text' : 'password';
-  btn.textContent = input.type === 'password' ? '👁' : '🙈';
-}
-
 async function confirmerReset() {
   const mdp = document.getElementById('resetMdp').value.trim();
   if (!mdp) {
-    document.getElementById('resetErreur').textContent = '⚠ Veuillez saisir le mot de passe.';
+    document.getElementById('resetErreur').textContent = 'Veuillez saisir le mot de passe.';
     return;
   }
 
@@ -1244,14 +1237,9 @@ function toast(msg, type) {
     <div class="modal-title" style="color:var(--red)">⚠ Réinitialisation globale</div>
     <div class="modal-body" id="modalResetTxt"></div>
     <div style="margin-bottom:16px">
-      <div style="position:relative;">
-        <input type="password" id="resetMdp" placeholder="Mot de passe…"
-          style="width:100%;padding:10px 44px 10px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);background:var(--bg);transition:border-color .15s;"
-          onkeydown="if(event.key==='Enter')confirmerReset()">
-        <button onclick="toggleVoirMdpReset()" type="button"
-          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:15px;color:var(--text3);line-height:1;"
-          id="btnVoirReset" title="Afficher/masquer">👁</button>
-      </div>
+      <input type="password" id="resetMdp" placeholder="Mot de passe…"
+        style="width:100%;padding:10px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);background:var(--bg);transition:border-color .15s;"
+        onkeydown="if(event.key==='Enter')confirmerReset()">
       <div id="resetErreur" style="color:var(--red);font-size:12px;margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;"></div>
     </div>
     <div class="modal-actions">
