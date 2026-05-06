@@ -410,7 +410,7 @@ function renderAteliers(data) {
     return;
   }
   const total = data.reduce((s,a) => s + a.passages, 0);
-  let h = `<table><thead><tr><th style="text-align:left">Atelier</th><th>Passages</th><th>Note moy.</th></tr></thead><tbody>`;
+  let h = `<table><thead><tr><th style="text-align:left">Atelier</th><th>Passages</th><th>Note moy.</th><th>Comport. moy.</th></tr></thead><tbody>`;
   data.forEach(a => {
     const pct = Math.round((a.passages / maxPassages) * 100);
     const cls = pct >= 70 ? 'high' : pct >= 40 ? 'medium' : 'low';
@@ -422,7 +422,8 @@ function renderAteliers(data) {
       </div></td>
       <td><div class="prog-wrap"><span class="passages-num">${a.passages}</span>
         <div class="prog-bar"><div class="prog-fill ${cls}" style="width:${pct}%"></div></div></div></td>
-      <td><span class="moy-chip">${a.moyenneNote} / 10</span></td></tr>`;
+      <td><span class="moy-chip">${a.moyenneNote} / 10</span></td>
+      <td><span class="moy-chip" style="background:var(--green-lt);color:var(--green)">${a.moyenneComport || '—'} / 5</span></td></tr>`;
     const eq = [...a.equipes].sort((x,y) => y.note - x.note);
     h += `<tr class="detail-row" id="detail-${id}"><td colspan="3" style="padding:0;">
       <div class="detail-inner"><table><thead><tr>
@@ -494,11 +495,12 @@ function renderEquipes(data) {
     document.getElementById('bodyEquipes').innerHTML = '<div class="state-box"><div class="state-desc">Aucune équipe.</div></div>';
     return;
   }
-  let h = `<table><thead><tr><th style="text-align:left">Équipe</th><th>Nb ateliers</th><th>Moy. notes</th></tr></thead><tbody>`;
+  let h = `<table><thead><tr><th style="text-align:left">Équipe</th><th>Nb ateliers</th><th>Moy. notes</th><th>Comport. moy.</th></tr></thead><tbody>`;
   data.forEach(e => {
     const id = 'eq-'+e.num;
     const nb = e.ateliers.length;
     const moy = nb > 0 ? Math.round((e.ateliers.reduce((s,a)=>s+a.note,0)/nb)*10)/10 : 0;
+    const moyC = nb > 0 ? Math.round((e.ateliers.reduce((s,a)=>s+(a.comport||0),0)/nb)*10)/10 : 0;
     h += `<tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}',this)">
       <td><div style="display:flex;align-items:center;">
         <span class="toggle-icon" id="icon-${id}">▶</span>
@@ -506,7 +508,8 @@ function renderEquipes(data) {
         <div style="font-size:11px;color:var(--text3)">${e.etab||''}</div></div></div></td>
       <td><div class="prog-wrap"><span class="passages-num">${nb}</span>
         <div class="prog-bar"><div class="prog-fill ${nb>=5?'high':nb>=3?'medium':'low'}" style="width:${Math.round(nb/10*100)}%"></div></div></div></td>
-      <td><span class="moy-chip">${moy} / 10</span></td></tr>`;
+      <td><span class="moy-chip">${moy} / 10</span></td>
+      <td><span class="moy-chip" style="background:var(--green-lt);color:var(--green)">${moyC} / 5</span></td></tr>`;
     const at = [...e.ateliers].sort((a,b)=>parseInt(a.numAtelier)-parseInt(b.numAtelier));
     h += `<tr class="detail-row" id="detail-${id}"><td colspan="3" style="padding:0;">
       <div class="detail-inner"><table><thead><tr>
