@@ -1,1 +1,444 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accueil Partenaires — Rallye Citoyen 2026</title>
+<script src="../config.js"></script>
+<script src="../nav_pc.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+  :root {
+    --navy:#1a2744;--navy-lt:#243358;--gold:#b8932a;--gold-lt:#f5ead4;--gold-mid:#e8d090;
+    --bg:#f2f0eb;--bg2:#e8e5de;--white:#ffffff;--text:#1a1e2e;--text2:#4a5068;--text3:#8a90a8;
+    --border:#dcd8ce;--border2:#c8c4b8;--green:#1a5a32;--green-lt:#e8f5ed;--red:#8b1a1a;--red-lt:#f5e8e8;
+    --shadow:rgba(26,39,68,0.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+  .nav-wrap{background:var(--bg2);border-bottom:1px solid var(--border);}
+  nav{display:flex;align-items:center;padding:0 20px;max-width:900px;margin:0 auto;}
+  .tab{padding:11px 16px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;display:flex;align-items:center;gap:8px;}
+  .tab:hover{color:var(--text2);}
+  .tab.active{color:var(--navy);border-bottom-color:var(--gold);}
+  .tab .n{background:var(--bg2);border:1px solid var(--border);color:var(--text3);font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600;transition:all .15s;}
+  .tab.active .n{background:var(--navy);color:var(--white);border-color:var(--navy);}
+  .nav-spacer{flex:1;}
+  .nav-info{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px;}
+  .btn-refresh{background:none;border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--text3);transition:all .15s;}
+  .btn-refresh:hover{border-color:var(--navy);color:var(--navy);}
+  main{flex:1;max-width:900px;margin:0 auto;padding:20px 20px 60px;width:100%;}
+  .panel{display:none;}.panel.active{display:block;}
+
+  /* SECTION */
+  .section{background:var(--white);border:1px solid var(--border);border-radius:16px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);}
+  .section-head{padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);}
+  .section-body{padding:16px;}
+
+  /* SELECT */
+  .select-wrap{position:relative;}
+  .select-wrap select{width:100%;padding:11px 36px 11px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;appearance:none;cursor:pointer;transition:border-color .15s;}
+  .select-wrap select:focus{outline:none;border-color:var(--navy);}
+  .select-wrap::after{content:'▾';position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;pointer-events:none;}
+
+  /* BADGE ARRIVÉE */
+  .badge-oui{display:inline-flex;align-items:center;gap:5px;background:var(--green-lt);color:var(--green);border:1px solid #b8dfc4;border-radius:8px;padding:3px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;}
+  .badge-non{display:inline-flex;align-items:center;gap:5px;background:var(--bg2);color:var(--text3);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;}
+  .badge-cd{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:4px;background:rgba(26,39,68,0.1);color:var(--navy);margin-left:4px;}
+
+  /* TOGGLE ARRIVÉE */
+  .toggle-arrivee{display:flex;align-items:center;gap:10px;}
+  .toggle-btn{padding:10px 20px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.06em;cursor:pointer;transition:all .15s;border:2px solid transparent;}
+  .toggle-btn.non{background:var(--bg2);border-color:var(--border);color:var(--text3);}
+  .toggle-btn.non:hover{border-color:var(--green);color:var(--green);}
+  .toggle-btn.oui{background:var(--green);border-color:var(--green);color:white;}
+
+  /* FORM */
+  .field-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
+  .field-wrap{margin-bottom:14px;}
+  .input-field{width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);transition:border-color .15s;}
+  .input-field:focus{outline:none;border-color:var(--navy);}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;}
+  .btn{padding:10px 18px;border:1.5px solid var(--border2);border-radius:10px;background:var(--white);color:var(--text);font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;box-shadow:0 1px 4px var(--shadow);}
+  .btn:hover{box-shadow:0 3px 10px var(--shadow);transform:translateY(-1px);}
+  .btn.primary{background:var(--navy);border-color:var(--navy);color:white;font-weight:700;}
+  .btn.primary:hover{background:var(--navy-lt);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+
+  /* TABLEAU */
+  .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+  .search-wrap{position:relative;flex:1;min-width:180px;}
+  .search-wrap input{width:100%;padding:9px 14px 9px 36px;background:var(--white);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);transition:border-color .15s;}
+  .search-wrap input:focus{outline:none;border-color:var(--navy);}
+  .search-wrap::before{content:'🔍';position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;}
+  .filter-btn{padding:8px 14px;background:var(--white);border:1.5px solid var(--border2);border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:all .15s;}
+  .filter-btn:hover{border-color:var(--navy);color:var(--navy);}
+  .filter-btn.active{background:var(--navy);border-color:var(--navy);color:var(--white);}
+  .stat-pill{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);white-space:nowrap;}
+
+  .tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);}
+  .tbl-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);}
+  .tbl-cnt{font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--white);border:1px solid var(--border);padding:2px 8px;border-radius:10px;}
+  table{width:100%;border-collapse:collapse;}
+  thead tr{background:var(--bg);}
+  th{padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);font-weight:600;}
+  td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13px;}
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:var(--bg);}
+  .eq-num{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy);font-size:13px;}
+  .eq-nom{font-size:13px;font-weight:600;}
+  .eq-etab{font-size:11px;color:var(--text3);margin-top:1px;}
+
+  /* STATS HEADER */
+  .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px;}
+  .stat-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px var(--shadow);}
+  .stat-card-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+  .stat-card-val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:22px;color:var(--navy);}
+  .stat-card-val.green{color:var(--green);}
+  .stat-card-val.gold{color:var(--gold);}
+
+  /* TOAST & LOADING */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--navy);color:white;padding:11px 22px;border-radius:30px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:999;transition:transform .25s ease;letter-spacing:.04em;box-shadow:0 8px 30px rgba(26,39,68,0.25);white-space:nowrap;}
+  .toast.on{transform:translateX(-50%) translateY(0);}
+  .toast.ok{background:var(--green);}
+  .toast.err{background:var(--red);}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:rot .6s linear infinite;}
+  .loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+  .loading-overlay.hidden{display:none;}
+  .loading-logo{width:64px;height:64px;object-fit:contain;}
+  .loading-txt{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;}
+  .spin-dark{display:inline-block;width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:rot .6s linear infinite;}
+  @keyframes rot{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <img src="../LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
+  <div class="spin-dark"></div>
+  <div class="loading-txt">Chargement…</div>
+</div>
+
+<div class="nav-wrap">
+  <nav>
+    <div class="tab active" id="tab-accueil" onclick="showTab('accueil')">Accueil</div>
+    <div class="tab" id="tab-recap" onclick="showTabRecap()">
+      Récapitulatif <span class="n" id="badgeArrivees">0</span>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-info">
+      <span id="lastUpdate">—</span>
+      <button class="btn-refresh" onclick="chargerDonnees()">↻</button>
+    </div>
+  </nav>
+</div>
+
+<main>
+
+  <!-- ═══ ACCUEIL ═══ -->
+  <div class="panel active" id="panel-accueil">
+
+    <div class="section">
+      <div class="section-head">Sélection du partenaire / atelier</div>
+      <div class="section-body">
+        <div class="select-wrap">
+          <select id="selEquipe" onchange="onEquipeChange()">
+            <option value="">— Choisir un atelier —</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div id="formAccueil" style="display:none">
+      <div class="section">
+        <div class="section-head">Statut d'arrivée</div>
+        <div class="section-body">
+          <div class="toggle-arrivee">
+            <button class="toggle-btn non" id="btnNon" onclick="setArrivee(false)">✕ Pas encore arrivé</button>
+            <button class="toggle-btn" id="btnOui" onclick="setArrivee(true)">✓ Arrivé</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head">Informations</div>
+        <div class="section-body">
+          <div class="field-wrap">
+            <div class="field-label">Nombre de personnes</div>
+            <input type="number" class="input-field" id="nbPersonnes" min="0" max="50" placeholder="0" style="max-width:160px;">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="btnSave" onclick="enregistrer()">✓ Enregistrer</button>
+        <button class="btn" onclick="annuler()">↺ Annuler</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ RÉCAPITULATIF ═══ -->
+  <div class="panel" id="panel-recap">
+
+    <div class="stats-bar" id="statsBar"></div>
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <input type="text" id="searchRecap" placeholder="Rechercher un partenaire…" oninput="filtrerRecap()">
+      </div>
+      <button class="filter-btn active" id="filter-tous" onclick="setFilter('tous')">Tous</button>
+      <button class="filter-btn" id="filter-arrivees" onclick="setFilter('arrivees')">✓ Arrivés</button>
+      <button class="filter-btn" id="filter-attente" onclick="setFilter('attente')">⏳ En attente</button>
+      
+      <span class="stat-pill" id="statRecap">— équipes</span>
+    </div>
+
+    <div class="tbl-wrap">
+      <div class="tbl-header">État d'accueil des partenaires <span class="tbl-cnt" id="cntRecap">0</span></div>
+      <div id="bodyRecap"><div style="padding:36px;text-align:center;color:var(--text3);font-style:italic">Chargement…</div></div>
+    </div>
+
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let equipesData  = [];
+let arriveeState = false;
+let currentFilter = 'tous';
+
+document.addEventListener('DOMContentLoaded', () => {
+  chargerDonnees();
+  setInterval(() => chargerDonnees(true), 30000);
+});
+
+async function chargerDonnees(silent = false) {
+  try {
+    const data = await apiGet('getAccueilPartenaires');
+    equipesData = data.data || [];
+
+    if (!silent) {
+      const sel  = document.getElementById('selEquipe');
+      const prev = sel.value;
+      sel.innerHTML = '<option value="">— Choisir un atelier —</option>';
+      equipesData.forEach(e => {
+        const o = document.createElement('option');
+        o.value = e.num;
+        const cd = e.classeDefense && e.classeDefense.toString().trim().toLowerCase() !== '' && e.classeDefense.toString().trim().toLowerCase() !== 'non' ? ' [CD]' : '';
+        o.textContent = e.num + ' — ' + e.nom + cd + '  ·  ' + e.etab;
+        if (e.arrive) o.style.color = 'var(--green)';
+        sel.appendChild(o);
+      });
+      if (prev) sel.value = prev;
+      document.getElementById('loadingOverlay').classList.add('hidden');
+    }
+
+    majBadge();
+    if (document.getElementById('panel-recap').classList.contains('active')) {
+      filtrerRecap();
+      majStats();
+    }
+
+    const now = new Date();
+    document.getElementById('lastUpdate').textContent =
+      'Actualisé à ' + now.getHours().toString().padStart(2,'0') + ':' +
+      now.getMinutes().toString().padStart(2,'0');
+
+  } catch(e) {
+    if (!silent) {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      toast('Erreur : ' + e.message, 'err');
+    }
+  }
+}
+
+function onEquipeChange() {
+  const num = document.getElementById('selEquipe').value;
+  const form = document.getElementById('formAccueil');
+  if (!num) { form.style.display = 'none'; return; }
+
+  const eq = equipesData.find(e => e.num === num);
+  form.style.display = 'block';
+
+  arriveeState = eq ? eq.arrive : false;
+  majToggle();
+
+  document.getElementById('nbPersonnes').value = eq && eq.nbPersonnes > 0 ? eq.nbPersonnes : '';
+  document.getElementById('infoNom').textContent = eq ? (eq.num + ' — ' + eq.nom) : '—';
+  document.getElementById('nomContact').value  = eq ? eq.nomContact : '';
+}
+
+function setArrivee(val) {
+  arriveeState = val;
+  majToggle();
+}
+
+function majToggle() {
+  const btnOui = document.getElementById('btnOui');
+  const btnNon = document.getElementById('btnNon');
+  if (arriveeState) {
+    btnOui.className = 'toggle-btn oui';
+    btnNon.className = 'toggle-btn non';
+  } else {
+    btnOui.className = 'toggle-btn';
+    btnNon.className = 'toggle-btn non';
+  }
+}
+
+async function enregistrer() {
+  const num = document.getElementById('selEquipe').value;
+  if (!num) return;
+
+  const btn = document.getElementById('btnSave');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Enregistrement…';
+
+  try {
+    const payload = {
+      id:          num,
+      arrive:      arriveeState,
+      nbPersonnes: Number(document.getElementById('nbPersonnes').value) || 0,
+      nomContact:  ''
+    };
+    const data = encodeURIComponent(JSON.stringify(payload));
+    const res  = await apiGet('saveAccueilPartenaire&data=' + data);
+
+    btn.disabled = false;
+    btn.innerHTML = '✓ Enregistrer';
+
+    if (res.success) {
+      // Mettre à jour localement
+      const idx = equipesData.findIndex(e => e.num === num);
+      if (idx >= 0) {
+        equipesData[idx].arrive      = arriveeState;
+        equipesData[idx].nbPersonnes = payload.nbPersonnes;
+        equipesData[idx].nomContact  = payload.nomContact;
+      }
+      toast(arriveeState ? '✓ Partenaire ' + num + ' marqué arrivé' : '✓ Mis à jour', 'ok');
+      majBadge();
+      // Mettre à jour la couleur dans le select
+      const opt = document.querySelector('#selEquipe option[value="' + num + '"]');
+      if (opt) opt.style.color = arriveeState ? 'var(--green)' : '';
+    } else {
+      toast('Erreur : ' + res.message, 'err');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = '✓ Enregistrer';
+    toast('Erreur réseau : ' + e.message, 'err');
+  }
+}
+
+function annuler() {
+  document.getElementById('selEquipe').value = '';
+  document.getElementById('formAccueil').style.display = 'none';
+}
+
+function majBadge() {
+  const n = equipesData.filter(e => e.arrive).length;
+  document.getElementById('badgeArrivees').textContent = n;
+}
+
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+function showTabRecap() {
+  showTab('recap');
+  majStats();
+  filtrerRecap();
+}
+
+function majStats() {
+  const total    = equipesData.length;
+  const arrivees = equipesData.filter(e => e.arrive).length;
+  const nbPers   = equipesData.reduce((s,e) => s + (e.arrive ? e.nbPersonnes : 0), 0);
+  const cd       = equipesData.filter(e => e.arrive && e.classeDefense && e.classeDefense.toString().trim().toLowerCase() !== '' && e.classeDefense.toString().trim().toLowerCase() !== 'non').length;
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-card"><div class="stat-card-label">Partenaires attendus</div><div class="stat-card-val">${total}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Arrivés</div><div class="stat-card-val green">${arrivees}</div></div>
+    <div class="stat-card"><div class="stat-card-label">En attente</div><div class="stat-card-val gold">${total - arrivees}</div></div>
+    <div class="stat-card"><div class="stat-card-label">Personnes arrivées</div><div class="stat-card-val">${nbPers}</div></div>
+    `;
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('filter-' + f).classList.add('active');
+  filtrerRecap();
+}
+
+function filtrerRecap() {
+  const search = document.getElementById('searchRecap').value.toLowerCase();
+  let data = equipesData.filter(e => {
+    const matchSearch = !search || e.num.includes(search) || e.nom.toLowerCase().includes(search) || e.etab.toLowerCase().includes(search);
+    const isCD = e.classeDefense && e.classeDefense.toString().trim().toLowerCase() !== '' && e.classeDefense.toString().trim().toLowerCase() !== 'non';
+    const matchFilter =
+      currentFilter === 'tous' ? true :
+      currentFilter === 'arrivees' ? e.arrive :
+      currentFilter === 'attente' ? !e.arrive :
+      currentFilter === 'cd' ? isCD : true;
+    return matchSearch && matchFilter;
+  });
+
+  document.getElementById('statRecap').textContent = data.length + ' équipe' + (data.length > 1 ? 's' : '');
+  document.getElementById('cntRecap').textContent = data.length;
+  renderRecap(data);
+  majStats();
+}
+
+function renderRecap(data) {
+  if (!data.length) {
+    document.getElementById('bodyRecap').innerHTML = '<div style="padding:36px;text-align:center;color:var(--text3);font-style:italic">Aucune équipe trouvée.</div>';
+    return;
+  }
+
+  let h = `<table><thead><tr>
+    <th>Équipe</th><th>Statut</th><th>Nb personnes</th><th>Contact</th><th>Heure</th>
+  </tr></thead><tbody>`;
+
+  data.forEach(e => {
+    h += `<tr>
+      <td>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="eq-num">${e.num}</span>
+        </div>
+        <div class="eq-nom">${e.nom}</div>
+        <div class="eq-etab">${e.etab}</div>
+      </td>
+      <td>${e.arrive ? '<span class="badge-oui">✓ Arrivé</span>' : '<span class="badge-non">⏳ En attente</span>'}</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;color:var(--navy)">${e.arrive && e.nbPersonnes > 0 ? e.nbPersonnes : '—'}</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${e.horodatage || '—'}</td>
+    </tr>`;
+  });
+
+  h += '</tbody></table>';
+  document.getElementById('bodyRecap').innerHTML = h;
+}
+
+async function apiGet(action) {
+  const res = await fetch(API_URL + '?action=' + action);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '');
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 3000);
+}
+</script>
+</body>
+</html>
