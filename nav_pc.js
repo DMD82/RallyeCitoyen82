@@ -4,13 +4,15 @@
 // ============================================================
 
 const NAV_PAGES = [
-  { href: '../index.html',       icon: '🏠', label: 'Accueil',       id: 'index'       },
-  { href: '../fil-rouge.html',   icon: '📋', label: 'Fil Rouge',     id: 'fil-rouge'   },
-  { href: '../bonus-malus.html', icon: '⚖️', label: 'Bonus / Malus', id: 'bonus-malus' },
-  { href: '../resultats.html',   icon: '📊', label: 'Résultats',     id: 'resultats'   },
-  { href: '../classement.html',  icon: '🏆', label: 'Classement',    id: 'classement'  },
-  { href: '../passages.html',    icon: '📍', label: 'Passages',      id: 'passages'    },
-  { href: '../admin.html',       icon: '⚙️', label: 'Admin',          id: 'admin'       },
+  { href: 'index.html',              icon: '🏠', label: 'Accueil',       id: 'index'              },
+  { href: 'fil-rouge.html',          icon: '📋', label: 'Fil Rouge',     id: 'fil-rouge'          },
+  { href: 'bonus-malus.html',        icon: '⚖️', label: 'Bonus / Malus', id: 'bonus-malus'        },
+  { href: 'resultats.html',          icon: '📊', label: 'Résultats',     id: 'resultats'          },
+  { href: 'classement.html',         icon: '🏆', label: 'Classement',    id: 'classement'         },
+  { href: 'passages.html',           icon: '📍', label: 'Passages',      id: 'passages'           },
+  { href: 'accueil-equipes.html',    icon: '👥', label: 'Accueil Éq.',   id: 'accueil-equipes'    },
+  { href: 'accueil-partenaires.html',icon: '🤝', label: 'Accueil Part.', id: 'accueil-partenaires'},
+  { href: 'admin.html',              icon: '⚙️', label: 'Admin',         id: 'admin'              },
 ];
 
 function getCurrentPage() {
