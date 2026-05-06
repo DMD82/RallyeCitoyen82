@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Notation — Rallye Citoyen 2026</title>
-<script src="PC/config.js"></script>
+<script src="config.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
@@ -430,7 +430,7 @@ function renderAteliers(data) {
       <td><span class="moy-chip">${a.moyenneNote} / 10</span></td>
       <td><span class="moy-chip" style="background:var(--green-lt);color:var(--green)">${a.moyenneComport || '—'} / 5</span></td></tr>`;
     const eq = [...a.equipes].sort((x,y) => y.note - x.note);
-    h += `<tr class="detail-row" id="detail-${id}"><td colspan="3" style="padding:0;">
+    h += `<tr class="detail-row" id="detail-${id}"><td colspan="4" style="padding:0;">
       <div class="detail-inner"><table><thead><tr>
         <th style="text-align:left">N°</th><th style="text-align:left">Équipe</th>
         <th style="text-align:left">Établissement</th>
@@ -516,7 +516,7 @@ function renderEquipes(data) {
       <td><span class="moy-chip">${moy} / 10</span></td>
       <td><span class="moy-chip" style="background:var(--green-lt);color:var(--green)">${moyC} / 5</span></td></tr>`;
     const at = [...e.ateliers].sort((a,b)=>parseInt(a.numAtelier)-parseInt(b.numAtelier));
-    h += `<tr class="detail-row" id="detail-${id}"><td colspan="3" style="padding:0;">
+    h += `<tr class="detail-row" id="detail-${id}"><td colspan="4" style="padding:0;">
       <div class="detail-inner"><table><thead><tr>
         <th style="text-align:left">N° atelier</th><th style="text-align:left">Nom atelier</th>
         <th style="text-align:center">Note</th><th style="text-align:center">Comportement</th>
@@ -543,7 +543,7 @@ function showTab(name) {
   document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
   document.getElementById('tab-'+name).classList.add('active');
-  if (name === 'equipes' && !equipesView.length) { buildEquipesData(); filtrerEquipes(); }
+  if (name === 'equipes') { buildEquipesData(); filtrerEquipes(); }
   if (name === 'ateliers') filtrerAteliers();
 }
 
