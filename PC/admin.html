@@ -259,7 +259,7 @@ async function lancer(action, params = {}) {
     if (action === 'lancerImport') endpoint = 'lancerImport';
     if (action === 'lancerCalcul') endpoint = 'lancerCalcul';
     if (action === 'updateFilRouge') endpoint = 'adminAction';
-    const url = API_URL + '?action=' + endpoint + '&data=' + encodeURIComponent(JSON.stringify(payload));
+    const url = API_NOTATION_URL + '?action=' + endpoint + '&data=' + encodeURIComponent(JSON.stringify(payload));
     const res  = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
