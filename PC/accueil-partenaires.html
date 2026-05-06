@@ -233,8 +233,7 @@ async function chargerDonnees(silent = false) {
       equipesData.forEach(e => {
         const o    = document.createElement('option');
         o.value    = e.num;
-        const cd   = isCD(e) ? ' [CD]' : '';
-        o.textContent = e.num + ' — ' + e.nom + cd + '  ·  ' + e.etab;
+        o.textContent = e.num + ' — ' + e.nom;
         if (e.presence) o.style.color = 'var(--green)';
         sel.appendChild(o);
       });
