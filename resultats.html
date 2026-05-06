@@ -109,6 +109,15 @@
 
   .nb-chip { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text3); }
 
+  /* ── BADGE DOUBLON ── */
+  .doublon-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #fff3cd; border: 1px solid #f5c842;
+    color: #856404; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600;
+    padding: 2px 8px; cursor: help; letter-spacing: .04em;
+  }
+
   .cd-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: rgba(26,39,68,0.1); color: var(--navy); margin-left: 4px; }
 
   /* Barre de progression pour les ateliers */
@@ -306,6 +315,7 @@ function renderTable() {
       <th onclick="trier('totalGlobal')" class="${thClass('totalGlobal')}">Total brut</th>
       <th onclick="trier('notePonderee')" class="${thClass('notePonderee')}">Note pondérée</th>
       <th onclick="trier('nbAteliers')" class="${thClass('nbAteliers')}">Nb ateliers</th>
+      <th title="Équipe notée deux fois au même atelier">⚠</th>
     </tr></thead><tbody>`;
 
   resultatsAffiches.forEach(r => {
@@ -336,6 +346,7 @@ function renderTable() {
       <td><span class="score-cell total">${r.totalGlobal}</span></td>
       <td><span class="pond-chip">${r.notePonderee}</span></td>
       <td><span class="nb-chip">${r.nbAteliers}</span></td>
+      <td>${r.doublons > 0 ? `<span class="doublon-badge" title="${r.doublons} doublon(s) détecté(s) — même atelier noté deux fois">⚠ ${r.doublons}</span>` : ''}</td>
     </tr>`;
   });
 
