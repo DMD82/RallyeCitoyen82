@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -221,6 +220,15 @@ async function chargerDonnees(silent = false) {
   try {
     const data = await apiGet('getAccueilPartenaires');
     equipesData = data.data || [];
+
+    if (!silent && equipesData.length === 0) {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      if (confirm('Les données partenaires ne sont pas encore initialisées.\nVoulez-vous les créer maintenant ?')) {
+        await apiGet('initAccueil');
+        const data2 = await apiGet('getAccueilPartenaires');
+        equipesData = data2.data || [];
+      }
+    }
 
     if (!silent) {
       const sel  = document.getElementById('selEquipe');
