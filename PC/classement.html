@@ -366,9 +366,10 @@ function renderComplet(data) {
     <th>Rang</th>
     <th style="text-align:left">Équipe</th>
     <th>Note pondérée</th>
+    <th>Note globale</th>
     <th>Ateliers</th>
     <th>Fil Rouge</th>
-    <th>Comport.</th>
+    <th>Comport. global</th>
     <th>Total comport.</th>
     <th>Nb ateliers</th>
   </tr></thead><tbody>`;
@@ -397,9 +398,11 @@ function renderComplet(data) {
         <div class="eq-etab">${e.etab}</div>
       </td>
       <td><span class="pond-chip ${e.rang===1?'or':e.rang===2?'argent':e.rang===3?'bronze':''}">${e.notePonderee}</span></td>
+      <td style="text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--text2)">${e.totalGlobal || '—'}</td>
       <td><span class="score-cell" style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.totalAtelier}</span></td>
       <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:#6b2f8a">${e.filRouge}</span></td>
-      <td><span class="comport-chip">${e.comportement}</span></td>
+      <td><span class="comport-chip">${e.comportGlobal || e.comportement}</span></td>
+      <td style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2)">${e.totalComportement || '—'}</td>
       <td><span class="nb-chip">${e.nbAteliers}</span></td>
     </tr>`;
   });
