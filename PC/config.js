@@ -7,7 +7,7 @@
 //    à jour la valeur ci-dessous et commitez sur GitHub.
 // ============================================================
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbxr45oLcjGwKZ7anZGd62aWJoei-N-U5TKwrh3Oo8h83Id0lqe0pcWkXGoy0jM6Pg6C/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzPgyLHy0yNOAzqAHw-YYLdfyLUKfRV6dtv1tZ3wV7zxVwIaF94O-cy_YxZj6Vd4bVn/exec';
 
 const API_NOTATION_URL = 'https://script.google.com/macros/s/AKfycbywQe86_W0Tw7XG65TEul7TsMRnlH92h_hfmeufiSTPBD4Kjb5nI1U9ONNepvOecuYjlQ/exec';
 
