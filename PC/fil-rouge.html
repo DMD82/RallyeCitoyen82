@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fil Rouge — Rallye Citoyen 2026</title>
-<script src="config.js"></script>
-<script src="nav.js"></script>
+<script src="../config.js"></script>
+<script src="../nav_pc.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
@@ -62,19 +62,19 @@
   
 
   /* ── NAV ── */
-  .nav-wrap > nav {
-  background: var(--white);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  padding: 0 20px;
-  max-width: 780px;
-  margin: 0 auto;
-  width: 100%;
-}
+  nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    padding: 0 20px;
+    max-width: 780px;
+    margin: 0 auto;
+    width: 100%;
+  }
 
   /* Trick pour étendre la bordure full width */
   .nav-wrap {
-    background: var(--white);
+    background: var(--bg2);
     border-bottom: 1px solid var(--border);
   }
 
@@ -508,7 +508,7 @@
   .loading-overlay {
     position: fixed; inset: 0;
     background: var(--bg);
-    z-index: 300;
+    z-index: 1000;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center; gap: 16px;
   }
@@ -532,9 +532,13 @@
 
 <!-- Écran de chargement -->
 <div class="loading-overlay" id="loadingOverlay">
-  <img src="LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
-  <div class="spin-dark"></div>
-  <div class="loading-txt">Chargement des équipes…</div>
+  <img src="../LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
+  <div class="spin-dark" id="loadingSpinner"></div>
+  <div class="loading-txt" id="loadingTxt">Chargement des équipes…</div>
+  <button id="loadingRetry" onclick="chargerDonnees()"
+    style="display:none;margin-top:8px;padding:8px 20px;background:var(--navy);color:white;border:none;border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;letter-spacing:.06em;">
+    ↺ Réessayer
+  </button>
 </div>
 
 <!-- Header -->
@@ -658,6 +662,9 @@
 <div class="toast" id="toast"></div>
 
 <script>
+if (typeof MDP_RESET === 'undefined') {
+  var MDP_RESET = 'SemperParatiDMD82!';
+}
 // ⚠️ METTRE À JOUR AVEC L'URL DE VOTRE DÉPLOIEMENT APPS SCRIPT
 const REP_OFF = [
   "B","B","C","C","B","C",
@@ -755,8 +762,10 @@ async function chargerDonnees(silent = false) {
       renderReponses();
     }
 
-    if (!silent) {
-      document.getElementById('loadingOverlay').classList.add('hidden');
+    // Masquer l'overlay dans TOUS les cas (silent ou non) au premier chargement
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay && !overlay.classList.contains('hidden')) {
+      overlay.classList.add('hidden');
     }
 
     // Indicateur discret de dernière actualisation
@@ -768,8 +777,11 @@ async function chargerDonnees(silent = false) {
 
   } catch (e) {
     if (!silent) {
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      toast('Erreur de chargement : ' + e.message, 'err');
+      // Afficher l'erreur dans l'overlay plutôt que de le masquer
+      document.getElementById('loadingSpinner').style.display = 'none';
+      document.getElementById('loadingTxt').textContent = '⚠ ' + e.message;
+      document.getElementById('loadingTxt').style.color = '#e07070';
+      document.getElementById('loadingRetry').style.display = 'block';
     }
   }
 }
@@ -1140,10 +1152,23 @@ function annulerReset() {
   resetCible = null;
 }
 
+function toggleVoirMdpReset() {
+  const input = document.getElementById('resetMdp');
+  const btn   = document.getElementById('btnVoirReset');
+  if (!input || !btn) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.style.color = 'var(--navy)';
+  } else {
+    input.type = 'password';
+    btn.style.color = 'var(--text3)';
+  }
+}
+
 async function confirmerReset() {
   const mdp = document.getElementById('resetMdp').value.trim();
   if (!mdp) {
-    document.getElementById('resetErreur').textContent = 'Veuillez saisir le mot de passe.';
+    document.getElementById('resetErreur').textContent = '⚠ Veuillez saisir le mot de passe.';
     return;
   }
 
@@ -1237,9 +1262,16 @@ function toast(msg, type) {
     <div class="modal-title" style="color:var(--red)">⚠ Réinitialisation globale</div>
     <div class="modal-body" id="modalResetTxt"></div>
     <div style="margin-bottom:16px">
-      <input type="password" id="resetMdp" placeholder="Mot de passe…"
-        style="width:100%;padding:10px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);background:var(--bg);transition:border-color .15s;"
-        onkeydown="if(event.key==='Enter')confirmerReset()">
+      <div style="position:relative;">
+        <input type="password" id="resetMdp" placeholder="Mot de passe…"
+          style="width:100%;padding:10px 44px 10px 14px;border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);background:var(--bg);transition:border-color .15s;"
+          onkeydown="if(event.key==='Enter')confirmerReset()">
+        <button onclick="toggleVoirMdpReset()" type="button"
+          style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text3);padding:4px;display:flex;align-items:center;"
+          id="btnVoirReset" title="Afficher/masquer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
       <div id="resetErreur" style="color:var(--red);font-size:12px;margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;"></div>
     </div>
     <div class="modal-actions">
