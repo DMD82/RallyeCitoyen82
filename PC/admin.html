@@ -67,7 +67,7 @@
 
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
-    <img src="LogoRC2026.png" class="login-logo" alt="" onerror="this.style.display='none'">
+    <img src="../LogoRC2026.png" class="login-logo" alt="" onerror="this.style.display='none'">
     <div class="login-title">Administration</div>
     <div class="login-sub">Accès restreint · Rallye Citoyen 2026</div>
     <div style="position:relative;">
@@ -109,19 +109,19 @@
           <div class="card-icon">📥</div>
           <div class="card-title">Importer les notes</div>
           <div class="card-desc">Lit tous les formulaires et peuple "Note par Atelier". Durée : ~2-3 min selon le nombre d'ateliers.</div>
-          <button class="btn primary" onclick="lancer('adminAction', {action:'importAtelierData'})">▶ Importer</button>
+          <button class="btn primary" onclick="lancerNotation('importAtelierData')">▶ Importer</button>
         </div>
         <div class="action-card">
           <div class="card-icon">➕</div>
           <div class="card-title">Calculer les totaux</div>
           <div class="card-desc">Calcule les scores pondérés depuis "Note par Atelier" + Fil Rouge. Peuple "Somme des Notes".</div>
-          <button class="btn primary" onclick="lancer('adminAction', {action:'calculateSumsAndAverages'})">▶ Calculer</button>
+          <button class="btn primary" onclick="lancerNotation('calculateSumsAndAverages')">▶ Calculer</button>
         </div>
         <div class="action-card">
           <div class="card-icon">🏆</div>
           <div class="card-title">Générer le classement</div>
           <div class="card-desc">Construit le classement final depuis "Somme des Notes". Peuple l'onglet "Classement".</div>
-          <button class="btn primary" onclick="lancer('adminAction', {action:'generateClassement'})">▶ Générer</button>
+          <button class="btn primary" onclick="lancerNotation('generateClassement')">▶ Générer</button>
         </div>
         <div class="action-card">
           <div class="card-icon">▶️</div>
@@ -135,6 +135,12 @@
     <div class="admin-section">
       <div class="admin-section-title">🔁 Mises à jour</div>
       <div class="cards-grid">
+        <div class="action-card">
+          <div class="card-icon">🆕</div>
+          <div class="card-title">Initialiser l'accueil</div>
+          <div class="card-desc">Crée les onglets "Accueil Equipes" et "Accueil Partenaires" dans le Spreadsheet et les pré-remplit. À faire une seule fois.</div>
+          <button class="btn primary" onclick="lancer('adminAction', {action:'initAccueil'})">▶ Initialiser</button>
+        </div>
         <div class="action-card">
           <div class="card-icon">🚩</div>
           <div class="card-title">Mettre à jour le Fil Rouge</div>
@@ -308,11 +314,32 @@ async function lancerTraitementComplet() {
 }
 
 async function lancerAction_(action) {
-  const payload = { action, motDePasse: getMdpAdmin() };
-  const url = API_URL + '?action=adminAction&data=' + encodeURIComponent(JSON.stringify(payload));
+  // Appelle API_NOTATION_URL (projet "Notation Rallye Citoyen 2026")
+  if (typeof API_NOTATION_URL === 'undefined' || API_NOTATION_URL.includes('REMPLACER')) {
+    return { success: false, message: 'API_NOTATION_URL non configurée dans config.js' };
+  }
+  const url = API_NOTATION_URL + '?action=' + action + '&mdp=' + encodeURIComponent(getMdpAdmin());
   const res  = await fetch(url);
   if (!res.ok) throw new Error('HTTP ' + res.status);
   return res.json();
+}
+
+async function lancerNotation(action) {
+  if (!authenticated) return;
+  log('▶ ' + action + '…', 'info');
+  try {
+    const r = await lancerAction_(action);
+    if (r.success) {
+      log('✓ ' + (r.message || action + ' terminé'), '');
+      toast('✓ ' + (r.message || action), 'ok');
+    } else {
+      log('✗ ' + r.message, 'err');
+      toast('❌ ' + r.message, 'err');
+    }
+  } catch(e) {
+    log('✗ Erreur : ' + e.message, 'err');
+    toast('Erreur : ' + e.message, 'err');
+  }
 }
 
 async function lancerTraitementNotation() {
