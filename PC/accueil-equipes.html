@@ -166,9 +166,9 @@
           <div class="field-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
             <div>
               <div class="field-label">Classe de Défense</div>
-              <div style="position:relative">
-                <select class="cd-select" id="cdSelect"></select>
-                <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none">▾</span>
+              <div style="display:flex;gap:8px;margin-top:4px">
+                <button class="t-btn" id="cd-oui" onclick="setCD('OUI')" style="flex:1;padding:10px">🎖 CD</button>
+                <button class="t-btn" id="cd-non" onclick="setCD('NON')" style="flex:1;padding:10px">Pas CD</button>
               </div>
             </div>
             <div>
@@ -225,22 +225,12 @@
 <div class="toast" id="toast"></div>
 
 <script>
-// Liste des classes de défense possibles — à adapter selon votre contexte
-const CD_OPTIONS = ['', '3ème', '2nde', '1ère', 'Terminale'];
-
 let equipesData   = [];
 let presenceState = 'NON';
+let cdState = 'NON';
 let currentFilter = 'tous';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Remplir le select CD
-  const cdSel = document.getElementById('cdSelect');
-  CD_OPTIONS.forEach(v => {
-    const o = document.createElement('option');
-    o.value = v; o.textContent = v || '— Aucune CD —';
-    cdSel.appendChild(o);
-  });
-
   chargerDonnees();
   setInterval(() => chargerDonnees(true), 30000);
 });
@@ -284,7 +274,7 @@ async function chargerDonnees(silent = false) {
 
 function isCD(e) {
   const cd = (e.classeDefense || '').toString().trim().toLowerCase();
-  return cd !== '' && cd !== 'non' && cd !== 'pas encore' && cd !== 'aucune cd' && cd !== '— aucune cd —';
+  return cd !== '' && cd !== 'non' && cd !== 'pas encore';
 }
 
 function onEquipeChange(silent = false) {
@@ -298,11 +288,8 @@ function onEquipeChange(silent = false) {
   majToggle();
 
   // Remplir les champs
-  const cdSel = document.getElementById('cdSelect');
-  const cdVal = (e.classeDefense || '').toString().trim();
-  // Chercher option correspondante
-  const opt = Array.from(cdSel.options).find(o => o.value === cdVal || cdVal.toLowerCase().includes(o.value.toLowerCase()));
-  cdSel.value = opt ? opt.value : '';
+  const cdVal = isCD(e) ? 'OUI' : 'NON';
+  setCD(cdVal, true);
 
   document.getElementById('effectifsField').value = e && e.effectifs > 0 ? e.effectifs : '';
 
@@ -332,6 +319,17 @@ function majToggle() {
   if (btn) btn.classList.add('sel');
 }
 
+function setCD(val, silent = false) {
+  cdState = val;
+  const btnOui = document.getElementById('cd-oui');
+  const btnNon = document.getElementById('cd-non');
+  if (!btnOui || !btnNon) return;
+  btnOui.classList.remove('sel');
+  btnNon.classList.remove('sel');
+  if (val === 'OUI') btnOui.classList.add('sel');
+  else btnNon.classList.add('sel');
+}
+
 async function enregistrer() {
   const num = document.getElementById('selEquipe').value;
   if (!num) return;
@@ -342,7 +340,7 @@ async function enregistrer() {
     const payload = {
       id:           num,
       presence:     presenceState,
-      classeDefense:document.getElementById('cdSelect').value,
+      classeDefense:cdState === 'OUI' ? 'Classe de Défense' : 'NON',
       effectifs:    Number(document.getElementById('effectifsField').value) || 0
     };
     const res = await apiGet('saveAccueilEquipe&data=' + encodeURIComponent(JSON.stringify(payload)));
