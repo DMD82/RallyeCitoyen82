@@ -139,6 +139,20 @@
   .toast.on { transform: translateX(-50%) translateY(0); }
   .toast.err { background: var(--red); }
   .toast.wrn { background: var(--gold); color: var(--navy); }
+
+  /* Détail dépliable */
+  .row-main { cursor: pointer; }
+  .row-main:hover td { background: #eef0f8 !important; }
+  .row-main.open td { background: #e8edf5 !important; }
+  .toggle-icon { display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;background:var(--bg2);border:1px solid var(--border);font-size:9px;font-weight:700;color:var(--text3);transition:all .2s;font-family:monospace;margin-right:6px;flex-shrink:0; }
+  .row-main.open .toggle-icon { background:var(--navy);color:white;border-color:var(--navy); }
+  .row-detail { display:none; }
+  .row-detail.visible { display:table-row; }
+  .detail-inner { background:#f8f9fd; border-top:1px solid var(--border); padding:12px 16px; }
+  .detail-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px; }
+  .detail-item { background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px; }
+  .detail-item-label { font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:3px; }
+  .detail-item-val { font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:14px;color:var(--navy); }
 </style>
 </head>
 <body>
@@ -308,6 +322,7 @@ function renderTable() {
 
   let h = `<table>
     <thead><tr>
+      <th style="width:30px"></th>
       <th onclick="trier('num')" class="${thClass('num')}">Équipe</th>
       <th onclick="trier('totalAtelier')" class="${thClass('totalAtelier')}">Ateliers</th>
       <th onclick="trier('filRouge')" class="${thClass('filRouge')}">Fil Rouge</th>
@@ -326,11 +341,13 @@ function renderTable() {
 
     const pct = Math.round((r.totalAtelier / maxAtelier) * 100);
 
-    h += `<tr>
+    const rid = 'r' + r.num;
+    h += `<tr class="row-main" id="row-${rid}" onclick="toggleDetail('${rid}',this)">
+      <td><span class="toggle-icon" id="icon-${rid}">▶</span></td>
       <td>
         <div style="display:flex;align-items:center;gap:6px">
           <span class="eq-num">${r.num}</span>
-          ${estCD ? `<span class="cd-badge">CD</span>` : ''}
+          ${estCD ? '<span class="cd-badge">CD</span>' : ''}
         </div>
         <div class="eq-nom">${r.nom}</div>
         <div class="eq-etab">${r.etab}</div>
@@ -346,12 +363,36 @@ function renderTable() {
       <td><span class="score-cell total">${r.totalGlobal}</span></td>
       <td><span class="pond-chip">${r.notePonderee}</span></td>
       <td><span class="nb-chip">${r.nbAteliers}</span></td>
-      <td>${r.doublons > 0 ? `<span class="doublon-badge" title="${r.doublons} doublon(s) détecté(s) — même atelier noté deux fois">⚠ ${r.doublons}</span>` : ''}</td>
-    </tr>`;
+      <td>${r.doublons > 0 ? '<span class="doublon-badge" title="' + r.doublons + ' doublon(s)">⚠ ' + r.doublons + '</span>' : ''}</td>
+    </tr>
+    <tr class="row-detail" id="detail-${rid}"><td colspan="9" style="padding:0">
+      <div class="detail-inner">
+        <div class="detail-grid">
+          <div class="detail-item"><div class="detail-item-label">Note ateliers</div><div class="detail-item-val">${r.totalAtelier}</div></div>
+          <div class="detail-item"><div class="detail-item-label">Comport. ateliers</div><div class="detail-item-val">${r.comportAtelier}</div></div>
+          <div class="detail-item"><div class="detail-item-label">Fil Rouge</div><div class="detail-item-val">${r.filRouge} / 30</div></div>
+          <div class="detail-item"><div class="detail-item-label">Comport. global</div><div class="detail-item-val">${r.comportGlobal}</div></div>
+          <div class="detail-item"><div class="detail-item-label">Total comportement</div><div class="detail-item-val">${r.totalComportement}</div></div>
+          <div class="detail-item"><div class="detail-item-label">Total global</div><div class="detail-item-val">${r.totalGlobal}</div></div>
+          <div class="detail-item"><div class="detail-item-label">Note pondérée</div><div class="detail-item-val" style="color:var(--gold)">${r.notePonderee}</div></div>
+          <div class="detail-item"><div class="detail-item-label">Nb ateliers</div><div class="detail-item-val">${r.nbAteliers}</div></div>
+        </div>
+      </div>
+    </td></tr>`;
   });
 
   h += '</tbody></table>';
   body.innerHTML = h;
+}
+
+function toggleDetail(id, row) {
+  const d = document.getElementById('detail-' + id);
+  const i = document.getElementById('icon-' + id);
+  if (d.classList.contains('visible')) {
+    d.classList.remove('visible'); i.textContent = '▶'; row.classList.remove('open');
+  } else {
+    d.classList.add('visible'); i.textContent = '▼'; row.classList.add('open');
+  }
 }
 
 async function apiGet(action) {
