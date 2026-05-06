@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Accueil Partenaires — Rallye Citoyen 2026</title>
+<title>Accueil Équipes — Rallye Citoyen 2026</title>
 <script src="config.js"></script>
 <script src="nav.js"></script>
 <style>
@@ -143,11 +143,11 @@
   <div class="panel active" id="panel-accueil">
 
     <div class="section">
-      <div class="section-head">Sélection du partenaire / atelier</div>
+      <div class="section-head">Sélection de l'équipe</div>
       <div class="section-body">
         <div class="select-wrap">
           <select id="selEquipe" onchange="onEquipeChange()">
-            <option value="">— Choisir un atelier —</option>
+            <option value="">— Choisir une équipe —</option>
           </select>
         </div>
       </div>
@@ -158,20 +158,10 @@
       <div class="equipe-info" id="equipeInfo"></div>
 
       <div class="section">
-        <div class="section-head">Nombre de personnes</div>
-        <div class="section-body">
-          <div style="margin-bottom:12px">
-            <div class="field-label">Nombre</div>
-            <input type="number" class="input-field" id="nbPersonnes" min="0" max="50" placeholder="0" style="max-width:140px">
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
         <div class="section-head">Présence</div>
         <div class="section-body">
           <div class="toggle-presence">
-            <button class="toggle-btn non" id="btnNon" onclick="setPresence(false)">✕ Pas encore arrivé</button>
+            <button class="toggle-btn non" id="btnNon" onclick="setPresence(false)">✕ Pas encore arrivée</button>
             <button class="toggle-btn oui" id="btnOui" onclick="setPresence(true)">✓ Arrivée</button>
           </div>
         </div>
@@ -192,16 +182,16 @@
 
     <div class="toolbar">
       <div class="search-wrap">
-        <input type="text" id="searchRecap" placeholder="Rechercher un partenaire…" oninput="filtrerRecap()">
+        <input type="text" id="searchRecap" placeholder="Rechercher…" oninput="filtrerRecap()">
       </div>
       <button class="filter-btn active" id="f-tous" onclick="setFilter('tous')">Tous</button>
-      <button class="filter-btn" id="f-arrivees" onclick="setFilter('arrivees')">✓ Arrivés</button>
+      <button class="filter-btn" id="f-arrivees" onclick="setFilter('arrivees')">✓ Arrivées</button>
       <button class="filter-btn" id="f-attente" onclick="setFilter('attente')">⏳ En attente</button>
-
+      <button class="filter-btn" id="f-cd" onclick="setFilter('cd')">🎖 CD</button>
     </div>
 
     <div class="tbl-wrap">
-      <div class="tbl-head">Partenaires <span class="tbl-cnt" id="cntRecap">0</span></div>
+      <div class="tbl-head">Équipes <span class="tbl-cnt" id="cntRecap">0</span></div>
       <div id="bodyRecap"></div>
     </div>
 
@@ -223,13 +213,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function chargerDonnees(silent = false) {
   try {
-    const data = await apiGet('getAccueilPartenaires');
+    const data = await apiGet('getAccueilEquipes');
     equipesData = data.data || [];
 
     if (!silent) {
       const sel  = document.getElementById('selEquipe');
       const prev = sel.value;
-      sel.innerHTML = '<option value="">— Choisir un atelier —</option>';
+      sel.innerHTML = '<option value="">— Choisir une équipe —</option>';
       equipesData.forEach(e => {
         const o    = document.createElement('option');
         o.value    = e.num;
@@ -274,7 +264,7 @@ function onEquipeChange(silentUpdate = false) {
   presenceState = e ? e.presence : false;
   majToggle();
 
-  // Infos partenaire
+  // Infos équipe
   const cd = isCD(e);
   document.getElementById('equipeInfo').innerHTML = `
     <div class="equipe-info-nom">${e.num} — ${e.nom}</div>
@@ -306,9 +296,8 @@ async function enregistrer() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span> Enregistrement…';
   try {
-    const nombre = Number(document.getElementById('nbPersonnes').value) || 0;
-    const payload = { id: num, presence: presenceState, nombre };
-    const res = await apiGet('saveAccueilPartenaire&data=' + encodeURIComponent(JSON.stringify(payload)));
+    const payload = { id: num, presence: presenceState };
+    const res = await apiGet('saveAccueilEquipe&data=' + encodeURIComponent(JSON.stringify(payload)));
     btn.disabled = false;
     btn.innerHTML = '✓ Enregistrer';
     if (res.success) {
@@ -318,7 +307,7 @@ async function enregistrer() {
       majBadge();
       const opt = document.querySelector('#selEquipe option[value="' + num + '"]');
       if (opt) opt.style.color = presenceState ? 'var(--green)' : '';
-      // Passer à l'partenaire suivante automatiquement
+      // Passer à l'équipe suivante automatiquement
       setTimeout(() => {
         const sel = document.getElementById('selEquipe');
         const idx2 = Array.from(sel.options).findIndex(o => o.value === num);
@@ -364,9 +353,9 @@ function majStats() {
   const cds      = equipesData.filter(e => e.presence && isCD(e)).length;
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-card"><div class="stat-label">Attendues</div><div class="stat-val">${total}</div></div>
-    <div class="stat-card"><div class="stat-label">Arrivés</div><div class="stat-val green">${arrivees}</div></div>
+    <div class="stat-card"><div class="stat-label">Arrivées</div><div class="stat-val green">${arrivees}</div></div>
     <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-val orange">${total - arrivees}</div></div>
-    <div class="stat-card"><div class="stat-label">CD arrivés</div><div class="stat-val">${cds}</div></div>`;
+    <div class="stat-card"><div class="stat-label">CD arrivées</div><div class="stat-val">${cds}</div></div>`;
 }
 
 function setFilter(f) {
@@ -383,22 +372,22 @@ function filtrerRecap() {
     const mf = currentFilter === 'tous' ? true :
                currentFilter === 'arrivees' ? e.presence :
                currentFilter === 'attente' ? !e.presence :
-               true;
+               currentFilter === 'cd' ? isCD(e) : true;
     return ms && mf;
   });
   document.getElementById('cntRecap').textContent = data.length;
   if (!data.length) {
-    document.getElementById('bodyRecap').innerHTML = '<div style="padding:36px;text-align:center;color:var(--text3);font-style:italic">Aucune partenaire.</div>';
+    document.getElementById('bodyRecap').innerHTML = '<div style="padding:36px;text-align:center;color:var(--text3);font-style:italic">Aucune équipe.</div>';
     return;
   }
-  let h = `<table><thead><tr><th>N°</th><th>Partenaire</th><th>Nb personnes</th><th>Statut</th><th>Heure</th></tr></thead><tbody>`;
+  let h = `<table><thead><tr><th>N°</th><th>Équipe</th><th>Établissement</th><th>Statut</th><th>Heure</th></tr></thead><tbody>`;
   data.forEach(e => {
     const cd = isCD(e);
     h += `<tr onclick="selectionnerEquipe('${e.num}')">
       <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.num}</span>${cd ? '<span class="badge-cd-sm">CD</span>' : ''}</td>
       <td style="font-weight:600">${e.nom}</td>
       <td style="color:var(--text3);font-size:12px">${e.etab}</td>
-      <td>${e.presence ? '<span class="badge-oui">✓ Arrivé</span>' : '<span class="badge-non">⏳ Attente</span>'}</td>
+      <td>${e.presence ? '<span class="badge-oui">✓ Arrivée</span>' : '<span class="badge-non">⏳ Attente</span>'}</td>
       <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${e.heureArrivee || '—'}</td>
     </tr>`;
   });
