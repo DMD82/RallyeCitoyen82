@@ -123,6 +123,18 @@
     </div>
 
     <div class="admin-section">
+      <div class="admin-section-title">🔁 Mises à jour</div>
+      <div class="cards-grid">
+        <div class="action-card">
+          <div class="card-icon">🚩</div>
+          <div class="card-title">Mettre à jour le Fil Rouge</div>
+          <div class="card-desc">Synchronise les noms et établissements des équipes dans les onglets Fil Rouge et Saisie Fil Rouge. À faire avant le jour J.</div>
+          <button class="btn primary" onclick="lancer('updateFilRouge', {})">▶ Mettre à jour</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-section">
       <div class="admin-section-title">🧹 Réinitialisations</div>
       <div class="cards-grid">
         <div class="action-card danger">
@@ -230,6 +242,7 @@ async function lancer(action, params = {}) {
     if (action === 'resetNoteParAtelier') endpoint = 'resetNoteParAtelier';
     if (action === 'lancerImport') endpoint = 'lancerImport';
     if (action === 'lancerCalcul') endpoint = 'lancerCalcul';
+    if (action === 'updateFilRouge') endpoint = 'adminAction';
     const url = API_URL + '?action=' + endpoint + '&data=' + encodeURIComponent(JSON.stringify(payload));
     const res  = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
