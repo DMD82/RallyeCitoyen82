@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Accueil Équipes — Rallye Citoyen 2026</title>
-<script src="../config.js"></script>
-<script src="../nav_pc.js"></script>
+<script src="config.js"></script>
+<script src="nav.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
   :root {
@@ -233,14 +233,11 @@ async function chargerDonnees(silent = false) {
     const data = await apiGet('getAccueilEquipes');
     equipesData = data.data || [];
 
-    // Si vide → proposer l'initialisation
+    // Si vide → message d'erreur clair
     if (!silent && equipesData.length === 0) {
       document.getElementById('loadingOverlay').classList.add('hidden');
-      if (confirm('Les données d'accueil ne sont pas encore initialisées.\nVoulez-vous les créer maintenant depuis l'onglet Equipes ?')) {
-        await apiGet('initAccueil');
-        const data2 = await apiGet('getAccueilEquipes');
-        equipesData = data2.data || [];
-      }
+      toast('Onglet non initialisé — lancez "Initialiser l'accueil" depuis Admin', 'err');
+      return;
     }
 
     if (!silent) {
