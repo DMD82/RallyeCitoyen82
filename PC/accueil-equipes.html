@@ -11,7 +11,8 @@
   :root {
     --navy:#1a2744;--navy-lt:#243358;--gold:#b8932a;--gold-lt:#f5ead4;--gold-mid:#e8d090;
     --bg:#f2f0eb;--bg2:#e8e5de;--white:#fff;--text:#1a1e2e;--text2:#4a5068;--text3:#8a90a8;
-    --border:#dcd8ce;--border2:#c8c4b8;--green:#1a5a32;--green-lt:#e8f5ed;--red:#8b1a1a;--red-lt:#f5e8e8;
+    --border:#dcd8ce;--border2:#c8c4b8;--green:#1a5a32;--green-lt:#e8f5ed;
+    --red:#8b1a1a;--red-lt:#f5e8e8;--orange:#c47a1a;--orange-lt:#fef3e2;
     --shadow:rgba(26,39,68,0.08);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
@@ -19,7 +20,6 @@
   main{flex:1;max-width:900px;margin:0 auto;padding:20px 20px 60px;width:100%;}
   .panel{display:none;}.panel.active{display:block;}
 
-  /* TABS */
   .tabs-wrap{background:var(--white);border-bottom:1px solid var(--border);}
   .tabs{display:flex;align-items:center;padding:0 20px;max-width:900px;margin:0 auto;}
   .tab{padding:11px 16px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;display:flex;align-items:center;gap:8px;}
@@ -29,45 +29,48 @@
   .tab.active .n{background:var(--navy);color:var(--white);border-color:var(--navy);}
   .nav-spacer{flex:1;}
   .nav-info{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px;padding:8px 0;}
-  .btn-sm{background:none;border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--text3);transition:all .15s;}
+  .btn-sm{background:none;border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--text3);}
   .btn-sm:hover{border-color:var(--navy);color:var(--navy);}
 
-  /* SECTION */
   .section{background:var(--white);border:1px solid var(--border);border-radius:16px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);}
   .section-head{padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);}
   .section-body{padding:16px;}
 
-  /* SELECT */
   .select-wrap{position:relative;}
-  .select-wrap select{width:100%;padding:11px 36px 11px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;appearance:none;cursor:pointer;transition:border-color .15s;}
+  .select-wrap select{width:100%;padding:11px 36px 11px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;appearance:none;cursor:pointer;}
   .select-wrap select:focus{outline:none;border-color:var(--navy);}
   .select-wrap::after{content:'▾';position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;pointer-events:none;}
 
-  /* INFOS ÉQUIPE */
-  .equipe-info{padding:12px 16px;background:var(--bg);border-radius:10px;margin-bottom:14px;}
+  /* INFOS */
+  .equipe-info{background:var(--bg);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
   .equipe-info-nom{font-family:'Libre Baskerville',serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:4px;}
-  .equipe-info-etab{font-size:13px;color:var(--text2);}
-  .equipe-info-badges{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+  .equipe-info-etab{font-size:13px;color:var(--text2);margin-bottom:8px;}
+  .info-badges{display:flex;gap:6px;flex-wrap:wrap;}
   .badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:8px;}
-  .badge-cd{background:rgba(26,39,68,0.1);color:var(--navy);}
+  .badge-cd{background:rgba(26,39,68,0.12);color:var(--navy);}
   .badge-eff{background:var(--bg2);border:1px solid var(--border);color:var(--text3);}
   .badge-niv{background:var(--gold-lt);color:var(--gold);}
+  .badge-h{background:var(--green-lt);color:var(--green);}
 
-  /* TOGGLE PRÉSENCE */
-  .toggle-presence{display:flex;gap:10px;}
-  .toggle-btn{flex:1;padding:14px;border-radius:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.06em;cursor:pointer;transition:all .18s;border:2px solid var(--border2);background:var(--bg2);color:var(--text3);text-align:center;}
-  .toggle-btn:hover{border-color:var(--border2);}
-  .toggle-btn.non.selected{background:var(--red-lt);border-color:var(--red);color:var(--red);}
-  .toggle-btn.oui.selected{background:var(--green-lt);border-color:var(--green);color:var(--green);}
-
-  /* CHAMP NOMBRE */
+  /* CHAMPS */
   .field-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
-  .input-field{width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;color:var(--text);transition:border-color .15s;}
+  .field-wrap{margin-bottom:14px;}
+  .input-field{padding:10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);}
   .input-field:focus{outline:none;border-color:var(--navy);}
 
-  /* BOUTONS */
+  /* SELECT CD */
+  .cd-select{width:100%;padding:10px 36px 10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);appearance:none;cursor:pointer;}
+  .cd-select:focus{outline:none;border-color:var(--navy);}
+
+  /* TOGGLE PRÉSENCE 3 états */
+  .toggle-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .t-btn{padding:12px 8px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.04em;cursor:pointer;transition:all .15s;border:2px solid var(--border2);background:var(--bg2);color:var(--text3);text-align:center;}
+  .t-btn.attente.sel{background:var(--bg2);border-color:var(--border2);color:var(--text2);}
+  .t-btn.arrivee.sel{background:var(--green-lt);border-color:var(--green);color:var(--green);}
+  .t-btn.absent.sel{background:var(--orange-lt);border-color:var(--orange);color:var(--orange);}
+
   .actions{display:flex;gap:10px;flex-wrap:wrap;}
-  .btn{padding:10px 18px;border:1.5px solid var(--border2);border-radius:10px;background:var(--white);color:var(--text);font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;box-shadow:0 1px 4px var(--shadow);}
+  .btn{padding:10px 18px;border:1.5px solid var(--border2);border-radius:10px;background:var(--white);color:var(--text);font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;}
   .btn.primary{background:var(--navy);border-color:var(--navy);color:white;font-weight:700;}
   .btn.primary:hover{background:var(--navy-lt);}
   .btn:disabled{opacity:.4;cursor:not-allowed;}
@@ -75,50 +78,50 @@
   @keyframes rot{to{transform:rotate(360deg);}}
 
   /* STATS */
-  .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px;}
-  .stat-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px var(--shadow);}
-  .stat-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
-  .stat-val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:22px;color:var(--navy);}
+  .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:16px;}
+  .stat-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:0 2px 8px var(--shadow);}
+  .stat-label{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:3px;}
+  .stat-val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:20px;color:var(--navy);}
   .stat-val.green{color:var(--green);}
-  .stat-val.orange{color:#c47a1a;}
+  .stat-val.orange{color:var(--orange);}
+  .stat-val.red{color:var(--red);}
 
-  /* TABLEAU RÉCAP */
-  .toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
-  .search-wrap{position:relative;flex:1;min-width:180px;}
-  .search-wrap input{width:100%;padding:9px 14px 9px 36px;background:var(--white);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);}
+  /* TABLEAU */
+  .toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+  .search-wrap{position:relative;flex:1;min-width:160px;}
+  .search-wrap input{width:100%;padding:8px 14px 8px 34px;background:var(--white);border:1.5px solid var(--border2);border-radius:10px;font-size:13px;color:var(--text);}
   .search-wrap input:focus{outline:none;border-color:var(--navy);}
-  .search-wrap::before{content:'🔍';position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;}
-  .filter-btn{padding:7px 12px;background:var(--white);border:1.5px solid var(--border2);border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:all .15s;}
+  .search-wrap::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none;}
+  .filter-btn{padding:6px 11px;background:var(--white);border:1.5px solid var(--border2);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:all .15s;}
   .filter-btn.active{background:var(--navy);border-color:var(--navy);color:var(--white);}
   .tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);}
   .tbl-head{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);}
   .tbl-cnt{background:var(--white);border:1px solid var(--border);padding:2px 8px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;}
   table{width:100%;border-collapse:collapse;}
   thead tr{background:var(--bg);}
-  th{padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);font-weight:600;}
-  td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13px;}
+  th{padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);font-weight:600;}
+  td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13px;}
   tr:last-child td{border-bottom:none;}
   tr:hover td{background:var(--bg);cursor:pointer;}
-  .badge-oui{display:inline-flex;align-items:center;gap:5px;background:var(--green-lt);color:var(--green);border:1px solid #b8dfc4;border-radius:8px;padding:3px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;}
-  .badge-non{display:inline-flex;align-items:center;gap:5px;background:var(--bg2);color:var(--text3);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;}
-  .badge-cd-sm{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:4px;background:rgba(26,39,68,0.1);color:var(--navy);margin-left:4px;}
+  .chip-oui{display:inline-flex;align-items:center;gap:4px;background:var(--green-lt);color:var(--green);border:1px solid #b8dfc4;border-radius:8px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;}
+  .chip-non{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);color:var(--text3);border:1px solid var(--border);border-radius:8px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;}
+  .chip-abs{display:inline-flex;align-items:center;gap:4px;background:var(--orange-lt);color:var(--orange);border:1px solid #e8c07a;border-radius:8px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;}
+  .badge-cd-sm{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:4px;background:rgba(26,39,68,0.1);color:var(--navy);margin-left:3px;}
 
-  /* TOAST / LOADING */
   .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--navy);color:white;padding:11px 22px;border-radius:30px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:999;transition:transform .25s;letter-spacing:.04em;box-shadow:0 8px 30px rgba(26,39,68,0.25);white-space:nowrap;}
   .toast.on{transform:translateX(-50%) translateY(0);}
   .toast.ok{background:var(--green);}
   .toast.err{background:var(--red);}
   .loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
   .loading-overlay.hidden{display:none;}
-  .loading-logo{width:64px;height:64px;object-fit:contain;}
-  .loading-txt{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;}
   .spin-dark{display:inline-block;width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:rot .6s linear infinite;}
+  .loading-txt{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;}
 </style>
 </head>
 <body>
 
 <div class="loading-overlay" id="loadingOverlay">
-  <img src="../LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
+  <img src="../LogoRC2026.png" style="width:64px;height:64px;object-fit:contain" alt="" onerror="this.style.display='none'">
   <div class="spin-dark"></div>
   <div class="loading-txt">Chargement…</div>
 </div>
@@ -139,7 +142,7 @@
 
 <main>
 
-  <!-- ═══ ACCUEIL ═══ -->
+  <!-- ACCUEIL -->
   <div class="panel active" id="panel-accueil">
 
     <div class="section">
@@ -158,11 +161,31 @@
       <div class="equipe-info" id="equipeInfo"></div>
 
       <div class="section">
+        <div class="section-head">Informations</div>
+        <div class="section-body">
+          <div class="field-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div class="field-label">Classe de Défense</div>
+              <div style="position:relative">
+                <select class="cd-select" id="cdSelect"></select>
+                <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none">▾</span>
+              </div>
+            </div>
+            <div>
+              <div class="field-label">Effectifs de l'équipe</div>
+              <input type="number" class="input-field" id="effectifsField" min="0" max="50" style="width:100%">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
         <div class="section-head">Présence</div>
         <div class="section-body">
-          <div class="toggle-presence">
-            <button class="toggle-btn non" id="btnNon" onclick="setPresence(false)">✕ Pas encore arrivée</button>
-            <button class="toggle-btn oui" id="btnOui" onclick="setPresence(true)">✓ Arrivée</button>
+          <div class="toggle-3">
+            <button class="t-btn attente" id="btn-attente" onclick="setPresence('NON')">⏳ En attente</button>
+            <button class="t-btn arrivee" id="btn-arrivee" onclick="setPresence('OUI')">✓ Arrivée</button>
+            <button class="t-btn absent"  id="btn-absent"  onclick="setPresence('NON_VENU')">✗ Ne viendra pas</button>
           </div>
         </div>
       </div>
@@ -175,7 +198,7 @@
 
   </div>
 
-  <!-- ═══ RÉCAPITULATIF ═══ -->
+  <!-- RÉCAPITULATIF -->
   <div class="panel" id="panel-recap">
 
     <div class="stats-bar" id="statsBar"></div>
@@ -186,7 +209,8 @@
       </div>
       <button class="filter-btn active" id="f-tous" onclick="setFilter('tous')">Tous</button>
       <button class="filter-btn" id="f-arrivees" onclick="setFilter('arrivees')">✓ Arrivées</button>
-      <button class="filter-btn" id="f-attente" onclick="setFilter('attente')">⏳ En attente</button>
+      <button class="filter-btn" id="f-attente" onclick="setFilter('attente')">⏳ Attente</button>
+      <button class="filter-btn" id="f-absent" onclick="setFilter('absent')">✗ Absentes</button>
       <button class="filter-btn" id="f-cd" onclick="setFilter('cd')">🎖 CD</button>
     </div>
 
@@ -198,15 +222,25 @@
   </div>
 
 </main>
-
 <div class="toast" id="toast"></div>
 
 <script>
-let equipesData = [];
-let presenceState = false;
+// Liste des classes de défense possibles — à adapter selon votre contexte
+const CD_OPTIONS = ['', '3ème', '2nde', '1ère', 'Terminale'];
+
+let equipesData   = [];
+let presenceState = 'NON';
 let currentFilter = 'tous';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Remplir le select CD
+  const cdSel = document.getElementById('cdSelect');
+  CD_OPTIONS.forEach(v => {
+    const o = document.createElement('option');
+    o.value = v; o.textContent = v || '— Aucune CD —';
+    cdSel.appendChild(o);
+  });
+
   chargerDonnees();
   setInterval(() => chargerDonnees(true), 30000);
 });
@@ -221,11 +255,12 @@ async function chargerDonnees(silent = false) {
       const prev = sel.value;
       sel.innerHTML = '<option value="">— Choisir une équipe —</option>';
       equipesData.forEach(e => {
-        const o    = document.createElement('option');
-        o.value    = e.num;
-        const cd   = isCD(e) ? ' [CD]' : '';
-        o.textContent = e.num + ' — ' + e.nom + cd + '  ·  ' + e.etab;
-        if (e.presence) o.style.color = 'var(--green)';
+        const o = document.createElement('option');
+        o.value = e.num;
+        const cdMark = isCD(e) ? ' [CD]' : '';
+        o.textContent = e.num + ' — ' + e.nom + cdMark + '  ·  ' + e.etab;
+        if (e.presence === 'OUI')      o.style.color = 'var(--green)';
+        if (e.presence === 'NON_VENU') o.style.color = 'var(--orange)';
         sel.appendChild(o);
       });
       if (prev) { sel.value = prev; onEquipeChange(true); }
@@ -239,8 +274,7 @@ async function chargerDonnees(silent = false) {
 
     const now = new Date();
     document.getElementById('lastUpdate').textContent =
-      now.getHours().toString().padStart(2,'0') + ':' +
-      now.getMinutes().toString().padStart(2,'0');
+      now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
 
   } catch(e) {
     if (!silent) document.getElementById('loadingOverlay').classList.add('hidden');
@@ -250,30 +284,37 @@ async function chargerDonnees(silent = false) {
 
 function isCD(e) {
   const cd = (e.classeDefense || '').toString().trim().toLowerCase();
-  return cd !== '' && cd !== 'non' && cd !== 'pas encore';
+  return cd !== '' && cd !== 'non' && cd !== 'pas encore' && cd !== 'aucune cd' && cd !== '— aucune cd —';
 }
 
-function onEquipeChange(silentUpdate = false) {
+function onEquipeChange(silent = false) {
   const num  = document.getElementById('selEquipe').value;
   const form = document.getElementById('formAccueil');
   if (!num) { form.style.display = 'none'; return; }
-
   const e = equipesData.find(x => x.num === num);
   form.style.display = 'block';
 
-  presenceState = e ? e.presence : false;
+  presenceState = e ? (e.presence || 'NON') : 'NON';
   majToggle();
 
-  // Infos équipe
+  // Remplir les champs
+  const cdSel = document.getElementById('cdSelect');
+  const cdVal = (e.classeDefense || '').toString().trim();
+  // Chercher option correspondante
+  const opt = Array.from(cdSel.options).find(o => o.value === cdVal || cdVal.toLowerCase().includes(o.value.toLowerCase()));
+  cdSel.value = opt ? opt.value : '';
+
+  document.getElementById('effectifsField').value = e && e.effectifs > 0 ? e.effectifs : '';
+
   const cd = isCD(e);
   document.getElementById('equipeInfo').innerHTML = `
     <div class="equipe-info-nom">${e.num} — ${e.nom}</div>
     <div class="equipe-info-etab">${e.etab}</div>
-    <div class="equipe-info-badges">
-      ${cd ? '<span class="badge badge-cd">🎖 Classe de Défense</span>' : ''}
+    <div class="info-badges">
+      ${cd ? '<span class="badge badge-cd">🎖 Classe de Défense : ' + e.classeDefense + '</span>' : '<span class="badge badge-eff">Équipe standard</span>'}
       ${e.effectifs ? '<span class="badge badge-eff">' + e.effectifs + ' élèves</span>' : ''}
       ${e.niveau ? '<span class="badge badge-niv">' + e.niveau + '</span>' : ''}
-      ${e.heureArrivee ? '<span class="badge badge-eff">Arrivée : ' + e.heureArrivee + '</span>' : ''}
+      ${e.heureArrivee ? '<span class="badge badge-h">Arrivée ' + e.heureArrivee + '</span>' : ''}
     </div>`;
 }
 
@@ -283,10 +324,12 @@ function setPresence(val) {
 }
 
 function majToggle() {
-  const btnOui = document.getElementById('btnOui');
-  const btnNon = document.getElementById('btnNon');
-  btnOui.className = 'toggle-btn oui' + (presenceState ? ' selected' : '');
-  btnNon.className = 'toggle-btn non' + (!presenceState ? ' selected' : '');
+  ['attente','arrivee','absent'].forEach(k => {
+    document.getElementById('btn-' + k).classList.remove('sel');
+  });
+  const map = { 'NON':'attente', 'OUI':'arrivee', 'NON_VENU':'absent' };
+  const btn = document.getElementById('btn-' + (map[presenceState] || 'attente'));
+  if (btn) btn.classList.add('sel');
 }
 
 async function enregistrer() {
@@ -296,23 +339,37 @@ async function enregistrer() {
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span> Enregistrement…';
   try {
-    const payload = { id: num, presence: presenceState };
+    const payload = {
+      id:           num,
+      presence:     presenceState,
+      classeDefense:document.getElementById('cdSelect').value,
+      effectifs:    Number(document.getElementById('effectifsField').value) || 0
+    };
     const res = await apiGet('saveAccueilEquipe&data=' + encodeURIComponent(JSON.stringify(payload)));
     btn.disabled = false;
     btn.innerHTML = '✓ Enregistrer';
     if (res.success) {
-      toast(presenceState ? '✓ Équipe ' + num + ' marquée arrivée' : '✓ Mis à jour', 'ok');
+      toast(presenceState === 'OUI' ? '✓ Équipe ' + num + ' arrivée' :
+            presenceState === 'NON_VENU' ? '✓ Équipe ' + num + ' marquée absente' : '✓ Mis à jour', 'ok');
       const idx = equipesData.findIndex(e => e.num === num);
-      if (idx >= 0) equipesData[idx].presence = presenceState;
+      if (idx >= 0) {
+        equipesData[idx].presence     = presenceState;
+        equipesData[idx].classeDefense = payload.classeDefense;
+        equipesData[idx].effectifs    = payload.effectifs;
+      }
       majBadge();
+      // Couleur dans le select
       const opt = document.querySelector('#selEquipe option[value="' + num + '"]');
-      if (opt) opt.style.color = presenceState ? 'var(--green)' : '';
-      // Passer à l'équipe suivante automatiquement
+      if (opt) {
+        opt.style.color = presenceState === 'OUI' ? 'var(--green)' :
+                          presenceState === 'NON_VENU' ? 'var(--orange)' : '';
+      }
+      // Passer à l'équipe suivante
       setTimeout(() => {
         const sel = document.getElementById('selEquipe');
-        const idx2 = Array.from(sel.options).findIndex(o => o.value === num);
-        if (idx2 >= 0 && idx2 < sel.options.length - 1) {
-          sel.selectedIndex = idx2 + 1;
+        const i   = Array.from(sel.options).findIndex(o => o.value === num);
+        if (i >= 0 && i < sel.options.length - 1) {
+          sel.selectedIndex = i + 1;
           onEquipeChange();
         }
       }, 800);
@@ -332,7 +389,7 @@ function annuler() {
 }
 
 function majBadge() {
-  document.getElementById('badgeArrivees').textContent = equipesData.filter(e => e.presence).length;
+  document.getElementById('badgeArrivees').textContent = equipesData.filter(e => e.presence === 'OUI').length;
 }
 
 function showTab(name) {
@@ -342,19 +399,19 @@ function showTab(name) {
   document.getElementById('tab-' + name).classList.add('active');
 }
 
-function showTabRecap() {
-  showTab('recap'); chargerDonnees(true);
-  majStats(); filtrerRecap();
-}
+function showTabRecap() { showTab('recap'); chargerDonnees(true); majStats(); filtrerRecap(); }
 
 function majStats() {
-  const total    = equipesData.length;
-  const arrivees = equipesData.filter(e => e.presence).length;
-  const cds      = equipesData.filter(e => e.presence && isCD(e)).length;
+  const total   = equipesData.length;
+  const arr     = equipesData.filter(e => e.presence === 'OUI').length;
+  const abs     = equipesData.filter(e => e.presence === 'NON_VENU').length;
+  const att     = total - arr - abs;
+  const cds     = equipesData.filter(e => e.presence === 'OUI' && isCD(e)).length;
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-card"><div class="stat-label">Attendues</div><div class="stat-val">${total}</div></div>
-    <div class="stat-card"><div class="stat-label">Arrivées</div><div class="stat-val green">${arrivees}</div></div>
-    <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-val orange">${total - arrivees}</div></div>
+    <div class="stat-card"><div class="stat-label">Arrivées</div><div class="stat-val green">${arr}</div></div>
+    <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-val orange">${att}</div></div>
+    <div class="stat-card"><div class="stat-label">Absentes</div><div class="stat-val red">${abs}</div></div>
     <div class="stat-card"><div class="stat-label">CD arrivées</div><div class="stat-val">${cds}</div></div>`;
 }
 
@@ -370,8 +427,9 @@ function filtrerRecap() {
   let data = equipesData.filter(e => {
     const ms = !s || e.num.includes(s) || e.nom.toLowerCase().includes(s) || e.etab.toLowerCase().includes(s);
     const mf = currentFilter === 'tous' ? true :
-               currentFilter === 'arrivees' ? e.presence :
-               currentFilter === 'attente' ? !e.presence :
+               currentFilter === 'arrivees' ? e.presence === 'OUI' :
+               currentFilter === 'attente' ? e.presence === 'NON' :
+               currentFilter === 'absent' ? e.presence === 'NON_VENU' :
                currentFilter === 'cd' ? isCD(e) : true;
     return ms && mf;
   });
@@ -380,14 +438,19 @@ function filtrerRecap() {
     document.getElementById('bodyRecap').innerHTML = '<div style="padding:36px;text-align:center;color:var(--text3);font-style:italic">Aucune équipe.</div>';
     return;
   }
-  let h = `<table><thead><tr><th>N°</th><th>Équipe</th><th>Établissement</th><th>Statut</th><th>Heure</th></tr></thead><tbody>`;
+  let h = `<table><thead><tr>
+    <th>N°</th><th>Équipe / Établissement</th><th>CD</th><th>Statut</th><th>Heure</th>
+  </tr></thead><tbody>`;
   data.forEach(e => {
     const cd = isCD(e);
+    const chip = e.presence === 'OUI' ? '<span class="chip-oui">✓ Arrivée</span>' :
+                 e.presence === 'NON_VENU' ? '<span class="chip-abs">✗ Absente</span>' :
+                 '<span class="chip-non">⏳ Attente</span>';
     h += `<tr onclick="selectionnerEquipe('${e.num}')">
-      <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.num}</span>${cd ? '<span class="badge-cd-sm">CD</span>' : ''}</td>
-      <td style="font-weight:600">${e.nom}</td>
-      <td style="color:var(--text3);font-size:12px">${e.etab}</td>
-      <td>${e.presence ? '<span class="badge-oui">✓ Arrivée</span>' : '<span class="badge-non">⏳ Attente</span>'}</td>
+      <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.num}</span></td>
+      <td><div style="font-weight:600">${e.nom}</div><div style="color:var(--text3);font-size:11px">${e.etab}</div></td>
+      <td>${cd ? '<span class="badge-cd-sm">🎖 ' + e.classeDefense + '</span>' : '<span style="color:var(--text3);font-size:11px">—</span>'}</td>
+      <td>${chip}</td>
       <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${e.heureArrivee || '—'}</td>
     </tr>`;
   });
