@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -233,6 +232,16 @@ async function chargerDonnees(silent = false) {
   try {
     const data = await apiGet('getAccueilEquipes');
     equipesData = data.data || [];
+
+    // Si vide → proposer l'initialisation
+    if (!silent && equipesData.length === 0) {
+      document.getElementById('loadingOverlay').classList.add('hidden');
+      if (confirm('Les données d'accueil ne sont pas encore initialisées.\nVoulez-vous les créer maintenant depuis l'onglet Equipes ?')) {
+        await apiGet('initAccueil');
+        const data2 = await apiGet('getAccueilEquipes');
+        equipesData = data2.data || [];
+      }
+    }
 
     if (!silent) {
       const sel  = document.getElementById('selEquipe');
