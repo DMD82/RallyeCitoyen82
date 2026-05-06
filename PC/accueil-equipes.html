@@ -10,117 +10,126 @@
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
   :root {
     --navy:#1a2744;--navy-lt:#243358;--gold:#b8932a;--gold-lt:#f5ead4;--gold-mid:#e8d090;
-    --bg:#f2f0eb;--bg2:#e8e5de;--white:#ffffff;--text:#1a1e2e;--text2:#4a5068;--text3:#8a90a8;
-    --border:#dcd8ce;--border2:#c8c4b8;--green:#1a5a32;--green-lt:#e8f5ed;--red:#8b1a1a;--red-lt:#f5e8e8;
+    --bg:#f2f0eb;--bg2:#e8e5de;--white:#fff;--text:#1a1e2e;--text2:#4a5068;--text3:#8a90a8;
+    --border:#dcd8ce;--border2:#c8c4b8;--green:#1a5a32;--green-lt:#e8f5ed;
+    --red:#8b1a1a;--red-lt:#f5e8e8;--orange:#c47a1a;--orange-lt:#fef3e2;
     --shadow:rgba(26,39,68,0.08);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
-  .nav-wrap{background:var(--bg2);border-bottom:1px solid var(--border);}
-  nav{display:flex;align-items:center;padding:0 20px;max-width:900px;margin:0 auto;}
-  .tab{padding:11px 16px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;display:flex;align-items:center;gap:8px;}
-  .tab:hover{color:var(--text2);}
-  .tab.active{color:var(--navy);border-bottom-color:var(--gold);}
-  .tab .n{background:var(--bg2);border:1px solid var(--border);color:var(--text3);font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600;transition:all .15s;}
-  .tab.active .n{background:var(--navy);color:var(--white);border-color:var(--navy);}
-  .nav-spacer{flex:1;}
-  .nav-info{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px;}
-  .btn-refresh{background:none;border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--text3);transition:all .15s;}
-  .btn-refresh:hover{border-color:var(--navy);color:var(--navy);}
   main{flex:1;max-width:900px;margin:0 auto;padding:20px 20px 60px;width:100%;}
   .panel{display:none;}.panel.active{display:block;}
 
-  /* SECTION */
+  .tabs-wrap{background:var(--white);border-bottom:1px solid var(--border);}
+  .tabs{display:flex;align-items:center;padding:0 20px;max-width:900px;margin:0 auto;}
+  .tab{padding:11px 16px;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s;display:flex;align-items:center;gap:8px;}
+  .tab:hover{color:var(--text2);}
+  .tab.active{color:var(--navy);border-bottom-color:var(--gold);}
+  .tab .n{background:var(--bg2);border:1px solid var(--border);color:var(--text3);font-size:10px;padding:1px 6px;border-radius:10px;font-weight:600;}
+  .tab.active .n{background:var(--navy);color:var(--white);border-color:var(--navy);}
+  .nav-spacer{flex:1;}
+  .nav-info{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);display:flex;align-items:center;gap:6px;padding:8px 0;}
+  .btn-sm{background:none;border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--text3);}
+  .btn-sm:hover{border-color:var(--navy);color:var(--navy);}
+
   .section{background:var(--white);border:1px solid var(--border);border-radius:16px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);}
   .section-head{padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);}
   .section-body{padding:16px;}
 
-  /* SELECT */
   .select-wrap{position:relative;}
-  .select-wrap select{width:100%;padding:11px 36px 11px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;appearance:none;cursor:pointer;transition:border-color .15s;}
+  .select-wrap select{width:100%;padding:11px 36px 11px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-family:'Source Sans 3',sans-serif;font-size:15px;font-weight:600;appearance:none;cursor:pointer;}
   .select-wrap select:focus{outline:none;border-color:var(--navy);}
   .select-wrap::after{content:'▾';position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;pointer-events:none;}
 
-  /* BADGE ARRIVÉE */
-  .badge-oui{display:inline-flex;align-items:center;gap:5px;background:var(--green-lt);color:var(--green);border:1px solid #b8dfc4;border-radius:8px;padding:3px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;}
-  .badge-non{display:inline-flex;align-items:center;gap:5px;background:var(--bg2);color:var(--text3);border:1px solid var(--border);border-radius:8px;padding:3px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;}
-  .badge-cd{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:4px;background:rgba(26,39,68,0.1);color:var(--navy);margin-left:4px;}
+  /* INFOS */
+  .equipe-info{background:var(--bg);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+  .equipe-info-nom{font-family:'Libre Baskerville',serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:4px;}
+  .equipe-info-etab{font-size:13px;color:var(--text2);margin-bottom:8px;}
+  .info-badges{display:flex;gap:6px;flex-wrap:wrap;}
+  .badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:8px;}
+  .badge-cd{background:rgba(26,39,68,0.12);color:var(--navy);}
+  .badge-eff{background:var(--bg2);border:1px solid var(--border);color:var(--text3);}
+  .badge-niv{background:var(--gold-lt);color:var(--gold);}
+  .badge-h{background:var(--green-lt);color:var(--green);}
 
-  /* TOGGLE ARRIVÉE */
-  .toggle-arrivee{display:flex;align-items:center;gap:10px;}
-  .toggle-btn{padding:10px 20px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.06em;cursor:pointer;transition:all .15s;border:2px solid transparent;}
-  .toggle-btn.non{background:var(--bg2);border-color:var(--border);color:var(--text3);}
-  .toggle-btn.non:hover{border-color:var(--green);color:var(--green);}
-  .toggle-btn.oui{background:var(--green);border-color:var(--green);color:white;}
-
-  /* FORM */
+  /* CHAMPS */
   .field-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
   .field-wrap{margin-bottom:14px;}
-  .input-field{width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);transition:border-color .15s;}
+  .input-field{padding:10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);}
   .input-field:focus{outline:none;border-color:var(--navy);}
+
+  /* SELECT CD */
+  .cd-select{width:100%;padding:10px 36px 10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);appearance:none;cursor:pointer;}
+  .cd-select:focus{outline:none;border-color:var(--navy);}
+
+  /* TOGGLE PRÉSENCE 3 états */
+  .toggle-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+  .t-btn{padding:12px 8px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:11px;letter-spacing:.04em;cursor:pointer;transition:all .15s;border:2px solid var(--border2);background:var(--bg2);color:var(--text3);text-align:center;}
+  .t-btn.attente.sel{background:#e8edf5;border-color:#8a9cc8;color:#2a3d70;font-weight:800;}
+  .t-btn.arrivee.sel{background:var(--green-lt);border-color:var(--green);color:var(--green);font-weight:800;}
+  .t-btn.absent.sel{background:var(--orange-lt);border-color:var(--orange);color:var(--orange);font-weight:800;}
+  .cd-btn-oui.sel{background:rgba(26,39,68,0.12);border-color:var(--navy);color:var(--navy);font-weight:800;}
+  .cd-btn-non.sel{background:#e8edf5;border-color:#8a9cc8;color:#2a3d70;font-weight:800;}
+
   .actions{display:flex;gap:10px;flex-wrap:wrap;}
-  .btn{padding:10px 18px;border:1.5px solid var(--border2);border-radius:10px;background:var(--white);color:var(--text);font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;box-shadow:0 1px 4px var(--shadow);}
-  .btn:hover{box-shadow:0 3px 10px var(--shadow);transform:translateY(-1px);}
+  .btn{padding:10px 18px;border:1.5px solid var(--border2);border-radius:10px;background:var(--white);color:var(--text);font-family:'Source Sans 3',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;}
   .btn.primary{background:var(--navy);border-color:var(--navy);color:white;font-weight:700;}
   .btn.primary:hover{background:var(--navy-lt);}
-  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:rot .6s linear infinite;}
+  @keyframes rot{to{transform:rotate(360deg);}}
+
+  /* STATS */
+  .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:16px;}
+  .stat-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:12px 14px;box-shadow:0 2px 8px var(--shadow);}
+  .stat-label{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:3px;}
+  .stat-val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:20px;color:var(--navy);}
+  .stat-val.green{color:var(--green);}
+  .stat-val.orange{color:var(--orange);}
+  .stat-val.red{color:var(--red);}
 
   /* TABLEAU */
-  .toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
-  .search-wrap{position:relative;flex:1;min-width:180px;}
-  .search-wrap input{width:100%;padding:9px 14px 9px 36px;background:var(--white);border:1.5px solid var(--border2);border-radius:10px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--text);transition:border-color .15s;}
+  .toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;}
+  .search-wrap{position:relative;flex:1;min-width:160px;}
+  .search-wrap input{width:100%;padding:8px 14px 8px 34px;background:var(--white);border:1.5px solid var(--border2);border-radius:10px;font-size:13px;color:var(--text);}
   .search-wrap input:focus{outline:none;border-color:var(--navy);}
-  .search-wrap::before{content:'🔍';position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;}
-  .filter-btn{padding:8px 14px;background:var(--white);border:1.5px solid var(--border2);border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:all .15s;}
-  .filter-btn:hover{border-color:var(--navy);color:var(--navy);}
+  .search-wrap::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none;}
+  .filter-btn{padding:6px 11px;background:var(--white);border:1.5px solid var(--border2);border-radius:8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:all .15s;}
   .filter-btn.active{background:var(--navy);border-color:var(--navy);color:var(--white);}
-  .stat-pill{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);white-space:nowrap;}
-
   .tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);}
-  .tbl-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);}
-  .tbl-cnt{font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--white);border:1px solid var(--border);padding:2px 8px;border-radius:10px;}
+  .tbl-head{background:var(--bg2);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);}
+  .tbl-cnt{background:var(--white);border:1px solid var(--border);padding:2px 8px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-size:11px;}
   table{width:100%;border-collapse:collapse;}
   thead tr{background:var(--bg);}
-  th{padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);font-weight:600;}
-  td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13px;}
+  th{padding:8px 12px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);text-align:left;border-bottom:1px solid var(--border);font-weight:600;}
+  td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13px;}
   tr:last-child td{border-bottom:none;}
-  tr:hover td{background:var(--bg);}
-  .eq-num{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy);font-size:13px;}
-  .eq-nom{font-size:13px;font-weight:600;}
-  .eq-etab{font-size:11px;color:var(--text3);margin-top:1px;}
+  tr:hover td{background:var(--bg);cursor:pointer;}
+  .chip-oui{display:inline-flex;align-items:center;gap:4px;background:var(--green-lt);color:var(--green);border:1px solid #b8dfc4;border-radius:8px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;}
+  .chip-non{display:inline-flex;align-items:center;gap:4px;background:var(--bg2);color:var(--text3);border:1px solid var(--border);border-radius:8px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;}
+  .chip-abs{display:inline-flex;align-items:center;gap:4px;background:var(--orange-lt);color:var(--orange);border:1px solid #e8c07a;border-radius:8px;padding:2px 8px;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;}
+  .badge-cd-sm{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:4px;background:rgba(26,39,68,0.1);color:var(--navy);margin-left:3px;}
 
-  /* STATS HEADER */
-  .stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px;}
-  .stat-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px var(--shadow);}
-  .stat-card-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
-  .stat-card-val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:22px;color:var(--navy);}
-  .stat-card-val.green{color:var(--green);}
-  .stat-card-val.gold{color:var(--gold);}
-
-  /* TOAST & LOADING */
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--navy);color:white;padding:11px 22px;border-radius:30px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:999;transition:transform .25s ease;letter-spacing:.04em;box-shadow:0 8px 30px rgba(26,39,68,0.25);white-space:nowrap;}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--navy);color:white;padding:11px 22px;border-radius:30px;font-family:'IBM Plex Mono',monospace;font-size:12px;z-index:999;transition:transform .25s;letter-spacing:.04em;box-shadow:0 8px 30px rgba(26,39,68,0.25);white-space:nowrap;}
   .toast.on{transform:translateX(-50%) translateY(0);}
   .toast.ok{background:var(--green);}
   .toast.err{background:var(--red);}
-  .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:rot .6s linear infinite;}
   .loading-overlay{position:fixed;inset:0;background:var(--bg);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
   .loading-overlay.hidden{display:none;}
-  .loading-logo{width:64px;height:64px;object-fit:contain;}
-  .loading-txt{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;}
   .spin-dark{display:inline-block;width:20px;height:20px;border:2px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:rot .6s linear infinite;}
-  @keyframes rot{to{transform:rotate(360deg);}}
+  .loading-txt{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--text3);text-transform:uppercase;}
 </style>
 </head>
 <body>
 
 <div class="loading-overlay" id="loadingOverlay">
-  <img src="../LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
+  <img src="../LogoRC2026.png" style="width:64px;height:64px;object-fit:contain" alt="" onerror="this.style.display='none'">
   <div class="spin-dark"></div>
   <div class="loading-txt">Chargement…</div>
 </div>
 
-<div class="nav-wrap">
-  <nav>
+<div class="tabs-wrap">
+  <div class="tabs">
     <div class="tab active" id="tab-accueil" onclick="showTab('accueil')">Accueil</div>
     <div class="tab" id="tab-recap" onclick="showTabRecap()">
       Récapitulatif <span class="n" id="badgeArrivees">0</span>
@@ -128,14 +137,14 @@
     <div class="nav-spacer"></div>
     <div class="nav-info">
       <span id="lastUpdate">—</span>
-      <button class="btn-refresh" onclick="chargerDonnees()">↻</button>
+      <button class="btn-sm" onclick="chargerDonnees(true)">↻</button>
     </div>
-  </nav>
+  </div>
 </div>
 
 <main>
 
-  <!-- ═══ ACCUEIL ═══ -->
+  <!-- ACCUEIL -->
   <div class="panel active" id="panel-accueil">
 
     <div class="section">
@@ -151,35 +160,35 @@
 
     <div id="formAccueil" style="display:none">
 
-      <div class="section">
-        <div class="section-head">Informations équipe</div>
-        <div class="section-body">
-          <div style="font-family:'Libre Baskerville',serif;font-weight:700;font-size:16px;color:var(--navy);margin-bottom:6px" id="infoNom">—</div>
-          <div style="font-size:13px;color:var(--text2);margin-bottom:4px" id="infoEtab">—</div>
-          <div style="display:flex;gap:8px;margin-top:6px">
-            <span id="infoCD"></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="section">
-        <div class="section-head">Statut d'arrivée</div>
-        <div class="section-body">
-          <div class="toggle-arrivee">
-            <button class="toggle-btn non" id="btnNon" onclick="setArrivee(false)">✕ Pas encore arrivée</button>
-            <button class="toggle-btn" id="btnOui" onclick="setArrivee(true)">✓ Arrivée</button>
-          </div>
-        </div>
-      </div>
+      <div class="equipe-info" id="equipeInfo"></div>
 
       <div class="section">
         <div class="section-head">Informations</div>
         <div class="section-body">
-          <div class="field-wrap">
-            <div class="field-label">Nombre de personnes</div>
-            <input type="number" class="input-field" id="nbPersonnes" min="0" max="50" placeholder="0" style="max-width:160px;">
+          <div class="field-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <div class="field-label">Classe de Défense</div>
+              <div style="display:flex;gap:8px;margin-top:4px">
+                <button class="t-btn cd-btn-oui" onclick="setCD('OUI')" style="flex:1;padding:10px">🎖 Classe de Défense</button>
+                <button class="t-btn cd-btn-non" onclick="setCD('NON')" style="flex:1;padding:10px">Pas CD</button>
+              </div>
+            </div>
+            <div>
+              <div class="field-label">Effectifs de l'équipe</div>
+              <input type="number" class="input-field" id="effectifsField" min="0" max="50" style="width:100%">
+            </div>
           </div>
+        </div>
+      </div>
 
+      <div class="section">
+        <div class="section-head">Présence</div>
+        <div class="section-body">
+          <div class="toggle-3">
+            <button class="t-btn attente" id="btn-attente" onclick="setPresence('NON')">⏳ En attente</button>
+            <button class="t-btn arrivee" id="btn-arrivee" onclick="setPresence('OUI')">✓ Arrivée</button>
+            <button class="t-btn absent"  id="btn-absent"  onclick="setPresence('NON_VENU')">✗ Ne viendra pas</button>
+          </div>
         </div>
       </div>
 
@@ -191,36 +200,36 @@
 
   </div>
 
-  <!-- ═══ RÉCAPITULATIF ═══ -->
+  <!-- RÉCAPITULATIF -->
   <div class="panel" id="panel-recap">
 
     <div class="stats-bar" id="statsBar"></div>
 
     <div class="toolbar">
       <div class="search-wrap">
-        <input type="text" id="searchRecap" placeholder="Rechercher une équipe…" oninput="filtrerRecap()">
+        <input type="text" id="searchRecap" placeholder="Rechercher…" oninput="filtrerRecap()">
       </div>
-      <button class="filter-btn active" id="filter-tous" onclick="setFilter('tous')">Tous</button>
-      <button class="filter-btn" id="filter-arrivees" onclick="setFilter('arrivees')">✓ Arrivées</button>
-      <button class="filter-btn" id="filter-attente" onclick="setFilter('attente')">⏳ En attente</button>
-      <button class="filter-btn" id="filter-cd" onclick="setFilter('cd')">🎖 CD</button>
-      <span class="stat-pill" id="statRecap">— équipes</span>
+      <button class="filter-btn active" id="f-tous" onclick="setFilter('tous')">Tous</button>
+      <button class="filter-btn" id="f-arrivees" onclick="setFilter('arrivees')">✓ Arrivées</button>
+      <button class="filter-btn" id="f-attente" onclick="setFilter('attente')">⏳ Attente</button>
+      <button class="filter-btn" id="f-absent" onclick="setFilter('absent')">✗ Absentes</button>
+      <button class="filter-btn" id="f-cd" onclick="setFilter('cd')">🎖 CD</button>
     </div>
 
     <div class="tbl-wrap">
-      <div class="tbl-header">État d'accueil des équipes <span class="tbl-cnt" id="cntRecap">0</span></div>
-      <div id="bodyRecap"><div style="padding:36px;text-align:center;color:var(--text3);font-style:italic">Chargement…</div></div>
+      <div class="tbl-head">Équipes <span class="tbl-cnt" id="cntRecap">0</span></div>
+      <div id="bodyRecap"></div>
     </div>
 
   </div>
 
 </main>
-
 <div class="toast" id="toast"></div>
 
 <script>
-let equipesData  = [];
-let arriveeState = false;
+let equipesData   = [];
+let presenceState = 'NON';
+let cdState = 'NON';
 let currentFilter = 'tous';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -233,13 +242,6 @@ async function chargerDonnees(silent = false) {
     const data = await apiGet('getAccueilEquipes');
     equipesData = data.data || [];
 
-    // Si vide → message d'erreur clair
-    if (!silent && equipesData.length === 0) {
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      toast('Onglet non initialisé — lancez Initialiser l\'accueil depuis Admin', 'err');
-      return;
-    }
-
     if (!silent) {
       const sel  = document.getElementById('selEquipe');
       const prev = sel.value;
@@ -247,105 +249,128 @@ async function chargerDonnees(silent = false) {
       equipesData.forEach(e => {
         const o = document.createElement('option');
         o.value = e.num;
-        const cd = e.classeDefense && e.classeDefense.toString().trim().toLowerCase() !== '' && e.classeDefense.toString().trim().toLowerCase() !== 'non' ? ' [CD]' : '';
-        o.textContent = e.num + ' — ' + e.nom + cd + '  ·  ' + e.etab;
-        if (e.arrivee) o.style.color = 'var(--green)';
+        const cdMark = isCD(e) ? ' [CD]' : '';
+        o.textContent = e.num + ' — ' + e.nom + cdMark + '  ·  ' + e.etab;
+        if (e.presence === 'OUI')      o.style.color = 'var(--green)';
+        if (e.presence === 'NON_VENU') o.style.color = 'var(--orange)';
         sel.appendChild(o);
       });
-      if (prev) sel.value = prev;
+      if (prev) { sel.value = prev; onEquipeChange(true); }
       document.getElementById('loadingOverlay').classList.add('hidden');
     }
 
     majBadge();
     if (document.getElementById('panel-recap').classList.contains('active')) {
-      filtrerRecap();
-      majStats();
+      filtrerRecap(); majStats();
     }
 
     const now = new Date();
     document.getElementById('lastUpdate').textContent =
-      'Actualisé à ' + now.getHours().toString().padStart(2,'0') + ':' +
-      now.getMinutes().toString().padStart(2,'0');
+      now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
 
   } catch(e) {
-    if (!silent) {
-      document.getElementById('loadingOverlay').classList.add('hidden');
-      toast('Erreur : ' + e.message, 'err');
-    }
+    if (!silent) document.getElementById('loadingOverlay').classList.add('hidden');
+    toast('Erreur : ' + e.message, 'err');
   }
 }
 
-function onEquipeChange() {
-  const num = document.getElementById('selEquipe').value;
-  const form = document.getElementById('formAccueil');
-  if (!num) { form.style.display = 'none'; return; }
-
-  const eq = equipesData.find(e => e.num === num);
-  form.style.display = 'block';
-
-  arriveeState = eq ? eq.arrivee : false;
-  majToggle();
-
-  document.getElementById('nbPersonnes').value = eq && eq.nbPersonnes > 0 ? eq.nbPersonnes : '';
-
-  // Remplir les infos équipe
-  const isCD = eq && eq.classeDefense && eq.classeDefense.toString().trim().toLowerCase() !== '' && eq.classeDefense.toString().trim().toLowerCase() !== 'non';
-  document.getElementById('infoNom').textContent  = eq ? (eq.num + ' — ' + eq.nom) : '—';
-  document.getElementById('infoEtab').textContent = eq ? eq.etab : '—';
-  document.getElementById('infoCD').innerHTML     = isCD ? '<span class="badge-cd" style="font-size:11px;padding:3px 8px;">🎖 Classe de Défense : ' + (eq.classeDefense) + '</span>' : '<span style="font-size:12px;color:var(--text3)">Équipe standard</span>';
+function isCD(e) {
+  const cd = (e.classeDefense || '').toString().trim().toLowerCase();
+  return cd !== '' && cd !== 'non' && cd !== 'pas encore';
 }
 
-function setArrivee(val) {
-  arriveeState = val;
+function onEquipeChange(silent = false) {
+  const num  = document.getElementById('selEquipe').value;
+  const form = document.getElementById('formAccueil');
+  if (!num) { form.style.display = 'none'; return; }
+  const e = equipesData.find(x => x.num === num);
+  form.style.display = 'block';
+
+  presenceState = e ? (e.presence || 'NON') : 'NON';
+  majToggle();
+  // CD par défaut NON si pas défini
+  setCD(e && (e.classeDefense || '').toString().trim() !== '' && 
+             (e.classeDefense || '').toString().trim().toLowerCase() !== 'non' ? 'OUI' : 'NON');
+
+  // Remplir les champs
+
+
+  document.getElementById('effectifsField').value = e && e.effectifs > 0 ? e.effectifs : '';
+
+  const cd = isCD(e);
+  document.getElementById('equipeInfo').innerHTML = `
+    <div class="equipe-info-nom">${e.num} — ${e.nom}</div>
+    <div class="equipe-info-etab">${e.etab}</div>
+    <div class="info-badges">
+      ${cd ? '<span class="badge badge-cd">🎖 Classe de Défense : ' + e.classeDefense + '</span>' : '<span class="badge badge-eff">Équipe standard</span>'}
+      ${e.effectifs ? '<span class="badge badge-eff">' + e.effectifs + ' élèves</span>' : ''}
+      ${e.niveau ? '<span class="badge badge-niv">' + e.niveau + '</span>' : ''}
+      ${e.heureArrivee ? '<span class="badge badge-h">Arrivée ' + e.heureArrivee + '</span>' : ''}
+    </div>`;
+}
+
+function setPresence(val) {
+  presenceState = val;
   majToggle();
 }
 
 function majToggle() {
-  const btnOui = document.getElementById('btnOui');
-  const btnNon = document.getElementById('btnNon');
-  if (arriveeState) {
-    btnOui.className = 'toggle-btn oui';
-    btnNon.className = 'toggle-btn non';
-  } else {
-    btnOui.className = 'toggle-btn';
-    btnNon.className = 'toggle-btn non';
-  }
+  ['attente','arrivee','absent'].forEach(k => {
+    document.getElementById('btn-' + k).classList.remove('sel');
+  });
+  const map = { 'NON':'attente', 'OUI':'arrivee', 'NON_VENU':'absent' };
+  const btn = document.getElementById('btn-' + (map[presenceState] || 'attente'));
+  if (btn) btn.classList.add('sel');
+}
+
+function setCD(val, silent = false) {
+  cdState = val;
+  document.querySelectorAll('.cd-btn-oui, .cd-btn-non').forEach(b => b.classList.remove('sel'));
+  const target = document.querySelector(val === 'OUI' ? '.cd-btn-oui' : '.cd-btn-non');
+  if (target) target.classList.add('sel');
 }
 
 async function enregistrer() {
   const num = document.getElementById('selEquipe').value;
   if (!num) return;
-
   const btn = document.getElementById('btnSave');
   btn.disabled = true;
   btn.innerHTML = '<span class="spin"></span> Enregistrement…';
-
   try {
     const payload = {
-      id:          num,
-      arrivee:     arriveeState,
-      nbPersonnes: Number(document.getElementById('nbPersonnes').value) || 0,
-      nomContact:  ''
+      id:           num,
+      presence:     presenceState,
+      classeDefense:cdState === 'OUI' ? 'Classe de Défense' : 'NON',
+      effectifs:    Number(document.getElementById('effectifsField').value) || 0
     };
-    const data = encodeURIComponent(JSON.stringify(payload));
-    const res  = await apiGet('saveAccueilEquipe&data=' + data);
-
+    const res = await apiGet('saveAccueilEquipe&data=' + encodeURIComponent(JSON.stringify(payload)));
     btn.disabled = false;
     btn.innerHTML = '✓ Enregistrer';
-
     if (res.success) {
-      // Mettre à jour localement
+      toast(presenceState === 'OUI' ? '✓ Équipe ' + num + ' arrivée' :
+            presenceState === 'NON_VENU' ? '✓ Équipe ' + num + ' marquée absente' : '✓ Mis à jour', 'ok');
       const idx = equipesData.findIndex(e => e.num === num);
       if (idx >= 0) {
-        equipesData[idx].arrivee     = arriveeState;
-        equipesData[idx].nbPersonnes = payload.nbPersonnes;
-        equipesData[idx].nomContact  = payload.nomContact;
+        equipesData[idx].presence     = presenceState;
+        equipesData[idx].classeDefense = payload.classeDefense;
+        equipesData[idx].effectifs    = payload.effectifs;
       }
-      toast(arriveeState ? '✓ Équipe ' + num + ' marquée arrivée' : '✓ Mis à jour', 'ok');
       majBadge();
-      // Mettre à jour la couleur dans le select
+      // Couleur dans le select
       const opt = document.querySelector('#selEquipe option[value="' + num + '"]');
-      if (opt) opt.style.color = arriveeState ? 'var(--green)' : '';
+      if (opt) {
+        opt.style.color = presenceState === 'OUI' ? 'var(--green)' :
+                          presenceState === 'NON_VENU' ? 'var(--orange)' : '';
+      }
+      // Passer à l'équipe suivante
+      setTimeout(() => {
+        const sel = document.getElementById('selEquipe');
+        const i   = Array.from(sel.options).findIndex(o => o.value === num);
+        if (i >= 0 && i < sel.options.length - 1) {
+          sel.selectedIndex = i + 1;
+          onEquipeChange();
+        }
+      }, 800);
     } else {
       toast('Erreur : ' + res.message, 'err');
     }
@@ -362,8 +387,7 @@ function annuler() {
 }
 
 function majBadge() {
-  const n = equipesData.filter(e => e.arrivee).length;
-  document.getElementById('badgeArrivees').textContent = n;
+  document.getElementById('badgeArrivees').textContent = equipesData.filter(e => e.presence === 'OUI').length;
 }
 
 function showTab(name) {
@@ -373,81 +397,70 @@ function showTab(name) {
   document.getElementById('tab-' + name).classList.add('active');
 }
 
-function showTabRecap() {
-  showTab('recap');
-  majStats();
-  filtrerRecap();
-}
+function showTabRecap() { showTab('recap'); chargerDonnees(true); majStats(); filtrerRecap(); }
 
 function majStats() {
-  const total    = equipesData.length;
-  const arrivees = equipesData.filter(e => e.arrivee).length;
-  const nbPers   = equipesData.reduce((s,e) => s + (e.arrivee ? e.nbPersonnes : 0), 0);
-  const cd       = equipesData.filter(e => e.arrivee && e.classeDefense && e.classeDefense.toString().trim().toLowerCase() !== '' && e.classeDefense.toString().trim().toLowerCase() !== 'non').length;
-
+  const total   = equipesData.length;
+  const arr     = equipesData.filter(e => e.presence === 'OUI').length;
+  const abs     = equipesData.filter(e => e.presence === 'NON_VENU').length;
+  const att     = total - arr - abs;
+  const cds     = equipesData.filter(e => e.presence === 'OUI' && isCD(e)).length;
   document.getElementById('statsBar').innerHTML = `
-    <div class="stat-card"><div class="stat-card-label">Équipes attendues</div><div class="stat-card-val">${total}</div></div>
-    <div class="stat-card"><div class="stat-card-label">Arrivées</div><div class="stat-card-val green">${arrivees}</div></div>
-    <div class="stat-card"><div class="stat-card-label">En attente</div><div class="stat-card-val gold">${total - arrivees}</div></div>
-    <div class="stat-card"><div class="stat-card-label">Personnes arrivées</div><div class="stat-card-val">${nbPers}</div></div>
-    <div class="stat-card"><div class="stat-card-label">CD arrivées</div><div class="stat-card-val">${cd}</div></div>`;
+    <div class="stat-card"><div class="stat-label">Attendues</div><div class="stat-val">${total}</div></div>
+    <div class="stat-card"><div class="stat-label">Arrivées</div><div class="stat-val green">${arr}</div></div>
+    <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-val orange">${att}</div></div>
+    <div class="stat-card"><div class="stat-label">Absentes</div><div class="stat-val red">${abs}</div></div>
+    <div class="stat-card"><div class="stat-label">CD arrivées</div><div class="stat-val">${cds}</div></div>`;
 }
 
 function setFilter(f) {
   currentFilter = f;
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('filter-' + f).classList.add('active');
+  document.getElementById('f-' + f).classList.add('active');
   filtrerRecap();
 }
 
 function filtrerRecap() {
-  const search = document.getElementById('searchRecap').value.toLowerCase();
+  const s = document.getElementById('searchRecap').value.toLowerCase();
   let data = equipesData.filter(e => {
-    const matchSearch = !search || e.num.includes(search) || e.nom.toLowerCase().includes(search) || e.etab.toLowerCase().includes(search);
-    const isCD = e.classeDefense && e.classeDefense.toString().trim().toLowerCase() !== '' && e.classeDefense.toString().trim().toLowerCase() !== 'non';
-    const matchFilter =
-      currentFilter === 'tous' ? true :
-      currentFilter === 'arrivees' ? e.arrivee :
-      currentFilter === 'attente' ? !e.arrivee :
-      currentFilter === 'cd' ? isCD : true;
-    return matchSearch && matchFilter;
+    const ms = !s || e.num.includes(s) || e.nom.toLowerCase().includes(s) || e.etab.toLowerCase().includes(s);
+    const mf = currentFilter === 'tous' ? true :
+               currentFilter === 'arrivees' ? e.presence === 'OUI' :
+               currentFilter === 'attente' ? e.presence === 'NON' :
+               currentFilter === 'absent' ? e.presence === 'NON_VENU' :
+               currentFilter === 'cd' ? isCD(e) : true;
+    return ms && mf;
   });
-
-  document.getElementById('statRecap').textContent = data.length + ' équipe' + (data.length > 1 ? 's' : '');
   document.getElementById('cntRecap').textContent = data.length;
-  renderRecap(data);
-  majStats();
-}
-
-function renderRecap(data) {
   if (!data.length) {
-    document.getElementById('bodyRecap').innerHTML = '<div style="padding:36px;text-align:center;color:var(--text3);font-style:italic">Aucune équipe trouvée.</div>';
+    document.getElementById('bodyRecap').innerHTML = '<div style="padding:36px;text-align:center;color:var(--text3);font-style:italic">Aucune équipe.</div>';
     return;
   }
-
   let h = `<table><thead><tr>
-    <th>Équipe</th><th>Statut</th><th>Nb personnes</th><th>Contact</th><th>Heure</th>
+    <th>N°</th><th>Équipe / Établissement</th><th>CD</th><th>Statut</th><th>Heure</th>
   </tr></thead><tbody>`;
-
   data.forEach(e => {
-    const isCD = e.classeDefense && e.classeDefense.toString().trim().toLowerCase() !== '' && e.classeDefense.toString().trim().toLowerCase() !== 'non';
-    h += `<tr>
-      <td>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="eq-num">${e.num}</span>
-          ${isCD ? '<span class="badge-cd">CD</span>' : ''}
-        </div>
-        <div class="eq-nom">${e.nom}</div>
-        <div class="eq-etab">${e.etab}</div>
-      </td>
-      <td>${e.arrivee ? '<span class="badge-oui">✓ Arrivée</span>' : '<span class="badge-non">⏳ En attente</span>'}</td>
-      <td style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;color:var(--navy)">${e.arrivee && e.nbPersonnes > 0 ? e.nbPersonnes : '—'}</td>
-      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${e.horodatage || '—'}</td>
+    const cd = isCD(e);
+    const chip = e.presence === 'OUI' ? '<span class="chip-oui">✓ Arrivée</span>' :
+                 e.presence === 'NON_VENU' ? '<span class="chip-abs">✗ Absente</span>' :
+                 '<span class="chip-non">⏳ Attente</span>';
+    h += `<tr onclick="selectionnerEquipe('${e.num}')">
+      <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.num}</span></td>
+      <td><div style="font-weight:600">${e.nom}</div><div style="color:var(--text3);font-size:11px">${e.etab}</div></td>
+      <td>${cd ? '<span class="badge-cd-sm">🎖 ' + e.classeDefense + '</span>' : '<span style="color:var(--text3);font-size:11px">—</span>'}</td>
+      <td>${chip}</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${e.heureArrivee || '—'}</td>
     </tr>`;
   });
-
   h += '</tbody></table>';
   document.getElementById('bodyRecap').innerHTML = h;
+}
+
+function selectionnerEquipe(num) {
+  showTab('accueil');
+  document.getElementById('selEquipe').value = num;
+  onEquipeChange();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function apiGet(action) {
