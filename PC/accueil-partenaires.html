@@ -396,7 +396,7 @@ function filtrerRecap() {
     h += `<tr onclick="selectionnerEquipe('${e.num}')">
       <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.num}</span>${cd ? '<span class="badge-cd-sm">CD</span>' : ''}</td>
       <td style="font-weight:600">${e.nom}</td>
-      <td style="color:var(--text3);font-size:12px">${e.etab}</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:14px;color:var(--navy)">${e.nombre > 0 ? e.nombre + ' pers.' : '—'}</td>
       <td>${e.presence ? '<span class="badge-oui">✓ Arrivé</span>' : '<span class="badge-non">⏳ Attente</span>'}</td>
       <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${e.heureArrivee || '—'}</td>
     </tr>`;
