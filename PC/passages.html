@@ -356,7 +356,7 @@ function renderAteliers(data) {
       <th style="text-align:left">Atelier</th>
       <th>Passages</th>
       <th>Note moy.</th>
-      <th>Comport. moy.</th>
+
     </tr></thead><tbody>`;
 
   data.forEach(a => {
@@ -381,7 +381,7 @@ function renderAteliers(data) {
         </div>
       </td>
       <td><span class="moy-chip">${a.moyenneNote} / 10</span></td>
-      <td><span class="moy-chip" style="background:var(--green-lt);color:var(--green)">${a.moyenneComport || '—'} / 5</span></td>
+
     </tr>`;
 
     const equipesTri = [...a.equipes].sort((x, y) => y.note - x.note);
@@ -531,7 +531,7 @@ function renderEquipes(data) {
       ? Math.round((e.ateliers.reduce((s,a) => s + a.note, 0) / nbAteliers) * 10) / 10
       : 0;
     const moyComport = nbAteliers > 0
-      ? Math.round((e.ateliers.reduce((s,a) => s + (a.comport||0), 0) / nbAteliers) * 10) / 10
+      ? Math.round((e.ateliers.reduce((s,a) => s + (a.comport || 0), 0) / nbAteliers) * 10) / 10
       : 0;
 
     h += `<tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}', this)">
