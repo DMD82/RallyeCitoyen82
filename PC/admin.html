@@ -154,6 +154,12 @@
       <div class="admin-section-title">🧹 Réinitialisations</div>
       <div class="cards-grid">
         <div class="action-card danger">
+          <div class="card-icon">🏠</div>
+          <div class="card-title">Réinitialiser l'accueil</div>
+          <div class="card-desc">Efface Présence et Heure d'arrivée dans Equipes et Ateliers. Utile en cas de test ou d'erreur.</div>
+          <button class="btn danger" onclick="lancer('adminAction', {action:'resetAccueil'})">🗑 Réinitialiser l'accueil</button>
+        </div>
+        <div class="action-card danger">
           <div class="card-icon">🗑</div>
           <div class="card-title">Réinitialiser le Fil Rouge</div>
           <div class="card-desc">Vide toutes les réponses et remet les scores à zéro.</div>
@@ -259,7 +265,7 @@ async function lancer(action, params = {}) {
     if (action === 'lancerImport') endpoint = 'lancerImport';
     if (action === 'lancerCalcul') endpoint = 'lancerCalcul';
     if (action === 'updateFilRouge') endpoint = 'adminAction';
-    const url = API_NOTATION_URL + '?action=' + endpoint + '&data=' + encodeURIComponent(JSON.stringify(payload));
+    const url = API_URL + '?action=' + endpoint + '&data=' + encodeURIComponent(JSON.stringify(payload));
     const res  = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const json = await res.json();
