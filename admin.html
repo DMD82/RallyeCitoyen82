@@ -99,10 +99,26 @@
 
   <main>
     <div class="admin-section">
-      <div class="admin-section-title">📊 Traitement des données</div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;color:var(--text2);font-size:13px;line-height:1.6;">
-        <strong style="color:var(--navy)">ℹ️ Ces actions sont disponibles directement dans Google Sheets</strong><br>
-        Ouvrez le Spreadsheet de notation → menu <strong>Outils Rallye</strong> pour importer les notes, calculer les scores et générer le classement.
+      <div class="admin-section-title">⚙️ Traitement automatique</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:14px;font-size:13px;color:var(--text2);line-height:1.6;">
+        <strong style="color:var(--navy)">ℹ️ Déclencheurs automatiques</strong><br>
+        Dans Google Sheets → menu <strong>⏱️ Automatisation → Installer les déclencheurs</strong><br>
+        • Import des notes : toutes les <strong>1 minute</strong><br>
+        • Calcul + classement : toutes les <strong>5 minutes</strong>
+      </div>
+      <div class="cards-grid">
+        <div class="action-card">
+          <div class="card-icon">▶️</div>
+          <div class="card-title">Lancer le traitement complet</div>
+          <div class="card-desc">Import toutes les notes + calcul des scores + classement. Durée estimée : 2-3 minutes.</div>
+          <button class="btn primary" id="btnTraitement" onclick="lancerTraitementNotation()">▶ Lancer maintenant</button>
+        </div>
+        <div class="action-card">
+          <div class="card-icon">📋</div>
+          <div class="card-title">État du traitement</div>
+          <div class="card-desc" id="etatTraitement">Cliquez pour vérifier l'état et la dernière mise à jour.</div>
+          <button class="btn" onclick="verifierEtatNotation()">🔍 Vérifier</button>
+        </div>
       </div>
     </div>
 
@@ -212,6 +228,8 @@ async function lancer(action, params = {}) {
     let endpoint = 'adminAction';
     if (action === 'resetGlobal') endpoint = 'resetGlobal';
     if (action === 'resetNoteParAtelier') endpoint = 'resetNoteParAtelier';
+    if (action === 'lancerImport') endpoint = 'lancerImport';
+    if (action === 'lancerCalcul') endpoint = 'lancerCalcul';
     const url = API_URL + '?action=' + endpoint + '&data=' + encodeURIComponent(JSON.stringify(payload));
     const res  = await fetch(url);
     if (!res.ok) throw new Error('HTTP ' + res.status);
@@ -232,6 +250,66 @@ async function lancer(action, params = {}) {
 function confirmerAction(action, params, message) {
   if (!confirm('⚠️ ' + message + '\n\nCette action est irréversible.')) return;
   lancer(action, params);
+}
+
+async function lancerTraitementNotation() {
+  if (!authenticated) return;
+  if (typeof API_NOTATION_URL === 'undefined' || API_NOTATION_URL === 'REMPLACER_PAR_URL_WEB_APP_NOTATION') {
+    toast('⚠️ API_NOTATION_URL non configurée dans config.js', 'err');
+    log('⚠️ API_NOTATION_URL non configurée — déployez la Web App dans "Notation Rallye Citoyen 2026"', 'err');
+    return;
+  }
+  const btn = document.getElementById('btnTraitement');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Traitement en cours…';
+  log('▶ Lancement du traitement complet…', 'info');
+  try {
+    const url = API_NOTATION_URL + '?action=lancerTraitement&mdp=' + encodeURIComponent(getMdpAdmin());
+    const res  = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const json = await res.json();
+    btn.disabled = false;
+    btn.innerHTML = '▶ Lancer maintenant';
+    if (json.success) {
+      log('✓ ' + json.message, '');
+      toast('✓ ' + json.message, 'ok');
+    } else {
+      log('✗ ' + json.message, 'err');
+      toast('❌ ' + json.message, 'err');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.innerHTML = '▶ Lancer maintenant';
+    log('✗ Erreur : ' + e.message, 'err');
+    toast('Erreur : ' + e.message, 'err');
+  }
+}
+
+async function verifierEtatNotation() {
+  if (!authenticated) return;
+  if (typeof API_NOTATION_URL === 'undefined' || API_NOTATION_URL === 'REMPLACER_PAR_URL_WEB_APP_NOTATION') {
+    document.getElementById('etatTraitement').textContent = '⚠️ API_NOTATION_URL non configurée dans config.js';
+    return;
+  }
+  try {
+    const url  = API_NOTATION_URL + '?action=etatTraitement';
+    const res  = await fetch(url);
+    const json = await res.json();
+    const el   = document.getElementById('etatTraitement');
+    if (json.enCours) {
+      el.textContent = '🔄 Traitement en cours…';
+      el.style.color = 'var(--gold)';
+    } else if (json.derniereMaj) {
+      const d = new Date(json.derniereMaj);
+      el.textContent = '✅ Dernière MAJ : ' + d.toLocaleTimeString('fr-FR');
+      el.style.color = 'var(--green)';
+    } else {
+      el.textContent = '⚠️ Aucun traitement effectué.';
+      el.style.color = 'var(--text3)';
+    }
+  } catch(e) {
+    document.getElementById('etatTraitement').textContent = '❌ ' + e.message;
+  }
 }
 
 function log(msg, type) {
