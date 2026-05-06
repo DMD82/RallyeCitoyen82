@@ -236,7 +236,7 @@ async function chargerDonnees(silent = false) {
     // Si vide → message d'erreur clair
     if (!silent && equipesData.length === 0) {
       document.getElementById('loadingOverlay').classList.add('hidden');
-      toast('Onglet non initialisé — lancez "Initialiser l'accueil" depuis Admin', 'err');
+      toast('Onglet non initialisé — lancez Initialiser l\'accueil depuis Admin', 'err');
       return;
     }
 
