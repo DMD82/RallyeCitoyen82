@@ -364,8 +364,7 @@ function majStats() {
   document.getElementById('statsBar').innerHTML = `
     <div class="stat-card"><div class="stat-label">Attendues</div><div class="stat-val">${total}</div></div>
     <div class="stat-card"><div class="stat-label">Arrivés</div><div class="stat-val green">${arrivees}</div></div>
-    <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-val orange">${total - arrivees}</div></div>
-    <div class="stat-card"><div class="stat-label">CD arrivés</div><div class="stat-val">${cds}</div></div>`;
+    <div class="stat-card"><div class="stat-label">En attente</div><div class="stat-val orange">${total - arrivees}</div></div>;
 }
 
 function setFilter(f) {
