@@ -99,25 +99,35 @@
 
   <main>
     <div class="admin-section">
-      <div class="admin-section-title">⚙️ Traitement automatique</div>
-      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:14px;font-size:13px;color:var(--text2);line-height:1.6;">
-        <strong style="color:var(--navy)">ℹ️ Déclencheurs automatiques</strong><br>
-        Dans Google Sheets → menu <strong>⏱️ Automatisation → Installer les déclencheurs</strong><br>
-        • Import des notes : toutes les <strong>1 minute</strong><br>
-        • Calcul + classement : toutes les <strong>5 minutes</strong>
+      <div class="admin-section-title">⚙️ Traitement des données</div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.5;">
+        <strong style="color:var(--navy)">⏱️ Automatique</strong> — déclencheur toutes les 5 min via Google Sheets → <strong>⏱️ Automatisation → Installer le déclencheur</strong><br>
+        <strong style="color:var(--navy)">▶ Manuel</strong> — utilisez les boutons ci-dessous pour forcer un traitement immédiat
       </div>
       <div class="cards-grid">
         <div class="action-card">
-          <div class="card-icon">▶️</div>
-          <div class="card-title">Lancer le traitement complet</div>
-          <div class="card-desc">Import toutes les notes + calcul des scores + classement. Durée estimée : 2-3 minutes.</div>
-          <button class="btn primary" id="btnTraitement" onclick="lancerTraitementNotation()">▶ Lancer maintenant</button>
+          <div class="card-icon">📥</div>
+          <div class="card-title">Importer les notes</div>
+          <div class="card-desc">Lit tous les formulaires et peuple "Note par Atelier". Durée : ~2-3 min selon le nombre d'ateliers.</div>
+          <button class="btn primary" onclick="lancer('adminAction', {action:'importAtelierData'})">▶ Importer</button>
         </div>
         <div class="action-card">
-          <div class="card-icon">📋</div>
-          <div class="card-title">État du traitement</div>
-          <div class="card-desc" id="etatTraitement">Cliquez pour vérifier l'état et la dernière mise à jour.</div>
-          <button class="btn" onclick="verifierEtatNotation()">🔍 Vérifier</button>
+          <div class="card-icon">➕</div>
+          <div class="card-title">Calculer les totaux</div>
+          <div class="card-desc">Calcule les scores pondérés depuis "Note par Atelier" + Fil Rouge. Peuple "Somme des Notes".</div>
+          <button class="btn primary" onclick="lancer('adminAction', {action:'calculateSumsAndAverages'})">▶ Calculer</button>
+        </div>
+        <div class="action-card">
+          <div class="card-icon">🏆</div>
+          <div class="card-title">Générer le classement</div>
+          <div class="card-desc">Construit le classement final depuis "Somme des Notes". Peuple l'onglet "Classement".</div>
+          <button class="btn primary" onclick="lancer('adminAction', {action:'generateClassement'})">▶ Générer</button>
+        </div>
+        <div class="action-card">
+          <div class="card-icon">▶️</div>
+          <div class="card-title">Traitement complet</div>
+          <div class="card-desc">Enchaîne import + calcul + classement en une seule opération. Durée estimée : 3-4 minutes.</div>
+          <button class="btn primary" id="btnTraitement" onclick="lancerTraitementComplet()">▶ Tout lancer</button>
         </div>
       </div>
     </div>
@@ -263,6 +273,46 @@ async function lancer(action, params = {}) {
 function confirmerAction(action, params, message) {
   if (!confirm('⚠️ ' + message + '\n\nCette action est irréversible.')) return;
   lancer(action, params);
+}
+
+async function lancerTraitementComplet() {
+  if (!authenticated) return;
+  const btn = document.getElementById('btnTraitement');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> En cours…';
+  log('▶ Traitement complet : import + calcul + classement…', 'info');
+  try {
+    // Import
+    log('  📥 Import des notes…', 'info');
+    const r1 = await lancerAction_('importAtelierData');
+    if (!r1.success) { log('  ✗ Import : ' + r1.message, 'err'); }
+    else { log('  ✓ ' + r1.message, ''); }
+    // Calcul
+    log('  📊 Calcul des totaux…', 'info');
+    const r2 = await lancerAction_('calculateSumsAndAverages');
+    if (!r2.success) { log('  ✗ Calcul : ' + r2.message, 'err'); }
+    else { log('  ✓ ' + r2.message, ''); }
+    // Classement
+    log('  🏆 Classement…', 'info');
+    const r3 = await lancerAction_('generateClassement');
+    if (!r3.success) { log('  ✗ Classement : ' + r3.message, 'err'); }
+    else { log('  ✓ ' + r3.message, ''); }
+    toast('✓ Traitement complet terminé', 'ok');
+  } catch(e) {
+    log('✗ Erreur : ' + e.message, 'err');
+    toast('Erreur : ' + e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '▶ Tout lancer';
+  }
+}
+
+async function lancerAction_(action) {
+  const payload = { action, motDePasse: getMdpAdmin() };
+  const url = API_URL + '?action=adminAction&data=' + encodeURIComponent(JSON.stringify(payload));
+  const res  = await fetch(url);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
 }
 
 async function lancerTraitementNotation() {
