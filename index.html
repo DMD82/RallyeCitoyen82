@@ -501,6 +501,7 @@ function renderEquipes(data) {
     const nb = e.ateliers.length;
     const moy = nb > 0 ? Math.round((e.ateliers.reduce((s,a)=>s+a.note,0)/nb)*10)/10 : 0;
     const moyC = nb > 0 ? Math.round((e.ateliers.reduce((s,a)=>s+(a.comport||0),0)/nb)*10)/10 : 0;
+    const moyC = nb > 0 ? Math.round((e.ateliers.reduce((s,a)=>s+(a.comport||0),0)/nb)*10)/10 : 0;
     h += `<tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}',this)">
       <td><div style="display:flex;align-items:center;">
         <span class="toggle-icon" id="icon-${id}">▶</span>
