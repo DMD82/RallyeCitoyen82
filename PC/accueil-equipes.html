@@ -340,7 +340,7 @@ async function enregistrer() {
     const payload = {
       id:           num,
       presence:     presenceState,
-      // classeDefense non envoyé : col D a une validation qui bloque l'écriture
+      classeDefense:cdState === 'OUI' ? 'Classe de Défense' : 'NON',
       effectifs:    Number(document.getElementById('effectifsField').value) || 0
     };
     const res = await apiGet('saveAccueilEquipe&data=' + encodeURIComponent(JSON.stringify(payload)));
