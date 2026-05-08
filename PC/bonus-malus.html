@@ -144,6 +144,12 @@
   .toast.ok  { background: var(--green); }
   .toast.err { background: var(--red); }
   .toast.wrn { background: var(--gold); color: var(--navy); }
+  .bm-equipe-row { background: var(--white); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+  .bm-equipe-header { display: flex; align-items: center; gap: 8px; padding: 12px 14px; cursor: pointer; transition: background .15s; }
+  .bm-equipe-header:hover { background: var(--bg); }
+  .bm-detail { border-top: 1px solid var(--border); }
+  .bm-detail.hidden { display: none; }
+  .toggle-icon { display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:4px;background:var(--bg2);border:1px solid var(--border);font-size:9px;font-weight:700;color:var(--text3);flex-shrink:0;font-family:monospace; }
 
   .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: rot .6s linear infinite; }
   @keyframes rot { to { transform: rotate(360deg); } }
@@ -208,6 +214,14 @@
       <div class="section-body">
         <input type="text" class="motif-input" id="motif"
           placeholder="Ex: Tenue irréprochable, Retard au départ…">
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">Attribué par (optionnel)</div>
+      <div class="section-body">
+        <input type="text" class="motif-input" id="attribuePar"
+          placeholder="Ex: Jury atelier 12, Équipe organisation…">
       </div>
     </div>
 
@@ -369,9 +383,10 @@ async function enregistrer() {
 
   try {
     const data = encodeURIComponent(JSON.stringify({
-      numEquipe: num,
-      valeur:    selectedVal,
-      motif:     motif
+      numEquipe:   num,
+      valeur:      selectedVal,
+      motif:       motif,
+      attribuePar: document.getElementById('attribuePar').value.trim()
     }));
     const res = await apiGet(`saveBonusMalus&data=${data}`);
 
@@ -406,35 +421,85 @@ function showTabHistorique() {
 }
 
 function renderHistorique() {
-  const tbl  = document.getElementById('tblBody');
-  const cnt  = document.getElementById('tblCnt');
+  const cnt = document.getElementById('tblCnt');
   cnt.textContent = historique.length;
 
   if (!historique.length) {
-    tbl.innerHTML = '<div class="empty">Aucune attribution pour le moment</div>';
+    document.getElementById('tblBody').innerHTML = '<div class="empty">Aucune attribution pour le moment</div>';
     return;
   }
 
-  let h = `<table><thead><tr>
-    <th>Heure</th><th>Équipe</th><th>Valeur</th><th>Motif</th><th>Total comportement</th>
-  </tr></thead><tbody>`;
-
+  // Grouper par équipe
+  const byEquipe = new Map();
   historique.forEach(h2 => {
-    const isPos = h2.valeur > 0;
-    h += `<tr>
-      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${h2.horodatage || '—'}</td>
-      <td><span class="eq-num">${h2.num}</span><br><span style="font-size:11px;color:var(--text3)">${h2.nom}</span></td>
-      <td><span class="val-chip ${isPos ? 'pos' : 'neg'}">${isPos ? '+' : ''}${h2.valeur}</span></td>
-      <td style="font-size:13px;color:var(--text2);font-style:italic">${h2.motif || '—'}</td>
-      <td><span class="total-chip">${h2.total !== undefined ? h2.total : '—'}</span></td>
-    </tr>`;
+    if (!byEquipe.has(h2.num)) byEquipe.set(h2.num, { num: h2.num, nom: h2.nom, entries: [] });
+    byEquipe.get(h2.num).entries.push(h2);
   });
 
-  h += '</tbody></table>';
+  let h = '';
+  let rowIdx = 0;
+
+  byEquipe.forEach((eq, num) => {
+    const total    = eq.entries.reduce((s, e) => s + (e.valeur || 0), 0);
+    const nb       = eq.entries.length;
+    const nbPos    = eq.entries.filter(e => e.valeur > 0).length;
+    const nbNeg    = eq.entries.filter(e => e.valeur < 0).length;
+    const rid      = 'bm-' + num;
+
+    h += `<div class="bm-equipe-row" id="row-${rid}">
+      <div class="bm-equipe-header" onclick="toggleBM('${rid}')">
+        <span class="toggle-icon" id="icon-${rid}">▶</span>
+        <span class="eq-num">${num}</span>
+        <span style="font-weight:600;margin-left:6px">${eq.nom}</span>
+        <span style="margin-left:auto;display:flex;gap:6px;align-items:center">
+          ${nbPos > 0 ? '<span class="val-chip pos">+' + nbPos + ' bonus</span>' : ''}
+          ${nbNeg > 0 ? '<span class="val-chip neg">' + nbNeg + ' malus</span>' : ''}
+          <span class="total-chip">Total: ${total > 0 ? '+' : ''}${total}</span>
+        </span>
+      </div>
+      <div class="bm-detail hidden" id="detail-${rid}">
+        <table style="width:100%;border-collapse:collapse;font-size:12px">
+          <thead><tr style="background:var(--bg)">
+            <th style="padding:6px 10px;text-align:left;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--text3)">Heure</th>
+            <th style="padding:6px 10px;text-align:center">Valeur</th>
+            <th style="padding:6px 10px;text-align:left">Motif</th>
+            <th style="padding:6px 10px;text-align:left">Attribué par</th>
+          </tr></thead><tbody>`;
+    eq.entries.forEach(e2 => {
+      const isPos = e2.valeur > 0;
+      h += `<tr style="border-top:1px solid var(--border)">
+        <td style="padding:6px 10px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${e2.horodatage || '—'}</td>
+        <td style="padding:6px 10px;text-align:center"><span class="val-chip ${isPos ? 'pos' : 'neg'}">${isPos ? '+' : ''}${e2.valeur}</span></td>
+        <td style="padding:6px 10px;color:var(--text2)">${e2.motif || '—'}</td>
+        <td style="padding:6px 10px;color:var(--text3);font-size:11px">${e2.attribuePar || '—'}</td>
+      </tr>`;
+    });
+    h += `</tbody></table>
+      </div>
+    </div>`;
+    rowIdx++;
+  });
+
   document.getElementById('tblBody').innerHTML = h;
 }
 
-// ── UTILITAIRES ──
+function toggleBM(id) {
+  const detail = document.getElementById('detail-' + id);
+  const icon   = document.getElementById('icon-' + id);
+  if (detail.classList.contains('hidden')) {
+    detail.classList.remove('hidden');
+    icon.textContent = '▼';
+    icon.style.background = 'var(--navy)';
+    icon.style.color = 'white';
+  } else {
+    detail.classList.add('hidden');
+    icon.textContent = '▶';
+    icon.style.background = '';
+    icon.style.color = '';
+  }
+}
+
+
 function reset() {
   document.getElementById('selEquipe').value = '';
   document.getElementById('motif').value = '';
