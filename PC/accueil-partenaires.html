@@ -51,9 +51,7 @@
   .toggle-btn{padding:10px 20px;border-radius:10px;font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:13px;letter-spacing:.06em;cursor:pointer;transition:all .15s;border:2px solid transparent;}
   .toggle-btn.non{background:var(--bg2);border-color:var(--border);color:var(--text3);}
   .toggle-btn.non:hover{border-color:var(--green);color:var(--green);}
-  .toggle-btn.non.selected{background:var(--red-lt);border-color:var(--red);color:var(--red);}
-  .toggle-btn.oui{background:var(--bg2);border-color:var(--border);color:var(--text3);}
-  .toggle-btn.oui.selected{background:var(--green);border-color:var(--green);color:white;}
+  .toggle-btn.oui{background:var(--green);border-color:var(--green);color:white;}
 
   /* FORM */
   .field-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:6px;}
@@ -240,7 +238,7 @@ async function chargerDonnees(silent = false) {
         const o = document.createElement('option');
         o.value = e.num;
         const cd = e.classeDefense && e.classeDefense.toString().trim().toLowerCase() !== '' && e.classeDefense.toString().trim().toLowerCase() !== 'non' ? ' [CD]' : '';
-        o.textContent = e.num + ' — ' + e.nom + cd + '  ·  ' + e.etab;
+        o.textContent = e.num + ' — ' + e.nom;
         if (e.presence) o.style.color = 'var(--green)';
         sel.appendChild(o);
       });
@@ -279,6 +277,8 @@ function onEquipeChange() {
   majToggle();
 
   document.getElementById('nbPersonnes').value = eq && eq.nombre > 0 ? eq.nombre : '';
+  document.getElementById('infoNom').textContent = eq ? (eq.num + ' — ' + eq.nom) : '—';
+  document.getElementById('nomContact').value  = eq ? eq.nomContact : '';
 }
 
 function setArrivee(val) {
@@ -290,11 +290,11 @@ function majToggle() {
   const btnOui = document.getElementById('btnOui');
   const btnNon = document.getElementById('btnNon');
   if (arriveeState) {
-    btnOui.className = 'toggle-btn oui selected';
+    btnOui.className = 'toggle-btn oui';
     btnNon.className = 'toggle-btn non';
   } else {
-    btnOui.className = 'toggle-btn non';
-    btnNon.className = 'toggle-btn non selected';
+    btnOui.className = 'toggle-btn';
+    btnNon.className = 'toggle-btn non';
   }
 }
 
@@ -323,8 +323,9 @@ async function enregistrer() {
       // Mettre à jour localement
       const idx = equipesData.findIndex(e => e.num === num);
       if (idx >= 0) {
-        equipesData[idx].presence = arriveeState;
-        equipesData[idx].nombre   = payload.nombre;
+        equipesData[idx].arrive      = arriveeState;
+        equipesData[idx].nbPersonnes = payload.nbPersonnes;
+        equipesData[idx].nomContact  = payload.nomContact;
       }
       toast(arriveeState ? '✓ Partenaire ' + num + ' marqué arrivé' : '✓ Mis à jour', 'ok');
       majBadge();
@@ -411,7 +412,7 @@ function renderRecap(data) {
   }
 
   let h = `<table><thead><tr>
-    <th>Équipe</th><th>Statut</th><th>Nb personnes</th><th>Heure</th>
+    <th>Équipe</th><th>Statut</th><th>Nb personnes</th><th>Contact</th><th>Heure</th>
   </tr></thead><tbody>`;
 
   data.forEach(e => {
@@ -436,9 +437,7 @@ function renderRecap(data) {
 async function apiGet(action) {
   const res = await fetch(API_URL + '?action=' + action);
   if (!res.ok) throw new Error('HTTP ' + res.status);
-  const text = await res.text();
-  try { return JSON.parse(text); }
-  catch(e) { throw new Error('Réponse invalide : ' + text.slice(0, 120)); }
+  return res.json();
 }
 
 function toast(msg, type) {
