@@ -325,9 +325,12 @@ async function lancerAction_(action) {
     return { success: false, message: 'API_NOTATION_URL non configurée dans config.js' };
   }
   const url = API_NOTATION_URL + '?action=' + action + '&mdp=' + encodeURIComponent(getMdpAdmin());
+  log('URL: ' + url.slice(0, 80) + '…', 'info');
   const res  = await fetch(url);
   if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch(e) { throw new Error('Réponse invalide : ' + text.slice(0, 120)); }
 }
 
 async function lancerNotation(action) {
