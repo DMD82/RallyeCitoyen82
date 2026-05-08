@@ -9,7 +9,7 @@
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbwrGBjSO8HqwkhH_8fTy7jnwqHCgEvKd59u04pVhMHLk7ld0av5EkKNf2AdXIZlM9Ks/exec';
 
-const API_NOTATION_URL = 'https://script.google.com/macros/s/AKfycbwLCNFWMXTPUJkrPPTnKebZA81bt4fasMQUbfNLALwCWBvsWvQs_FjfgSP_8NHZOnwRSw/exec';
+const API_NOTATION_URL = 'https://script.google.com/macros/s/AKfycbwY6IlNPdlWcIVtI1CVKxE-_wnfcrAT4A2a0gPHrdrQnHASSnup9fIvT80oMx99NbW0Vw/exec';
 
 // ============================================================
 // MOTS DE PASSE
