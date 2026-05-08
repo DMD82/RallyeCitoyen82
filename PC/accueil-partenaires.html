@@ -238,7 +238,7 @@ async function chargerDonnees(silent = false) {
         const o = document.createElement('option');
         o.value = e.num;
         const cd = e.classeDefense && e.classeDefense.toString().trim().toLowerCase() !== '' && e.classeDefense.toString().trim().toLowerCase() !== 'non' ? ' [CD]' : '';
-        o.textContent = e.num + ' — ' + e.nom + cd + '  ·  ' + e.etab;
+        o.textContent = e.num + ' — ' + e.nom;
         if (e.presence) o.style.color = 'var(--green)';
         sel.appendChild(o);
       });
@@ -289,13 +289,8 @@ function setArrivee(val) {
 function majToggle() {
   const btnOui = document.getElementById('btnOui');
   const btnNon = document.getElementById('btnNon');
-  if (arriveeState) {
-    btnOui.className = 'toggle-btn oui';
-    btnNon.className = 'toggle-btn non';
-  } else {
-    btnOui.className = 'toggle-btn';
-    btnNon.className = 'toggle-btn non';
-  }
+  btnOui.className = 'toggle-btn oui' + (arriveeState ? ' selected' : '');
+  btnNon.className = 'toggle-btn non' + (!arriveeState ? ' selected' : '');
 }
 
 async function enregistrer() {
@@ -422,11 +417,10 @@ function renderRecap(data) {
           <span class="eq-num">${e.num}</span>
         </div>
         <div class="eq-nom">${e.nom}</div>
-        <div class="eq-etab">${e.etab}</div>
       </td>
       <td>${e.presence ? '<span class="badge-oui">✓ Arrivé</span>' : '<span class="badge-non">⏳ En attente</span>'}</td>
       <td style="font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:15px;color:var(--navy)">${e.presence && e.nombre > 0 ? e.nombre : '—'}</td>
-      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${e.horodatage || '—'}</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)">${e.heureArrivee || '—'}</td>
     </tr>`;
   });
 
