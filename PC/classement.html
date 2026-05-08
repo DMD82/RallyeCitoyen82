@@ -297,6 +297,7 @@ function renderTopTable(data, scoreCol, isComport) {
   let h = `<div class="tbl-wrap"><table><thead><tr>
     <th>Rang</th><th style="text-align:left">Équipe</th>
     <th>${isComport ? 'Comportement' : 'Note pondérée'}</th>
+    ${isComport ? '' : '<th>Note globale</th><th>Comport. global</th><th>Total comport.</th>'}
     <th>Nb ateliers</th>
   </tr></thead><tbody>`;
 
@@ -329,6 +330,10 @@ function renderTopTable(data, scoreCol, isComport) {
           ? `<span class="comport-chip">${scoreVal}</span>`
           : `<span class="pond-chip ${chipClass}">${scoreVal}</span>`}
       </td>
+      ${isComport ? '' : `
+      <td style="text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--text2)">${e.totalGlobal ?? '—'}</td>
+      <td style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green)">${e.comportGlobal ?? '—'}</td>
+      <td style="text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2)">${e.totalComportement ?? '—'}</td>`}
       <td><span class="nb-chip">${e.nbAteliers}</span></td>
     </tr>`;
   });
