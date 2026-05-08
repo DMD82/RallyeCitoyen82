@@ -153,6 +153,20 @@
   .detail-item { background:var(--white);border:1px solid var(--border);border-radius:8px;padding:8px 12px; }
   .detail-item-label { font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:3px; }
   .detail-item-val { font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:14px;color:var(--navy); }
+
+  /* ── RESPONSIVE MOBILE ── */
+  @media (max-width: 768px) {
+    .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tbl-wrap table { min-width: 600px; }
+    .bloc .tbl-wrap table { min-width: 500px; }
+    main { padding: 12px 10px 40px; }
+    th, td { padding: 7px 8px; font-size: 11px; }
+    .pond-chip { min-width: 36px; font-size: 12px; }
+    .eq-nom { font-size: 12px; }
+    .eq-etab { font-size: 10px; }
+    .sort-btns { flex-wrap: wrap; }
+    .toolbar { gap: 6px; }
+  }
 </style>
 </head>
 <body>
