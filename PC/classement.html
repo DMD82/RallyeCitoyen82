@@ -134,6 +134,20 @@
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 11px 22px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 999; transition: transform .25s ease; letter-spacing: .04em; box-shadow: 0 8px 30px rgba(26,39,68,0.25); white-space: nowrap; }
   .toast.on { transform: translateX(-50%) translateY(0); }
   .toast.err { background: var(--red); }
+
+  /* ── RESPONSIVE MOBILE ── */
+  @media (max-width: 768px) {
+    .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tbl-wrap table { min-width: 600px; }
+    .bloc .tbl-wrap table { min-width: 500px; }
+    main { padding: 12px 10px 40px; }
+    th, td { padding: 7px 8px; font-size: 11px; }
+    .pond-chip { min-width: 36px; font-size: 12px; }
+    .eq-nom { font-size: 12px; }
+    .eq-etab { font-size: 10px; }
+    .sort-btns { flex-wrap: wrap; }
+    .toolbar { gap: 6px; }
+  }
 </style>
 </head>
 <body>
