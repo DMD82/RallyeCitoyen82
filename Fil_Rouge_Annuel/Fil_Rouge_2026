@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fil Rouge Citoyen 2025-2026 — Tableau de bord</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bleu:    #1a2e4a;
+    --bleu2:   #2a4a72;
+    --or:      #c9922a;
+    --or2:     #f0c060;
+    --rouge:   #8b1a1a;
+    --blanc:   #f5f2ec;
+    --gris:    #d8d4cc;
+    --gris2:   #aea99e;
+    --texte:   #1a1a18;
+    --texte2:  #4a4a44;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--blanc);
+    color: var(--texte);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--bleu);
+    color: #fff;
+    padding: 3.5rem 3rem 3rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 320px; height: 320px;
+    border: 40px solid rgba(201,146,42,0.12);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 200px;
+    width: 200px; height: 200px;
+    border: 24px solid rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; position: relative; z-index: 1; }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--or2);
+    margin-bottom: 0.75rem;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+  }
+  .hero-title span { color: var(--or2); }
+  .hero-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    max-width: 560px;
+    margin-bottom: 2rem;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.12);
+  }
+  .hero-stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--or2);
+    line-height: 1;
+  }
+  .hero-stat-lbl {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 1000px; margin: 0 auto; padding: 2.5rem 2rem; }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--bleu);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--or);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .dot {
+    width: 8px; height: 8px;
+    background: var(--or);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .section { margin-bottom: 3rem; }
+
+  /* ── PODIUM ── */
+  .podium-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    align-items: end;
+  }
+  .podium-card {
+    border-radius: 12px;
+    padding: 1.5rem 1.25rem 1.25rem;
+    text-align: center;
+    position: relative;
+  }
+  .podium-1 {
+    background: var(--bleu);
+    color: #fff;
+    padding-top: 2rem;
+  }
+  .podium-2 { background: #eae7df; }
+  .podium-3 { background: #f0ece4; }
+  .podium-medal {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  .podium-1 .podium-medal { color: var(--or2); }
+  .podium-2 .podium-medal { color: #888; }
+  .podium-3 .podium-medal { color: #a0735a; }
+  .podium-name {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+  .podium-1 .podium-name { color: #fff; }
+  .podium-ref {
+    font-size: 12px;
+    color: var(--gris2);
+    margin-bottom: 0.75rem;
+  }
+  .podium-1 .podium-ref { color: rgba(255,255,255,0.5); }
+  .podium-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+  }
+  .podium-1 .podium-score { color: var(--or2); }
+  .podium-2 .podium-score { color: var(--bleu); }
+  .podium-3 .podium-score { color: var(--bleu); }
+  .podium-actions { font-size: 12px; color: var(--gris2); margin-top: 2px; }
+  .podium-1 .podium-actions { color: rgba(255,255,255,0.45); }
+  .podium-crown {
+    position: absolute;
+    top: -14px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--or);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 12px;
+    border-radius: 20px;
+  }
+
+  /* ── CLASSEMENT TABLE ── */
+  .ranking-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .ranking-table thead th {
+    background: var(--bleu);
+    color: rgba(255,255,255,0.7);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px 14px;
+    text-align: left;
+  }
+  .ranking-table thead th:last-child { text-align: right; }
+  .ranking-table tbody tr { border-bottom: 1px solid var(--gris); transition: background 0.15s; }
+  .ranking-table tbody tr:hover { background: #eeebe2; }
+  .ranking-table td { padding: 11px 14px; vertical-align: middle; }
+  .rank-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .rn-1 { background: var(--bleu); color: var(--or2); }
+  .rn-2 { background: #ccc; color: #444; }
+  .rn-3 { background: #d4a88a; color: #5a2a10; }
+  .rn-other { background: var(--gris); color: var(--texte2); }
+  .etab-name { font-weight: 600; font-size: 14px; }
+  .etab-ref { font-size: 12px; color: var(--gris2); }
+  .bar-cell { min-width: 120px; }
+  .bar-track { background: var(--gris); border-radius: 3px; height: 5px; margin-top: 5px; }
+  .bar-fill { height: 5px; border-radius: 3px; background: var(--bleu2); }
+  .score-pts { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--bleu); text-align: right; }
+  .score-count { font-size: 11px; color: var(--gris2); text-align: right; }
+
+  /* ── CHART ── */
+  .chart-box {
+    background: #fff;
+    border: 1px solid var(--gris);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .chart-box canvas { max-height: 280px; }
+
+  /* ── DÉTAIL ÉTABLISSEMENTS ── */
+  .etab-cards { display: flex; flex-direction: column; gap: 1.5rem; }
+  .etab-card {
+    background: #fff;
+    border: 1px solid var(--gris);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .etab-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: var(--bleu);
+    color: #fff;
+  }
+  .etab-rank-badge {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .etab-rank-badge.gold { background: var(--or); }
+  .etab-card-info { flex: 1; }
+  .etab-card-name { font-weight: 600; font-size: 16px; }
+  .etab-card-sub { font-size: 12px; color: rgba(255,255,255,0.55); }
+  .etab-card-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--or2);
+    text-align: right;
+  }
+  .etab-card-score span { display: block; font-size: 11px; font-weight: 400; color: rgba(255,255,255,0.45); font-family: 'DM Sans', sans-serif; }
+  .etab-card-body { padding: 1.25rem 1.5rem; }
+  .missions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+    margin-bottom: 1rem;
+  }
+  .mission-pill {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: var(--blanc);
+    border: 1px solid var(--gris);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 12.5px;
+  }
+  .mission-pts {
+    background: var(--bleu);
+    color: var(--or2);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .mission-label { color: var(--texte2); line-height: 1.4; }
+
+  /* ── TÉMOIGNAGES ── */
+  .temoignages-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .temoignage-card {
+    background: #fff;
+    border: 1px solid var(--gris);
+    border-left: 4px solid var(--or);
+    border-radius: 0 8px 8px 0;
+    padding: 1.25rem;
+  }
+  .temoignage-text {
+    font-size: 13.5px;
+    font-style: italic;
+    color: var(--texte2);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+  }
+  .temoignage-author {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bleu);
+  }
+  .temoignage-etab {
+    font-size: 11px;
+    color: var(--gris2);
+  }
+
+  /* ── FAITS MARQUANTS ── */
+  .highlights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .highlight-card {
+    background: #fff;
+    border: 1px solid var(--gris);
+    border-radius: 10px;
+    padding: 1.25rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .highlight-icon {
+    width: 38px; height: 38px;
+    background: var(--bleu);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--or2);
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .highlight-title { font-weight: 600; font-size: 14px; margin-bottom: 3px; color: var(--bleu); }
+  .highlight-desc { font-size: 13px; color: var(--texte2); line-height: 1.5; }
+
+  /* ── CONCLUSION ── */
+  .conclusion {
+    background: var(--bleu);
+    color: #fff;
+    border-radius: 14px;
+    padding: 2.5rem;
+    margin-top: 1rem;
+  }
+  .conclusion-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--or2);
+    margin-bottom: 1.5rem;
+  }
+  .conclusion-body { font-size: 14.5px; color: rgba(255,255,255,0.8); line-height: 1.8; }
+  .conclusion-body strong { color: #fff; }
+  .conclusion-body p { margin-bottom: 1rem; }
+  .conclusion-body p:last-child { margin-bottom: 0; }
+  .winner-banner {
+    background: var(--or);
+    color: #fff;
+    border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .winner-trophy {
+    font-size: 36px;
+    line-height: 1;
+  }
+  .winner-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: 0.85; margin-bottom: 2px; }
+  .winner-name { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; }
+  .winner-detail { font-size: 13px; opacity: 0.85; }
+
+  /* ── STATS MISSIONS ── */
+  .type-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .type-card {
+    background: #fff;
+    border: 1px solid var(--gris);
+    border-radius: 8px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .type-count { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--bleu); }
+  .type-label { font-size: 12px; color: var(--texte2); line-height: 1.3; margin-top: 3px; }
+
+  /* ── PRINT ── */
+  @media print {
+    body { font-size: 13px; }
+    .hero { padding: 2rem; }
+    .page { padding: 1.5rem; }
+    .temoignages-grid, .highlights-grid { grid-template-columns: 1fr 1fr; }
+    .podium-grid { grid-template-columns: 1fr 1.1fr 1fr; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-inner > * { animation: fadeUp 0.5s ease both; }
+  .hero-eyebrow { animation-delay: 0.05s; }
+  .hero-title   { animation-delay: 0.15s; }
+  .hero-sub     { animation-delay: 0.25s; }
+  .hero-stats   { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Rallye Citoyen 82 · Année scolaire 2025-2026</div>
+    <h1 class="hero-title">Fil Rouge <span>Citoyen</span><br>Tableau de bord</h1>
+    <p class="hero-sub">Mémoire, citoyenneté et engagement local — bilan des réalisations des classes défense du Tarn-et-Garonne.</p>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-val">9</div>
+        <div class="hero-stat-lbl">Établissements</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">107</div>
+        <div class="hero-stat-lbl">Actions menées</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">810</div>
+        <div class="hero-stat-lbl">Points cumulés</div>
+      </div>
+      <div>
+        <div class="hero-stat-val">Sept. 25 — Mai 26</div>
+        <div class="hero-stat-lbl">Période</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- PODIUM -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Podium</div>
+    <div class="podium-grid">
+
+      <!-- 2e -->
+      <div class="podium-card podium-2">
+        <div class="podium-medal">②</div>
+        <div class="podium-name">Collège La Sainte Famille</div>
+        <div class="podium-ref">M. Reinaldos · Moissac</div>
+        <div class="podium-score">204 pts</div>
+        <div class="podium-actions">24 missions</div>
+      </div>
+
+      <!-- 1er -->
+      <div class="podium-card podium-1">
+        <div class="podium-crown">★ Vainqueur</div>
+        <div class="podium-medal">①</div>
+        <div class="podium-name">LEAP Lestonnac</div>
+        <div class="podium-ref">A. Beyneix · Beaumont-de-Lomagne</div>
+        <div class="podium-score">261 pts</div>
+        <div class="podium-actions">32 missions</div>
+      </div>
+
+      <!-- 3e -->
+      <div class="podium-card podium-3">
+        <div class="podium-medal">③</div>
+        <div class="podium-name">Collège Pierre Flamens</div>
+        <div class="podium-ref">S. Authier · Castelsarrasin</div>
+        <div class="podium-score">126 pts</div>
+        <div class="podium-actions">18 missions</div>
+      </div>
+
+    </div>
+
+    <!-- Classement complet -->
+    <table class="ranking-table">
+      <thead>
+        <tr>
+          <th style="width:50px;">Rang</th>
+          <th>Établissement</th>
+          <th>Référent</th>
+          <th>Actions</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody id="rankingBody"></tbody>
+    </table>
+
+    <div class="chart-box">
+      <div style="position:relative;width:100%;height:260px;">
+        <canvas id="scoreChart" role="img" aria-label="Graphique des scores par établissement">Scores : LEAP Lestonnac 261 pts, Sainte Famille 204 pts, Pierre Flamens 126 pts, A. Perbosc 108 pts, Institut Familial 96 pts, Ste Claire 82 pts, LP Théas 52 pts, Pierre Bayrou 51 pts, Azana 30 pts.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- DÉTAIL ÉTABLISSEMENTS -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Détail par établissement</div>
+    <div class="etab-cards" id="etabCards"></div>
+  </div>
+
+  <!-- TÉMOIGNAGES -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Parole aux élèves — témoignages marquants</div>
+    <div class="temoignages-grid">
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« Quelle immense émotion de porter fièrement nos couleurs bleu, blanc, rouge ! Mais quel stress tout de même lorsque Madame la Députée est venue me parler ! »</div>
+        <div class="temoignage-author">Chloé, 3e — porte-drapeau</div>
+        <div class="temoignage-etab">Collège La Sainte Famille · Cérémonie du 11 novembre à Moissac</div>
+      </div>
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« Ce matin, j'ai été invité à la cérémonie de présentation au drapeau des jeunes recrues du 31e régiment. Quelle émotion de voir tous ces militaires au garde-à-vous ! Cela donne vraiment envie de s'engager. »</div>
+        <div class="temoignage-author">Léo, 3e</div>
+        <div class="temoignage-etab">Collège La Sainte Famille · 31e Régiment du Génie</div>
+      </div>
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« Participer à cette journée a été un honneur. Porter le drapeau, c'est représenter la mémoire et les valeurs de notre pays. »</div>
+        <div class="temoignage-author">Chloé, élève porte-drapeau</div>
+        <div class="temoignage-etab">Collège La Sainte Famille · Formation porte-drapeaux, Caussade</div>
+      </div>
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« J'hallucine, ils arrivent à traiter l'équivalent de 60 piscines en une heure afin d'avoir de l'eau potable ! »</div>
+        <div class="temoignage-author">Romane, 3e</div>
+        <div class="temoignage-etab">Collège La Sainte Famille · VIP Days, 31e Régiment du Génie</div>
+      </div>
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« Les valeurs françaises m'ont été transmises par mes parents, renforcées par mon engagement comme réserviste au 17e RGP et par la classe défense du lycée. Ma première cérémonie restera gravée dans ma mémoire. »</div>
+        <div class="temoignage-author">Valentin, réserviste et porte-drapeau</div>
+        <div class="temoignage-etab">LP Pierre-Marie Théas · Cérémonie du 11 novembre, Montauban</div>
+      </div>
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« Très impressionnant de voir autant de familles dans le besoin. Pendant les vacances, je pense aller donner un coup de main pour la distribution des colis alimentaires. »</div>
+        <div class="temoignage-author">Louane, 4e</div>
+        <div class="temoignage-etab">Collège La Sainte Famille · Visite Croix-Rouge, Moissac</div>
+      </div>
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« De pouvoir amener les élèves à chaque commémoration pour que le devoir de mémoire se transmette — pour moi, c'est une immense reconnaissance. »</div>
+        <div class="temoignage-author">M. Reinaldos, référent CDSG</div>
+        <div class="temoignage-etab">Collège La Sainte Famille</div>
+      </div>
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« J'envoie toute ma force à Lili et je lui souhaite de vivre jusqu'à ses 100 ans ! »</div>
+        <div class="temoignage-author">Inès, élève</div>
+        <div class="temoignage-etab">Collège Pierre Flamens · Spectacle "Lili", rescapée de la Shoah</div>
+      </div>
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« Pour moi qui suis d'origine roumaine, cette formation était importante car elle me permettait, à moi et ma famille, de montrer notre attachement à la France et ses valeurs. »</div>
+        <div class="temoignage-author">Un élève, formation porte-drapeaux</div>
+        <div class="temoignage-etab">Collège Pierre Bayrou · Caussade</div>
+      </div>
+
+      <div class="temoignage-card">
+        <div class="temoignage-text">« Nous sommes là pour ne pas oublier ceux qui nous ont défendus. Nous sommes fiers d'honorer leur mémoire et de mieux comprendre ce qu'ils ont vécu. »</div>
+        <div class="temoignage-author">Un élève de la classe défense</div>
+        <div class="temoignage-etab">Collège Azana · Voyage commémoratif, Soulac-sur-Mer</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FAITS MARQUANTS -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Actions particulières à mettre en avant</div>
+    <div class="highlights-grid">
+
+      <div class="highlight-card">
+        <div class="highlight-icon">⚑</div>
+        <div>
+          <div class="highlight-title">Chloé, première fille porte-drapeau officielle</div>
+          <div class="highlight-desc">Lors du 11 novembre à Moissac, Chloé (3e, Sainte Famille) a officié comme porte-drapeau pour la première fois dans une cérémonie à laquelle assistaient le Sous-Préfet et la Députée. Elle a été remarquée et félicitée. Un moment historique.</div>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">✦</div>
+        <div>
+          <div class="highlight-title">Voyage à Verdun — Sainte Famille</div>
+          <div class="highlight-desc">M. Reinaldos a organisé un voyage scolaire à Verdun, incluant la visite du 1er Régiment de Chasseurs (régiment où il a lui-même servi). Un lien personnel fort entre le passé militaire du référent et la transmission aux élèves.</div>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">★</div>
+        <div>
+          <div class="highlight-title">1 000 € récoltés pour les Bleuets de France</div>
+          <div class="highlight-desc">La CDSG de Lafrançaise (A. Perbosc) a récolté à elle seule 1 000 € sur un total de 2 200 € collectés dans le cadre du challenge de leur unité marraine, au profit des blessés de guerre. Un engagement concret et remarquable.</div>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">✎</div>
+        <div>
+          <div class="highlight-title">Articles dans La Dépêche du Midi</div>
+          <div class="highlight-desc">Le LEAP Lestonnac a publié 3 articles dans La Dépêche du Midi, relayés sur les réseaux sociaux (dont un post du député David Taupiac partagé 11 fois et liké 80 fois). La Sainte Famille a aussi été publiée avant Noël.</div>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">⊕</div>
+        <div>
+          <div class="highlight-title">Formation SST — tous certifiés sauveteurs</div>
+          <div class="highlight-desc">L'ensemble des élèves du LEAP Lestonnac ont obtenu le certificat SST (Sauveteur Secouriste du Travail) après 14 heures de formation réparties sur 4 jours. Une compétence concrète et reconnue dans le monde professionnel.</div>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">⬡</div>
+        <div>
+          <div class="highlight-title">Voyage en Alsace-Vosges — Pierre Flamens</div>
+          <div class="highlight-desc">Un voyage de mémoire exceptionnel : musée de Colmar, Verdun, camp de Struthof, nécropole de la Fontenelle et Parlement Européen à Strasbourg. Un parcours mémoriel et civique complet sur 4 jours.</div>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">▲</div>
+        <div>
+          <div class="highlight-title">Spectacle immersif "Lili" — rescapée de la Shoah</div>
+          <div class="highlight-desc">Sur invitation du 31e RG, les élèves de Pierre Flamens ont assisté au témoignage de Lili Keller Rosenberg, rescapée des camps à 93 ans. Une expérience bouleversante qui illustre l'importance du devoir de mémoire vivant.</div>
+        </div>
+      </div>
+
+      <div class="highlight-card">
+        <div class="highlight-icon">◈</div>
+        <div>
+          <div class="highlight-title">Valentin — réserviste et porte-drapeau lycéen</div>
+          <div class="highlight-desc">Élève du LP Pierre-Marie Théas, Valentin est réserviste actif au 17e RGP et porte-drapeau pour le Souvenir Français. Un engagement citoyen exceptionnel pour un jeune, associant formation scolaire et engagement militaire.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TYPES DE MISSIONS -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Répartition des types de missions</div>
+    <div class="type-grid">
+      <div class="type-card"><div class="type-count">28</div><div class="type-label">Cérémonies commémoratives</div></div>
+      <div class="type-card"><div class="type-count">19</div><div class="type-label">Monuments aux morts documentés</div></div>
+      <div class="type-card"><div class="type-count">10</div><div class="type-label">Traditions militaires explorées</div></div>
+      <div class="type-card"><div class="type-count">9</div><div class="type-label">Concours mémoire</div></div>
+      <div class="type-card"><div class="type-count">6</div><div class="type-label">Articles de presse</div></div>
+      <div class="type-card"><div class="type-count">6</div><div class="type-label">Biographies historiques</div></div>
+      <div class="type-card"><div class="type-count">5</div><div class="type-label">Prix Armées Zone Sud</div></div>
+      <div class="type-card"><div class="type-count">4</div><div class="type-label">Échanges avec élus locaux</div></div>
+      <div class="type-card"><div class="type-count">4</div><div class="type-label">Associations patriotiques</div></div>
+      <div class="type-card"><div class="type-count">3</div><div class="type-label">Interviews historiens</div></div>
+      <div class="type-card"><div class="type-count">3</div><div class="type-label">Visites musées / lieux de mémoire</div></div>
+      <div class="type-card"><div class="type-count">18</div><div class="type-label">Autres actions citoyennes</div></div>
+    </div>
+    <div class="chart-box" style="margin-top:1.25rem;">
+      <div style="position:relative;width:100%;height:240px;">
+        <canvas id="typeChart" role="img" aria-label="Graphique des types de missions">28 cérémonies, 19 monuments documentés, 10 traditions militaires, 9 concours, 6 articles de presse.</canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCLUSION -->
+  <div class="section">
+    <div class="section-title"><span class="dot"></span> Conclusion — Bilan de l'année</div>
+
+    <div class="conclusion">
+      <div class="winner-banner">
+        <div class="winner-trophy">🏆</div>
+        <div>
+          <div class="winner-label">Établissement lauréat 2025-2026</div>
+          <div class="winner-name">LEAP Lestonnac — Beaumont-de-Lomagne</div>
+          <div class="winner-detail">261 points · 32 missions · Professeur référent : M. Alain Beyneix</div>
+        </div>
+      </div>
+
+      <div class="conclusion-title">Ce que cette année nous a appris</div>
+
+      <div class="conclusion-body">
+
+        <p>Cette première année du <strong>Fil Rouge Citoyen</strong> est une réussite remarquable. Neuf établissements mobilisés, 107 actions documentées, 810 points cumulés : les classes de défense du Tarn-et-Garonne ont démontré que l'engagement citoyen des jeunes peut prendre des formes multiples, sincères et profondes.</p>
+
+        <p>Le <strong>LEAP Lestonnac</strong> s'impose comme le lauréat incontestable de cette édition, avec 32 missions d'une diversité exemplaire : cérémonies patriotiques, articles dans La Dépêche, formation SST complète, interviews d'historiens, engagement éco-citoyen, voyages culturels et rencontres avec des élus. M. Beyneix a su construire une programmation riche et cohérente tout au long de l'année.</p>
+
+        <p>Le <strong>Collège La Sainte Famille</strong> mérite une mention toute particulière pour l'intensité de son engagement mémoriel — 8 cérémonies commémoratives en une année scolaire, un voyage à Verdun organisé par M. Reinaldos, et des témoignages d'élèves particulièrement touchants. L'histoire personnelle du référent (20 ans de service militaire) transparaît dans la profondeur des actions menées.</p>
+
+        <p>Le <strong>Collège Pierre Flamens</strong> se distingue par l'ampleur de ses projets collectifs : voyage en Alsace (Verdun, Struthof, Parlement Européen), participation à plusieurs concours et un investissement notable dans les arts de mémoire (BD, théâtre immersif).</p>
+
+        <p>À signaler : la <strong>CDSG du Collège A. Perbosc</strong> a accompli un travail territorial unique en documentant systématiquement les monuments aux morts des villages de ses élèves, et en récoltant 1 000 € pour les Bleuets de France — une action concrète et engagée.</p>
+
+        <p>Cette année montre qu'au-delà des points, <strong>le Fil Rouge crée des liens durables</strong> : entre les élèves et leur histoire locale, entre les établissements scolaires et les unités militaires, entre les jeunes générations et les anciens combattants. Les témoignages recueillis en témoignent avec émotion.</p>
+
+        <p style="border-top:1px solid rgba(255,255,255,0.15); padding-top:1rem; margin-top:0.5rem;"><strong>Rendez-vous au Rallye Citoyen 2026</strong> pour la remise des récompenses, et bonne continuation à tous les référents et élèves qui ont porté ces projets avec passion.</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<script>
+const etablissements = [
+  { rang:1, nom:"LEAP Lestonnac", ref:"Alain Beyneix", ville:"Beaumont-de-Lomagne", score:261, missions:32,
+    actions:[
+      {label:"Cérémonies commémoratives (×2)", pts:12},
+      {label:"Explorer traditions militaires (×3)", pts:24},
+      {label:"Choisir un nom de classe (×2)", pts:12},
+      {label:"Créer une devise", pts:7},
+      {label:"Documenter monuments aux morts (×3)", pts:18},
+      {label:"Créer un insigne", pts:9},
+      {label:"Rencontrer assoc. patriotiques (×2)", pts:14},
+      {label:"Échanger avec un élu local", pts:7},
+      {label:"Écrire articles journal local (×3)", pts:24},
+      {label:"Visiter lieu de mémoire (×2)", pts:12},
+      {label:"Interview historien", pts:9},
+      {label:"Biographie figure historique (×3)", pts:21},
+      {label:"Rédiger lettre fictive poilu", pts:5},
+      {label:"Formation SST — tous certifiés", pts:9},
+      {label:"Créer affiche citoyenne", pts:8},
+      {label:"Étudier armées du département", pts:7},
+      {label:"Action éco-citoyenne (composteur)", pts:5},
+      {label:"Tee-shirts classe défense", pts:5},
+      {label:"Sortie cinéma — film historique", pts:5},
+      {label:"Formation porte-drapeaux (3 élèves)", pts:5},
+      {label:"Rencontre ancien gendarme", pts:5},
+    ]
+  },
+  { rang:2, nom:"Collège La Sainte Famille", ref:"Alain Reinaldos", ville:"Moissac", score:204, missions:24,
+    actions:[
+      {label:"Cérémonies commémoratives (×8)", pts:48},
+      {label:"Explorer traditions militaires (×2)", pts:16},
+      {label:"Créer un insigne", pts:9},
+      {label:"Concours national classes de défense", pts:10},
+      {label:"Concours Bulles de Mémoire", pts:10},
+      {label:"Prix Armées Zone Sud", pts:10},
+      {label:"Écrire article journal local", pts:8},
+      {label:"Écrire lettres de Noël aux soldats", pts:5},
+      {label:"Échanger avec le Maire de Moissac", pts:7},
+      {label:"Visite police municipale", pts:5},
+      {label:"Visite Croix-Rouge Moissac", pts:5},
+      {label:"Formation porte-drapeaux (2 élèves)", pts:5},
+      {label:"Présentation au drapeau (×2)", pts:10},
+      {label:"Participation jury Galons BD 2026", pts:5},
+      {label:"Article presse (Le Petit Journal)", pts:5},
+      {label:"Visite hôpital de Moissac", pts:5},
+      {label:"Voyage scolaire à Verdun", pts:5},
+      {label:"Visite 1er Régiment de Chasseurs", pts:8},
+    ]
+  },
+  { rang:3, nom:"Collège Pierre Flamens", ref:"Sonia Authier / Sabine Pouzergues", ville:"Castelsarrasin", score:126, missions:18,
+    actions:[
+      {label:"Cérémonies commémoratives (×2)", pts:12},
+      {label:"Visiter musée de la Résistance", pts:8},
+      {label:"Visiter maquis d'Ornano (Penne)", pts:6},
+      {label:"Concours Bulles de Mémoire (3 groupes)", pts:10},
+      {label:"Prix Armées Zone Sud (adaptation BD)", pts:10},
+      {label:"CNRD — jeu de l'oie sur la Shoah", pts:10},
+      {label:"Rencontrer assoc. patriotique FNAM", pts:7},
+      {label:"Rencontrer Souvenir Français", pts:7},
+      {label:"Étudier armées du département", pts:7},
+      {label:"Biographie Marcel Langer (résistance)", pts:7},
+      {label:"Participation cross avec 31e RG", pts:5},
+      {label:"Rencontre militaires 31e RG", pts:5},
+      {label:"Atelier Destination Europe", pts:5},
+      {label:"Spectacle immersif Lili (Shoah)", pts:5},
+      {label:"Voyage Verdun, Struthof, Strasbourg", pts:5},
+    ]
+  },
+  { rang:4, nom:"Collège A. Perbosc", ref:"M. Herrera", ville:"Lafrançaise", score:108, missions:17,
+    actions:[
+      {label:"Documenter monuments aux morts (×13)", pts:78},
+      {label:"Cérémonie laïcité — Place des Valeurs", pts:6},
+      {label:"Cérémonie du 11 novembre", pts:6},
+      {label:"Interview historien (1re GM) (×2)", pts:18},
+      {label:"Biographie Antonin Perbosc", pts:7},
+      {label:"Choisir un nom de classe — Les Sentinelles", pts:6},
+      {label:"Créer un insigne (logo CIEC + collège)", pts:9},
+      {label:"Projet bénévole — Bleuets de France (1 000 €)", pts:10},
+      {label:"Dessin aquarelle monument Thiepval", pts:5},
+    ]
+  },
+  { rang:5, nom:"Collège Institut Familial", ref:"David Vaissière", ville:"Montauban", score:96, missions:14,
+    actions:[
+      {label:"Explorer traditions militaires — 3e RMat", pts:8},
+      {label:"Explorer traditions militaires — 17e RGP", pts:8},
+      {label:"Explorer traditions militaires — 9e RSAM", pts:8},
+      {label:"Podcast visites aux régiments (×1)", pts:8},
+      {label:"Concours mémoire — CNRD (36 copies)", pts:10},
+      {label:"Rencontrer assoc. patriotiques (Légion d'honneur)", pts:7},
+      {label:"Écrire lettres militaires (bases outre-mer)", pts:5},
+      {label:"Échanger avec sénateur M. Lévy", pts:7},
+      {label:"Visiter monument aux morts Montauban", pts:6},
+      {label:"Biographie Louis Sabatié (résistant)", pts:7},
+      {label:"Biographie Charles Bourrat", pts:7},
+      {label:"Créer affiche citoyenne (2 affiches)", pts:8},
+      {label:"Rédiger article pour plaquette du collège", pts:6},
+      {label:"Carte interactive des régiments du 82", pts:5},
+      {label:"Sortie sportive avec 3e RMat", pts:5},
+    ]
+  },
+  { rang:6, nom:"Collège Ste Claire", ref:"Mme Bouxet", ville:"Dieupentale", score:82, missions:10,
+    actions:[
+      {label:"Cérémonies commémoratives (×3) — 11/11, Saint-Martin, victimes terrorisme", pts:18},
+      {label:"CNRD — participation 3es", pts:10},
+      {label:"Prix Armées Zone Sud — film Joseph Kessel (×2)", pts:20},
+      {label:"Visiter musée de la Résistance", pts:8},
+      {label:"Parcours mémoriel — enfants cachés de Moissac", pts:6},
+      {label:"Formation porte-drapeau", pts:5},
+      {label:"Salon du livre militaire (Patrick Chauvel)", pts:5},
+      {label:"Théâtre immersif — statut des Juifs sous Vichy", pts:5},
+    ]
+  },
+  { rang:7, nom:"LP Pierre-Marie Théas", ref:"Floriane Lenfant", ville:"Montauban", score:52, missions:6,
+    actions:[
+      {label:"Cérémonie du 11 novembre (Valentin porte-drapeau)", pts:6},
+      {label:"Créer une devise — Honore Serviam", pts:7},
+      {label:"CNRD — participation", pts:10},
+      {label:"Deux élèves engagés (réserviste + élu CMJ)", pts:5},
+      {label:"Formation porte-drapeaux (3 élèves)", pts:5},
+      {label:"Salon du Livre Défense — Caserne Guibert", pts:5},
+    ]
+  },
+  { rang:8, nom:"Collège Pierre Bayrou", ref:"M. Gide", ville:"Saint-Antonin-Noble-Val", score:51, missions:5,
+    actions:[
+      {label:"Prix Armées Zone Sud — Voies de guerre, voies de paix", pts:10},
+      {label:"Prix de la Mémoire 82 (Ordre National du Mérite)", pts:10},
+      {label:"Cérémonie hommage LCL Le Normand (11e RPIE)", pts:6},
+      {label:"Formation porte-drapeaux — remise diplômes par le Préfet", pts:5},
+      {label:"Concours national d'éloquence (Palmes académiques)", pts:5},
+    ]
+  },
+  { rang:9, nom:"Collège Azana", ref:"Sonia Schneider", ville:"Montauban", score:30, missions:4,
+    actions:[
+      {label:"Voyage commémoratif Soulac-sur-Mer — libération Pointe de Grave", pts:6},
+      {label:"Cérémonie du 11 novembre à Montauban", pts:6},
+      {label:"Visite 9e RSAM + concours semaine Défense", pts:7},
+      {label:"Formation porte-drapeaux (ONAC 82)", pts:5},
+    ]
+  },
+];
+
+const maxScore = etablissements[0].score;
+
+/* ── Classement table ── */
+const tbody = document.getElementById('rankingBody');
+etablissements.forEach(e => {
+  const pct = Math.round((e.score / maxScore) * 100);
+  const rnClass = e.rang === 1 ? 'rn-1' : e.rang === 2 ? 'rn-2' : e.rang === 3 ? 'rn-3' : 'rn-other';
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><span class="rank-num ${rnClass}">${e.rang}</span></td>
+    <td><div class="etab-name">${e.nom}</div><div class="etab-ref">${e.ville}</div></td>
+    <td><div class="etab-ref">${e.ref}</div></td>
+    <td>${e.missions} actions</td>
+    <td>
+      <div class="score-pts">${e.score} pts</div>
+      <div class="score-count">${e.missions} missions</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+    </td>
+  `;
+  tbody.appendChild(tr);
+});
+
+/* ── Étab cards ── */
+const container = document.getElementById('etabCards');
+etablissements.forEach(e => {
+  const card = document.createElement('div');
+  card.className = 'etab-card';
+  const isGold = e.rang === 1;
+  const badgeClass = isGold ? 'etab-rank-badge gold' : 'etab-rank-badge';
+  const pillsHtml = e.actions.map(a => `
+    <div class="mission-pill">
+      <span class="mission-pts">${a.pts} pts</span>
+      <span class="mission-label">${a.label}</span>
+    </div>
+  `).join('');
+  const totalPts = e.actions.reduce((s, a) => s + a.pts, 0);
+  card.innerHTML = `
+    <div class="etab-card-header">
+      <div class="${badgeClass}">${e.rang}</div>
+      <div class="etab-card-info">
+        <div class="etab-card-name">${e.nom}</div>
+        <div class="etab-card-sub">${e.ref} · ${e.ville}</div>
+      </div>
+      <div class="etab-card-score">${e.score} pts<span>${e.missions} missions</span></div>
+    </div>
+    <div class="etab-card-body">
+      <div class="missions-grid">${pillsHtml}</div>
+    </div>
+  `;
+  container.appendChild(card);
+});
+
+/* ── Score chart ── */
+const colors = ['#1a2e4a','#2a4a72','#3a6090','#4a7ab0','#5a90c8','#6aa0d8','#7ab0e0','#8abce8','#9acaf0'];
+new Chart(document.getElementById('scoreChart'), {
+  type: 'bar',
+  data: {
+    labels: etablissements.map(e => e.nom.replace('Collège ','').replace('Lycée Professionnel ','LP ').replace('LEAP ','LEAP ')),
+    datasets: [{
+      label: 'Points',
+      data: etablissements.map(e => e.score),
+      backgroundColor: colors,
+      borderRadius: 6,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} pts — ${etablissements[ctx.dataIndex].missions} missions` } }
+    },
+    scales: {
+      x: { ticks: { font:{size:11}, color:'#6a6a60', maxRotation:30, autoSkip:false }, grid:{display:false} },
+      y: { beginAtZero:true, ticks:{font:{size:11},color:'#6a6a60'}, grid:{color:'rgba(26,46,74,0.08)'} }
+    }
+  }
+});
+
+/* ── Type chart ── */
+new Chart(document.getElementById('typeChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Cérémonies','Monuments documentés','Traditions militaires','Concours mémoire','Articles presse','Biographies','Prix Armées','Élus locaux','Assoc. patriotiques','Interviews historiens','Musées / mémoire','Autres'],
+    datasets: [{
+      label: 'Nombre d\'actions',
+      data: [28, 19, 10, 9, 6, 6, 5, 4, 4, 3, 3, 18],
+      backgroundColor: '#2a4a72',
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend:{display:false} },
+    scales: {
+      x: { beginAtZero:true, ticks:{font:{size:11},color:'#6a6a60'}, grid:{color:'rgba(26,46,74,0.08)'} },
+      y: { ticks:{font:{size:11},color:'#4a4a44'}, grid:{display:false} }
+    }
+  }
+});
+</script>
+</body>
+</html>
