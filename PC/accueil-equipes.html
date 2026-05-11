@@ -165,6 +165,10 @@
       <div class="section">
         <div class="section-head">Informations</div>
         <div class="section-body">
+          <div class="field-wrap">
+            <div class="field-label">Nom de l'équipe</div>
+            <input type="text" class="input-field" id="nomField" style="width:100%" placeholder="Nom de l'équipe">
+          </div>
           <div class="field-wrap" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
             <div>
               <div class="field-label">Classe de Défense</div>
@@ -295,6 +299,7 @@ function onEquipeChange(silent = false) {
   // Remplir les champs
 
 
+  document.getElementById('nomField').value = e ? e.nom : '';
   document.getElementById('effectifsField').value = e && e.effectifs > 0 ? e.effectifs : '';
 
   const cd = isCD(e);
@@ -340,6 +345,7 @@ async function enregistrer() {
     const payload = {
       id:           num,
       presence:     presenceState,
+      nom:          document.getElementById('nomField').value.trim(),
       classeDefense:cdState === 'OUI' ? 'Classe de Défense' : 'NON',
       effectifs:    Number(document.getElementById('effectifsField').value) || 0
     };
@@ -351,6 +357,7 @@ async function enregistrer() {
             presenceState === 'NON_VENU' ? '✓ Équipe ' + num + ' marquée absente' : '✓ Mis à jour', 'ok');
       const idx = equipesData.findIndex(e => e.num === num);
       if (idx >= 0) {
+        equipesData[idx].nom          = payload.nom || equipesData[idx].nom;
         equipesData[idx].presence     = presenceState;
         equipesData[idx].classeDefense = payload.classeDefense;
         equipesData[idx].effectifs    = payload.effectifs;
