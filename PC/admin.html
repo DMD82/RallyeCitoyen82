@@ -188,6 +188,33 @@
     </div>
 
     <div class="admin-section">
+      <div class="admin-section-title">⏱️ Déclencheur automatique</div>
+      <div class="actions-grid">
+        <div class="action-card" id="cardDeclencheur">
+          <div class="card-icon" id="iconDeclencheur">⏳</div>
+          <div class="card-title">État du déclencheur</div>
+          <div class="card-desc" id="descDeclencheur">Authentifiez-vous pour vérifier.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+            <button class="btn primary" id="btnInstaller" onclick="gererDeclencheur('installer')" style="display:none">✅ Installer (5 min)</button>
+            <button class="btn" id="btnSupprimer" onclick="gererDeclencheur('supprimer')" style="display:none;background:var(--red-lt);border-color:var(--red);color:var(--red)">🛑 Supprimer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <div class="admin-section-title">🚀 Début de rallye</div>
+      <div class="actions-grid">
+        <div class="action-card" style="border:2px solid var(--gold);background:var(--gold-lt)">
+          <div class="card-icon">🚀</div>
+          <div class="card-title">Mise à jour début de rallye</div>
+          <div class="card-desc">Synchronise les noms d'équipes dans le Fil Rouge (étape 1 auto). Puis rappel pour mettre à jour les formulaires depuis le spreadsheet tracking (étape 2 manuelle).</div>
+          <button class="btn primary" onclick="lancerCombo()" style="background:var(--gold);border-color:var(--gold);color:var(--navy);font-weight:700">▶ Lancer la mise à jour</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-section">
       <div class="admin-section-title">📋 Journal d'exécution</div>
       <div class="log-wrap" id="logWrap">
         <div class="log-entry info">// En attente d'actions…</div>
@@ -221,6 +248,7 @@ function seConnecter() {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('adminContent').classList.add('visible');
     log('Connexion réussie', 'info');
+    verifierEtatDeclencheur();
   } else {
     err.textContent = '❌ Mot de passe incorrect.';
     document.getElementById('loginMdp').value = '';
@@ -325,12 +353,9 @@ async function lancerAction_(action) {
     return { success: false, message: 'API_NOTATION_URL non configurée dans config.js' };
   }
   const url = API_NOTATION_URL + '?action=' + action + '&mdp=' + encodeURIComponent(getMdpAdmin());
-  log('URL: ' + url.slice(0, 80) + '…', 'info');
   const res  = await fetch(url);
   if (!res.ok) throw new Error('HTTP ' + res.status);
-  const text = await res.text();
-  try { return JSON.parse(text); }
-  catch(e) { throw new Error('Réponse invalide : ' + text.slice(0, 120)); }
+  return res.json();
 }
 
 async function lancerNotation(action) {
