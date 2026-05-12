@@ -231,7 +231,7 @@
     <span class="meta-pill lieu">Complexe Jacques Chirac · Montauban</span>
   </div>
 
-  <div class="last-update" id="lastUpdate"></div>
+
 </header>
 
 <div class="tabs-wrap">
@@ -255,8 +255,7 @@
         <button class="sort-btn" id="sort-atel-passages" onclick="trierAteliers('passages')">Passages ↓</button>
       </div>
       <span class="stat-pill" id="statAteliers">— ateliers</span>
-      <button class="btn-refresh" onclick="chargerPassages()">↻ Actualiser</button>
-      <button class="btn-refresh" onclick="exporterCSVGlobal()">⬇ CSV Global</button>
+<button class="btn-refresh" onclick="exporterCSVGlobal()">⬇ CSV Global</button>
       <button class="btn-refresh" onclick="exporterCSVAtelier()">⬇ CSV Atelier…</button>
       <button class="btn-refresh" onclick="exporterPDF()">🖨 PDF</button>
     </div>
@@ -281,7 +280,6 @@ let maxPassages  = 1;
 // ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   chargerPassages();
-  setInterval(chargerPassages, 30000);
 });
 
 // ── PASSAGES ─────────────────────────────────────────────────
@@ -292,10 +290,7 @@ async function chargerPassages() {
     maxPassages  = Math.max(...ateliersData.map(a => a.passages), 1);
     document.getElementById('loadingOverlay').classList.add('hidden');
     filtrerAteliers();
-    const now = new Date();
-    document.getElementById('lastUpdate').textContent =
-      'Actualisé à ' + now.getHours().toString().padStart(2,'0') + ':' +
-      now.getMinutes().toString().padStart(2,'0');
+
   } catch(e) {
     document.getElementById('loadingOverlay').classList.add('hidden');
     document.getElementById('bodyAteliers').innerHTML =
