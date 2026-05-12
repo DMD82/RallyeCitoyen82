@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Passages Ateliers — Rallye Citoyen 2026</title>
-<script src="/PC/config.js"></script>
-<script src="nav.js"></script>
+<script src="../PC/config.js"></script>
+<script src="../PC/nav.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
@@ -166,6 +165,17 @@
   .toast.on { transform: translateX(-50%) translateY(0); }
   .toast.err { background: var(--red); }
 
+  /* ── EXPORT ── */
+  @media print {
+    .nav-wrap, .toolbar, .btn-refresh, .toggle-icon { display: none !important; }
+    .detail-row { display: table-row !important; }
+    .detail-inner { display: block !important; }
+    body { background: white; }
+    .carte, .tbl-wrap { box-shadow: none; border: 1px solid #ccc; }
+    main { padding: 0; max-width: 100%; }
+    tr { page-break-inside: avoid; }
+  }
+
   /* ── LIGNES DÉPLIABLES ── */
   .atelier-row { cursor: pointer; transition: background .15s; }
   .atelier-row:hover td { background: #eef0f8 !important; }
@@ -226,6 +236,9 @@
         <button class="sort-btn" id="sort-atel-passages" onclick="trierAteliers('passages')">Passages ↓</button>
       </div>
       <span class="stat-pill" id="statAteliers">— ateliers</span>
+      <button class="sort-btn" onclick="exporterCSVGlobal()" title="Export CSV toutes les données">⬇ CSV Global</button>
+      <button class="sort-btn" onclick="exporterCSVAtelier()" title="Export CSV atelier sélectionné">⬇ CSV Atelier…</button>
+      <button class="sort-btn" onclick="exporterPDF()" title="Imprimer / Exporter en PDF">🖨 PDF</button>
     </div>
 
     <div class="tbl-wrap">
@@ -607,6 +620,93 @@ async function apiGet(action) {
   const res = await fetch(`${API_URL}?action=${action}`);
   if (!res.ok) throw new Error('HTTP ' + res.status);
   return res.json();
+}
+
+// ── EXPORTS ─────────────────────────────────────────────
+
+function exporterCSVGlobal() {
+  if (!ateliersData.length) { toast('Aucune donnée', 'err'); return; }
+
+  const rows = [['Atelier', 'Nom atelier', 'N° équipe', 'Nom équipe', 'Établissement', 'Note atelier', 'Comportement']];
+  ateliersData.forEach(a => {
+    if (!a.equipes.length) {
+      rows.push([a.numAtelier, a.nomAtelier, '', '', '', '', '']);
+    } else {
+      [...a.equipes].sort((x,y) => parseInt(x.num) - parseInt(y.num)).forEach(e => {
+        rows.push([a.numAtelier, a.nomAtelier, e.num, e.nom || '', e.etab || '', e.note, e.comport]);
+      });
+    }
+  });
+
+  telechargerCSV(rows, 'passages_rallye_2026_complet.csv');
+  toast('✅ Export CSV global téléchargé');
+}
+
+function exporterCSVAtelier() {
+  if (!ateliersData.length) { toast('Aucune donnée', 'err'); return; }
+
+  // Demander le numéro d'atelier
+  const num = prompt('Numéro de l'atelier à exporter (ex: 34) :
+
+Ateliers disponibles : ' +
+    ateliersData.map(a => a.numAtelier).join(', '));
+  if (!num) return;
+
+  const atelier = ateliersData.find(a => a.numAtelier === num.trim());
+  if (!atelier) { toast('Atelier ' + num + ' non trouvé', 'err'); return; }
+
+  const rows = [
+    ['Rallye Citoyen 2026 — ' + atelier.numAtelier + ' — ' + atelier.nomAtelier],
+    [],
+    ['Passages : ' + atelier.passages, 'Note moyenne : ' + atelier.moyenneNote + '/10', 'Comportement moyen : ' + (atelier.moyenneComport || '—') + '/5'],
+    [],
+    ['N° équipe', 'Nom équipe', 'Établissement', 'Note atelier', 'Comportement']
+  ];
+
+  [...atelier.equipes]
+    .sort((a, b) => parseInt(a.num) - parseInt(b.num))
+    .forEach(e => rows.push([e.num, e.nom || '', e.etab || '', e.note, e.comport]));
+
+  telechargerCSV(rows, 'passages_atelier_' + atelier.numAtelier + '_' + atelier.nomAtelier.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 30) + '.csv');
+  toast('✅ Export atelier ' + num + ' téléchargé');
+}
+
+function telechargerCSV(rows, filename) {
+  const bom  = '﻿'; // BOM UTF-8 pour Excel
+  const csv  = bom + rows.map(r =>
+    r.map(v => {
+      const s = (v === undefined || v === null) ? '' : String(v);
+      return s.includes(',') || s.includes('"') || s.includes('
+')
+        ? '"' + s.replace(/"/g, '""') + '"'
+        : s;
+    }).join(',')
+  ).join('
+');
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exporterPDF() {
+  // Ouvrir tous les détails avant impression
+  ateliersData.forEach(a => {
+    const id     = 'a-' + a.numAtelier;
+    const detail = document.getElementById('detail-' + id);
+    const icon   = document.getElementById('icon-' + id);
+    const row    = document.getElementById('row-' + id);
+    if (detail && !detail.classList.contains('visible')) {
+      detail.classList.add('visible');
+      if (icon) icon.textContent = '▼';
+      if (row) row.classList.add('open');
+    }
+  });
+  setTimeout(() => window.print(), 300);
 }
 
 function toast(msg, type) {
