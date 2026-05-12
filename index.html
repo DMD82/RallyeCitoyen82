@@ -1,454 +1,350 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Passages Ateliers — Rallye Citoyen 2026</title>
-<script src="/PC/config.js"></script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
-
-  :root {
-    --navy:    #1a2744;
-    --navy-lt: #243358;
-    --gold:    #b8932a;
-    --gold-lt: #f5ead4;
-    --gold-mid:#e8d090;
-    --bg:      #f2f0eb;
-    --bg2:     #e8e5de;
-    --white:   #ffffff;
-    --text:    #1a1e2e;
-    --text2:   #4a5068;
-    --text3:   #8a90a8;
-    --border:  #dcd8ce;
-    --border2: #c8c4b8;
-    --green:   #1a5a32;
-    --green-lt:#e8f5ed;
-    --red:     #8b1a1a;
-    --shadow:  rgba(26,39,68,0.08);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
-
-  /* ── HEADER ── */
-  header {
-    background: var(--navy);
-    padding: 28px 24px 24px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  header::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image: repeating-linear-gradient(45deg,
-      rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px,
-      transparent 1px, transparent 12px);
-    pointer-events: none;
-  }
-  .header-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 14px; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.3)); }
-  .header-org { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 8px; }
-  .header-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 24px; color: var(--white); margin-bottom: 10px; }
-  .header-meta { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
-  .meta-pill { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .06em; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; }
-  .meta-pill.date { background: var(--gold); color: var(--navy); }
-  .meta-pill.lieu { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.15); }
-
-  /* ── TABS ── */
-  .tabs-wrap { background: var(--navy-lt); border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .tabs { display: flex; max-width: 1100px; margin: 0 auto; padding: 0 20px; overflow-x: auto; scrollbar-width: none; }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tab-btn {
-    padding: 12px 20px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
-    letter-spacing: .08em; text-transform: uppercase;
-    color: rgba(255,255,255,0.4); cursor: pointer;
-    border-bottom: 2px solid transparent; margin-bottom: -1px;
-    transition: color .15s, border-color .15s; white-space: nowrap;
-    background: none; border-top: none; border-left: none; border-right: none;
-  }
-  .tab-btn:hover { color: rgba(255,255,255,0.7); }
-  .tab-btn.active { color: var(--gold-mid); border-bottom-color: var(--gold); }
-
-  /* ── MAIN ── */
-  main { flex: 1; max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; width: 100%; }
-  .panel { display: none; }
-  .panel.active { display: block; }
-
-  /* ── TOOLBAR ── */
-  .toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
-  .search-wrap { position: relative; flex: 1; min-width: 200px; }
-  .search-wrap input { width: 100%; padding: 10px 16px 10px 38px; background: var(--white); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--text); transition: border-color .15s; }
-  .search-wrap input:focus { outline: none; border-color: var(--navy); }
-  .search-wrap::before { content: '🔍'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; }
-  .stat-pill { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--border); color: var(--text2); white-space: nowrap; }
-  .btn-refresh { background: none; border: 1.5px solid var(--border2); border-radius: 8px; padding: 8px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .06em; cursor: pointer; color: var(--text3); transition: all .15s; }
-  .btn-refresh:hover { border-color: var(--navy); color: var(--navy); }
-
-  /* ── GRILLE FORMULAIRES ── */
-  .forms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
-
-  .form-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px var(--shadow);
-    transition: all .22s ease;
-    text-decoration: none;
-    color: inherit;
-    display: flex; flex-direction: column;
-    cursor: pointer;
-    position: relative;
-  }
-  .form-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: linear-gradient(90deg, var(--navy), var(--gold));
-    opacity: 0; transition: opacity .22s;
-  }
-  .form-card:hover { box-shadow: 0 8px 28px var(--shadow); transform: translateY(-3px); border-color: var(--gold-mid); }
-  .form-card:hover::before { opacity: 1; }
-
-  .card-logo {
-    height: 100px; display: flex; align-items: center; justify-content: center;
-    padding: 16px; background: var(--bg); border-bottom: 1px solid var(--border);
-  }
-  .card-logo img { max-width: 80px; max-height: 72px; object-fit: contain; transition: transform .2s; }
-  .form-card:hover .card-logo img { transform: scale(1.05); }
-  .card-logo .logo-fallback {
-    width: 56px; height: 56px; border-radius: 12px;
-    background: linear-gradient(135deg, var(--navy), var(--navy-lt));
-    color: var(--gold-mid);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 16px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
-  }
-
-  .card-body { padding: 12px 14px 14px; flex: 1; display: flex; flex-direction: column; }
-  .card-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .1em; color: var(--text3); margin-bottom: 4px; }
-  .card-name { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 13px; color: var(--navy); line-height: 1.35; flex: 1; }
-  .card-cta { margin-top: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); display: flex; align-items: center; gap: 5px; transition: color .15s; }
-  .form-card:hover .card-cta { color: var(--gold); }
-
-  /* ── ÉTAT ── */
-  .state-box { padding: 60px 20px; text-align: center; }
-  .state-icon { font-size: 40px; margin-bottom: 14px; }
-  .state-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 18px; color: var(--navy); margin-bottom: 8px; }
-  .state-desc { font-size: 14px; color: var(--text3); line-height: 1.6; }
-  .spin-dark { display: inline-block; width: 24px; height: 24px; border: 3px solid var(--border2); border-top-color: var(--navy); border-radius: 50%; animation: rot .6s linear infinite; }
-  @keyframes rot { to { transform: rotate(360deg); } }
-
-  /* ── PASSAGES ── */
-  .sort-btns { display: flex; gap: 6px; }
-  .sort-btn { padding: 8px 14px; background: var(--white); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); cursor: pointer; transition: all .15s; }
-  .sort-btn:hover { border-color: var(--navy); color: var(--navy); }
-  .sort-btn.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
-
-  .tbl-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
-  .tbl-header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--text3); }
-  .tbl-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: var(--white); border: 1px solid var(--border); padding: 2px 8px; border-radius: 10px; }
-  table { width: 100%; border-collapse: collapse; }
-  thead tr { background: var(--bg); }
-  th { padding: 9px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); text-align: center; border-bottom: 1px solid var(--border); font-weight: 600; }
-  th:first-child { text-align: left; }
-  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; text-align: center; }
-  td:first-child { text-align: left; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: var(--bg); }
-  .atelier-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px; color: var(--text3); }
-  .atelier-nom { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 1px; }
-  .passages-num { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 15px; color: var(--navy); }
-  .moy-chip { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 8px; background: var(--bg2); color: var(--text2); }
-  .prog-wrap { display: flex; align-items: center; gap: 10px; justify-content: center; }
-  .prog-bar { flex: 1; max-width: 80px; height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
-  .prog-fill { height: 100%; border-radius: 3px; }
-  .prog-fill.high   { background: var(--green); }
-  .prog-fill.medium { background: var(--gold); }
-  .prog-fill.low    { background: #e0c0c0; }
-
-  /* ── LIGNES DÉPLIABLES ── */
-  .atelier-row { cursor: pointer; transition: background .15s; }
-  .atelier-row:hover td { background: #eef0f8 !important; }
-  .atelier-row.open td { background: #e8edf5 !important; }
-  .toggle-icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4px; background: var(--bg2); border: 1px solid var(--border); font-size: 10px; font-weight: 700; color: var(--text3); transition: all .2s; flex-shrink: 0; margin-right: 8px; font-family: monospace; }
-  .atelier-row.open .toggle-icon { background: var(--navy); color: white; border-color: var(--navy); }
-  .detail-row { display: none; }
-  .detail-row.visible { display: table-row; }
-  .detail-inner { background: #f8f9fd; border-top: 1px solid var(--border); }
-  .detail-inner table { min-width: unset; margin: 0; }
-  .detail-inner th { padding: 6px 12px; font-size: 9px; background: #eef0f8; }
-  .detail-inner td { padding: 7px 12px; font-size: 12px; background: #f8f9fd; border-bottom: 1px solid var(--border); }
-  .detail-inner tr:last-child td { border-bottom: none; }
-  .detail-inner tr:hover td { background: #eef0f8 !important; }
-  .note-val { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px; color: var(--navy); }
-  .note-bar-wrap { display: flex; align-items: center; gap: 8px; }
-  .note-bar { flex: 1; max-width: 60px; height: 5px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
-  .note-bar-fill { height: 100%; border-radius: 3px; }
-  .note-bar-fill.high   { background: var(--green); }
-  .note-bar-fill.medium { background: var(--gold); }
-  .note-bar-fill.low    { background: #e0a0a0; }
-
-  /* ── PRINT ── */
-  @media print {
-    header .meta-pill.lieu, .tabs-wrap, .toolbar, .loading-overlay { display:none!important; }
-    .detail-row { display:table-row!important; }
-    body { background:white; }
-    .tbl-wrap { box-shadow:none; }
-    tr { page-break-inside:avoid; }
-  }
-
-  /* ── TOAST ── */
-  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 11px 22px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 999; transition: transform .25s ease; letter-spacing: .04em; box-shadow: 0 8px 30px rgba(26,39,68,0.25); white-space: nowrap; }
-  .toast.on { transform: translateX(-50%) translateY(0); }
-  .toast.err { background: var(--red); }
-
-  /* ── LOADING ── */
-  .loading-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 500; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; transition: opacity .3s; }
-  .loading-overlay.hidden { opacity: 0; pointer-events: none; }
-  .loading-logo { width: 72px; height: 72px; object-fit: contain; }
-  .loading-txt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .12em; color: var(--text3); text-transform: uppercase; }
-
-  /* ── DERNIÈRE MAJ ── */
-  .last-update { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; padding: 6px 0 0; letter-spacing: .06em; }
-</style>
-</head>
-<body>
-
-<div class="loading-overlay" id="loadingOverlay">
-  <img src="LogoRC2026.png" class="loading-logo" alt="" onerror="this.style.display='none'">
-  <div class="spin-dark"></div>
-  <div class="loading-txt">Chargement…</div>
-</div>
-
-<header>
-  <img src="LogoRC2026.png" class="header-logo" alt="" onerror="this.style.display='none'">
-  <div class="header-org">Délégation Militaire Départementale 82</div>
-  <div class="header-title">Passages Ateliers — Rallye Citoyen 2026</div>
-  <div class="header-meta">
-    <span class="meta-pill date">12 mai 2026</span>
-    <span class="meta-pill lieu">Complexe Jacques Chirac · Montauban</span>
-  </div>
-
-
-</header>
-
-<div class="tabs-wrap">
-  <div class="tabs">
-    <button class="tab-btn active" id="tab-ateliers">📍 Passages ateliers — Rallye Citoyen 2026</button>
-  </div>
-</div>
-
-<main>
-
-
-
-  <!-- ═══ PASSAGES ATELIERS ═══ -->
-  <div class="panel active" id="panel-ateliers">
-    <div class="toolbar">
-      <div class="search-wrap">
-        <input type="text" id="searchAteliers" placeholder="Rechercher un atelier…" oninput="filtrerAteliers()">
-      </div>
-      <div class="sort-btns">
-        <button class="sort-btn active" id="sort-atel-num" onclick="trierAteliers('num')">N° atelier</button>
-        <button class="sort-btn" id="sort-atel-passages" onclick="trierAteliers('passages')">Passages ↓</button>
-      </div>
-      <span class="stat-pill" id="statAteliers">— ateliers</span>
-<button class="btn-refresh" onclick="exporterCSVGlobal()">⬇ CSV Global</button>
-      <button class="btn-refresh" onclick="exporterCSVAtelier()">⬇ CSV Atelier…</button>
-      <button class="btn-refresh" onclick="exporterPDF()">🖨 PDF</button>
-    </div>
-    <div class="tbl-wrap">
-      <div class="tbl-header">Passages par atelier <span class="tbl-cnt" id="cntAteliers">0</span></div>
-      <div id="bodyAteliers"><div class="state-box"><div class="state-desc">Chargement…</div></div></div>
-    </div>
-  </div>
-
-
-
-</main>
-
-<div class="toast" id="toast"></div>
-
 <script>
-// ── DONNÉES ──────────────────────────────────────────────────
 let ateliersData = [];
 let sortAteliers = 'num';
-let maxPassages  = 1;
+let maxPassages = 1;
 
-// ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   chargerPassages();
 });
 
-// ── PASSAGES ─────────────────────────────────────────────────
 async function chargerPassages() {
   try {
-    const data   = await apiGet('getPassages');
-    ateliersData = data.ateliers || [];
-    maxPassages  = Math.max(...ateliersData.map(a => a.passages), 1);
-    document.getElementById('loadingOverlay').classList.add('hidden');
+    afficherChargement(true);
+
+    const data = await apiGet('getPassages');
+
+    ateliersData = Array.isArray(data.ateliers) ? data.ateliers : [];
+    maxPassages = Math.max(...ateliersData.map(a => Number(a.passages) || 0), 1);
+
+    afficherChargement(false);
     filtrerAteliers();
 
-  } catch(e) {
-    document.getElementById('loadingOverlay').classList.add('hidden');
-    document.getElementById('bodyAteliers').innerHTML =
-      `<div class="state-box"><div class="state-icon">❌</div><div class="state-title">Erreur</div><div class="state-desc">${e.message}</div></div>`;
+  } catch (e) {
+    afficherChargement(false);
+    document.getElementById('bodyAteliers').innerHTML = `
+      <div class="state-box">
+        <div class="state-icon">❌</div>
+        <div class="state-title">Erreur de chargement</div>
+        <div class="state-desc">${e.message}</div>
+      </div>`;
     toast('Erreur passages : ' + e.message, 'err');
   }
 }
 
-// ── ATELIERS ─────────────────────────────────────────────────
+function afficherChargement(show) {
+  const overlay = document.getElementById('loadingOverlay');
+  if (!overlay) return;
+  overlay.classList.toggle('hidden', !show);
+}
+
 function trierAteliers(col) {
   sortAteliers = col;
-  document.querySelectorAll('#panel-ateliers .sort-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('sort-atel-' + col).classList.add('active');
+
+  document.querySelectorAll('#panel-ateliers .sort-btn').forEach(b => {
+    b.classList.remove('active');
+  });
+
+  const btn = document.getElementById('sort-atel-' + col);
+  if (btn) btn.classList.add('active');
+
   filtrerAteliers();
 }
 
 function filtrerAteliers() {
-  const search = document.getElementById('searchAteliers').value.toLowerCase();
-  let data = ateliersData.filter(a =>
-    !search || a.numAtelier.includes(search) || a.nomAtelier.toLowerCase().includes(search));
-  data = sortAteliers === 'passages'
-    ? [...data].sort((a,b) => b.passages - a.passages || parseInt(a.numAtelier) - parseInt(b.numAtelier))
-    : [...data].sort((a,b) => parseInt(a.numAtelier) - parseInt(b.numAtelier));
+  const input = document.getElementById('searchAteliers');
+  const search = input ? input.value.toLowerCase().trim() : '';
+
+  let data = ateliersData.filter(a => {
+    const num = String(a.numAtelier || '').toLowerCase();
+    const nom = String(a.nomAtelier || '').toLowerCase();
+    return !search || num.includes(search) || nom.includes(search);
+  });
+
+  if (sortAteliers === 'passages') {
+    data.sort((a, b) =>
+      (Number(b.passages) || 0) - (Number(a.passages) || 0)
+      || (Number(a.numAtelier) || 0) - (Number(b.numAtelier) || 0)
+    );
+  } else {
+    data.sort((a, b) =>
+      (Number(a.numAtelier) || 0) - (Number(b.numAtelier) || 0)
+    );
+  }
+
   renderAteliers(data);
 }
 
 function renderAteliers(data) {
   document.getElementById('cntAteliers').textContent = data.length;
-  document.getElementById('statAteliers').textContent = data.length + ' atelier' + (data.length > 1 ? 's' : '');
+  document.getElementById('statAteliers').textContent =
+    data.length + ' atelier' + (data.length > 1 ? 's' : '');
+
   if (!data.length) {
-    document.getElementById('bodyAteliers').innerHTML = '<div class="state-box"><div class="state-desc">Aucun atelier.</div></div>';
+    document.getElementById('bodyAteliers').innerHTML =
+      '<div class="state-box"><div class="state-desc">Aucun atelier.</div></div>';
     return;
   }
-  const total = data.reduce((s,a) => s + a.passages, 0);
-  let h = `<table><thead><tr><th style="text-align:left">Atelier</th><th>Passages</th><th>Note moy.</th><th>Comport. moy.</th></tr></thead><tbody>`;
+
+  const total = data.reduce((s, a) => s + (Number(a.passages) || 0), 0);
+
+  let h = `
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align:left">Atelier</th>
+          <th>Passages</th>
+          <th>Note moy.</th>
+          <th>Comport. moy.</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
   data.forEach(a => {
-    const pct = Math.round((a.passages / maxPassages) * 100);
+    const passages = Number(a.passages) || 0;
+    const pct = Math.round((passages / maxPassages) * 100);
     const cls = pct >= 70 ? 'high' : pct >= 40 ? 'medium' : 'low';
-    const id  = 'a-' + a.numAtelier;
-    h += `<tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}',this)">
-      <td><div style="display:flex;align-items:center;">
-        <span class="toggle-icon" id="icon-${id}">▶</span>
-        <div><div class="atelier-num">Atelier ${a.numAtelier}</div><div class="atelier-nom">${a.nomAtelier}</div></div>
-      </div></td>
-      <td><div class="prog-wrap"><span class="passages-num">${a.passages}</span>
-        <div class="prog-bar"><div class="prog-fill ${cls}" style="width:${pct}%"></div></div></div></td>
-      <td><span class="moy-chip">${a.moyenneNote} / 10</span></td>
-      <td><span class="moy-chip" style="background:var(--green-lt);color:var(--green)">${a.moyenneComport || '—'} / 5</span></td></tr>`;
-    const eq = [...a.equipes].sort((x,y) => y.note - x.note);
-    h += `<tr class="detail-row" id="detail-${id}"><td colspan="4" style="padding:0;">
-      <div class="detail-inner"><table><thead><tr>
-        <th style="text-align:left">N°</th><th style="text-align:left">Équipe</th>
-        <th style="text-align:left">Établissement</th>
-        <th style="text-align:center">Note</th><th style="text-align:center">Comportement</th>
-      </tr></thead><tbody>`;
-    eq.forEach(e => {
-      const np = Math.round((e.note/10)*100);
-      const nc = e.note>=7?'high':e.note>=4?'medium':'low';
-      h += `<tr><td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.num}</span></td>
-        <td>${e.nom||'—'}</td><td style="color:var(--text3);font-size:11px">${e.etab||'—'}</td>
-        <td style="text-align:center"><div class="note-bar-wrap" style="justify-content:center">
-          <span class="note-val">${e.note}</span>
-          <div class="note-bar"><div class="note-bar-fill ${nc}" style="width:${np}%"></div></div></div></td>
-        <td style="text-align:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:12px">${e.comport}</span></td></tr>`;
+    const id = 'a-' + String(a.numAtelier || '').replace(/[^a-zA-Z0-9_-]/g, '');
+
+    h += `
+      <tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}', this)">
+        <td>
+          <div style="display:flex;align-items:center;">
+            <span class="toggle-icon" id="icon-${id}">▶</span>
+            <div>
+              <div class="atelier-num">Atelier ${a.numAtelier || '—'}</div>
+              <div class="atelier-nom">${a.nomAtelier || 'Sans nom'}</div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="prog-wrap">
+            <span class="passages-num">${passages}</span>
+            <div class="prog-bar">
+              <div class="prog-fill ${cls}" style="width:${pct}%"></div>
+            </div>
+          </div>
+        </td>
+        <td><span class="moy-chip">${a.moyenneNote || '—'} / 10</span></td>
+        <td>
+          <span class="moy-chip" style="background:var(--green-lt);color:var(--green)">
+            ${a.moyenneComport || '—'} / 5
+          </span>
+        </td>
+      </tr>`;
+
+    const equipes = Array.isArray(a.equipes) ? [...a.equipes] : [];
+    equipes.sort((x, y) => (Number(y.note) || 0) - (Number(x.note) || 0));
+
+    h += `
+      <tr class="detail-row" id="detail-${id}">
+        <td colspan="4" style="padding:0;">
+          <div class="detail-inner">
+            <table>
+              <thead>
+                <tr>
+                  <th style="text-align:left">N°</th>
+                  <th style="text-align:left">Équipe</th>
+                  <th style="text-align:left">Établissement</th>
+                  <th style="text-align:center">Note</th>
+                  <th style="text-align:center">Comportement</th>
+                </tr>
+              </thead>
+              <tbody>`;
+
+    equipes.forEach(e => {
+      const note = Number(e.note) || 0;
+      const np = Math.round((note / 10) * 100);
+      const nc = note >= 7 ? 'high' : note >= 4 ? 'medium' : 'low';
+
+      h += `
+        <tr>
+          <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.num || '—'}</span></td>
+          <td>${e.nom || '—'}</td>
+          <td style="color:var(--text3);font-size:11px">${e.etab || '—'}</td>
+          <td style="text-align:center">
+            <div class="note-bar-wrap" style="justify-content:center">
+              <span class="note-val">${note}</span>
+              <div class="note-bar">
+                <div class="note-bar-fill ${nc}" style="width:${np}%"></div>
+              </div>
+            </div>
+          </td>
+          <td style="text-align:center">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:12px">${e.comport || '—'}</span>
+          </td>
+        </tr>`;
     });
-    h += `</tbody></table></div></td></tr>`;
+
+    h += `
+              </tbody>
+            </table>
+          </div>
+        </td>
+      </tr>`;
   });
-  h += `</tbody></table><div style="padding:10px 14px;background:var(--bg);border-top:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);text-align:right">
-    Total passages : <strong style="color:var(--navy)">${total}</strong></div>`;
+
+  h += `
+      </tbody>
+    </table>
+    <div style="padding:10px 14px;background:var(--bg);border-top:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);text-align:right">
+      Total passages : <strong style="color:var(--navy)">${total}</strong>
+    </div>`;
+
   document.getElementById('bodyAteliers').innerHTML = h;
 }
 
 function toggleDetail(id, row) {
-  const d = document.getElementById('detail-'+id);
-  const i = document.getElementById('icon-'+id);
-  if (d.classList.contains('visible')) {
-    d.classList.remove('visible'); i.textContent='▶'; row.classList.remove('open');
-  } else {
-    d.classList.add('visible'); i.textContent='▼'; row.classList.add('open');
-  }
+  const d = document.getElementById('detail-' + id);
+  const i = document.getElementById('icon-' + id);
+  if (!d || !i) return;
+
+  const ouvert = d.classList.contains('visible');
+  d.classList.toggle('visible', !ouvert);
+  i.textContent = ouvert ? '▶' : '▼';
+  row.classList.toggle('open', !ouvert);
 }
 
-
-
-// ── EXPORTS ─────────────────────────────────────────────────
 function exporterCSVGlobal() {
-  if (!ateliersData.length) { toast('Aucune donnée', 'err'); return; }
-  const rows = [['Atelier','Nom atelier','N° équipe','Nom équipe','Établissement','Note atelier','Comportement']];
+  if (!ateliersData.length) {
+    toast('Aucune donnée', 'err');
+    return;
+  }
+
+  const rows = [['Atelier', 'Nom atelier', 'N° équipe', 'Nom équipe', 'Établissement', 'Note atelier', 'Comportement']];
+
   ateliersData.forEach(a => {
-    if (!a.equipes.length) { rows.push([a.numAtelier, a.nomAtelier,'','','','','']); }
-    else [...a.equipes].sort((x,y) => parseInt(x.num)-parseInt(y.num))
-      .forEach(e => rows.push([a.numAtelier, a.nomAtelier, e.num, e.nom||'', e.etab||'', e.note, e.comport]));
+    const equipes = Array.isArray(a.equipes) ? a.equipes : [];
+
+    if (!equipes.length) {
+      rows.push([a.numAtelier, a.nomAtelier, '', '', '', '', '']);
+    } else {
+      [...equipes]
+        .sort((x, y) => (Number(x.num) || 0) - (Number(y.num) || 0))
+        .forEach(e => {
+          rows.push([a.numAtelier, a.nomAtelier, e.num || '', e.nom || '', e.etab || '', e.note || '', e.comport || '']);
+        });
+    }
   });
+
   telechargerCSV(rows, 'passages_rallye_2026_complet.csv');
-  toast('✅ CSV global téléchargé');
 }
 
 function exporterCSVAtelier() {
-  if (!ateliersData.length) { toast('Aucune donnée', 'err'); return; }
-  const nums = ateliersData.map(a => a.numAtelier).join(', ');
-  const num  = prompt('Numéro atelier à exporter :
+  if (!ateliersData.length) {
+    toast('Aucune donnée', 'err');
+    return;
+  }
 
-Disponibles : ' + nums);
+  const nums = ateliersData.map(a => a.numAtelier).join(', ');
+  const num = prompt(`Numéro atelier à exporter :
+
+Disponibles : ${nums}`);
+
   if (!num) return;
-  const a = ateliersData.find(x => x.numAtelier === num.trim());
-  if (!a) { toast('Atelier ' + num + ' non trouvé', 'err'); return; }
+
+  const a = ateliersData.find(x => String(x.numAtelier) === num.trim());
+
+  if (!a) {
+    toast('Atelier ' + num + ' non trouvé', 'err');
+    return;
+  }
+
   const rows = [
     ['Rallye Citoyen 2026 — Atelier ' + a.numAtelier + ' — ' + a.nomAtelier],
     [],
-    ['Passages : ' + a.passages, 'Note moy. : ' + a.moyenneNote + '/10', 'Comportement moy. : ' + (a.moyenneComport||'—') + '/5'],
+    ['Passages : ' + a.passages, 'Note moy. : ' + a.moyenneNote + '/10', 'Comportement moy. : ' + (a.moyenneComport || '—') + '/5'],
     [],
-    ['N° équipe','Nom équipe','Établissement','Note atelier','Comportement']
+    ['N° équipe', 'Nom équipe', 'Établissement', 'Note atelier', 'Comportement']
   ];
-  [...a.equipes].sort((x,y) => parseInt(x.num)-parseInt(y.num))
-    .forEach(e => rows.push([e.num, e.nom||'', e.etab||'', e.note, e.comport]));
-  telechargerCSV(rows, 'passages_atelier_' + a.numAtelier + '_' + a.nomAtelier.replace(/[^a-zA-Z0-9]/g,'_').slice(0,30) + '.csv');
-  toast('✅ CSV atelier ' + num + ' téléchargé');
+
+  const equipes = Array.isArray(a.equipes) ? a.equipes : [];
+
+  [...equipes]
+    .sort((x, y) => (Number(x.num) || 0) - (Number(y.num) || 0))
+    .forEach(e => {
+      rows.push([e.num || '', e.nom || '', e.etab || '', e.note || '', e.comport || '']);
+    });
+
+  const safeName = String(a.nomAtelier || 'atelier')
+    .replace(/[^a-zA-Z0-9]/g, '_')
+    .slice(0, 30);
+
+  telechargerCSV(rows, 'passages_atelier_' + a.numAtelier + '_' + safeName + '.csv');
 }
 
 function telechargerCSV(rows, filename) {
   const bom = '\uFEFF';
+
   const csv = bom + rows.map(r => r.map(v => {
-    const s = (v===undefined||v===null) ? '' : String(v);
-    return s.includes(',')||s.includes('"')||s.includes('\n') ? '"'+s.replace(/"/g,'""')+'"' : s;
+    const s = v === undefined || v === null ? '' : String(v);
+    return s.includes(',') || s.includes('"') || s.includes('\n')
+      ? '"' + s.replace(/"/g, '""') + '"'
+      : s;
   }).join(',')).join('\n');
+
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'}));
-  a.download = filename; a.click();
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+  a.download = filename;
+  a.click();
+
   toast('✅ Export téléchargé');
 }
 
 function exporterPDF() {
   ateliersData.forEach(a => {
-    const id = 'a-' + a.numAtelier;
-    const d  = document.getElementById('detail-' + id);
-    const i  = document.getElementById('icon-' + id);
-    const r  = document.getElementById('row-' + id);
+    const id = 'a-' + String(a.numAtelier || '').replace(/[^a-zA-Z0-9_-]/g, '');
+    const d = document.getElementById('detail-' + id);
+    const i = document.getElementById('icon-' + id);
+    const r = document.getElementById('row-' + id);
+
     if (d && !d.classList.contains('visible')) {
-      d.classList.add('visible'); if(i) i.textContent='▼'; if(r) r.classList.add('open');
+      d.classList.add('visible');
+      if (i) i.textContent = '▼';
+      if (r) r.classList.add('open');
     }
   });
+
   setTimeout(() => window.print(), 300);
 }
 
-// ── API ───────────────────────────────────────────────────────
 async function apiGet(action) {
-  const res = await fetch(API_URL + '?action=' + action);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+  if (typeof API_URL === 'undefined' || !API_URL) {
+    throw new Error('API_URL non défini dans /PC/config.js');
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const res = await fetch(API_URL + '?action=' + encodeURIComponent(action), {
+      signal: controller.signal
+    });
+
+    if (!res.ok) {
+      throw new Error('HTTP ' + res.status);
+    }
+
+    return await res.json();
+
+  } catch (e) {
+    if (e.name === 'AbortError') {
+      throw new Error('Délai dépassé : l’API ne répond pas');
+    }
+    throw e;
+
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function toast(msg, type) {
   const t = document.getElementById('toast');
+  if (!t) return;
+
   t.textContent = msg;
-  t.className = 'toast ' + (type||'');
+  t.className = 'toast ' + (type || '');
   t.classList.add('on');
+
   setTimeout(() => t.classList.remove('on'), 3000);
 }
 </script>
-</body>
-</html>
