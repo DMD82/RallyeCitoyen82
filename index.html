@@ -391,7 +391,7 @@ function exporterCSVGlobal() {
 function exporterCSVAtelier() {
   if (!ateliersData.length) { toast('Aucune donnée', 'err'); return; }
   const nums = ateliersData.map(a => a.numAtelier).join(', ');
-  const num  = prompt('Numéro de l'atelier à exporter :
+  const num  = prompt('Numéro atelier à exporter :
 
 Disponibles : ' + nums);
   if (!num) return;
