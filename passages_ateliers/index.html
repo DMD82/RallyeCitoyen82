@@ -1,1 +1,621 @@
 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Passages Ateliers — Rallye Citoyen 2026</title>
+<script src="config.js"></script>
+<script src="nav.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+
+  :root {
+    --navy:    #1a2744;
+    --navy-lt: #243358;
+    --gold:    #b8932a;
+    --gold-lt: #f5ead4;
+    --gold-mid:#e8d090;
+    --bg:      #f2f0eb;
+    --bg2:     #e8e5de;
+    --white:   #ffffff;
+    --text:    #1a1e2e;
+    --text2:   #4a5068;
+    --text3:   #8a90a8;
+    --border:  #dcd8ce;
+    --border2: #c8c4b8;
+    --green:   #1a5a32;
+    --green-lt:#e8f5ed;
+    --red:     #8b1a1a;
+    --shadow:  rgba(26,39,68,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+  
+  
+  
+  
+  
+  
+  
+  
+
+  /* ── NAV ── */
+  .nav-wrap { background: var(--bg2); border-bottom: 1px solid var(--border); }
+  nav { display: flex; align-items: center; padding: 0 20px; max-width: 1100px; margin: 0 auto; }
+  .tab { padding: 11px 16px; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .15s, border-color .15s; }
+  .tab:hover { color: var(--text2); }
+  .tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+  .nav-spacer { flex: 1; }
+  .nav-info { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text3); display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+  .btn-refresh { background: none; border: 1px solid var(--border); border-radius: 6px; padding: 3px 10px; font-size: 12px; cursor: pointer; color: var(--text3); transition: all .15s; }
+  .btn-refresh:hover { border-color: var(--navy); color: var(--navy); }
+
+  /* ── MAIN ── */
+  main { flex: 1; max-width: 1100px; margin: 0 auto; padding: 20px 20px 60px; width: 100%; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── TOOLBAR ── */
+  .toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .search-wrap { position: relative; flex: 1; min-width: 200px; }
+  .search-wrap input { width: 100%; padding: 9px 14px 9px 36px; background: var(--white); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'Source Sans 3', sans-serif; font-size: 14px; color: var(--text); transition: border-color .15s; }
+  .search-wrap input:focus { outline: none; border-color: var(--navy); }
+  .search-wrap::before { content: '🔍'; position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 13px; pointer-events: none; }
+
+  .sort-btns { display: flex; gap: 6px; }
+  .sort-btn { padding: 8px 14px; background: var(--white); border: 1.5px solid var(--border2); border-radius: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); cursor: pointer; transition: all .15s; }
+  .sort-btn:hover { border-color: var(--navy); color: var(--navy); }
+  .sort-btn.active { background: var(--navy); border-color: var(--navy); color: var(--white); }
+
+  .stat-pill { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; background: var(--bg2); border: 1px solid var(--border); color: var(--text2); white-space: nowrap; }
+
+  /* ── VUE COMPTAGE — TABLEAU ── */
+  .tbl-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
+  .tbl-header { background: var(--bg2); border-bottom: 1px solid var(--border); padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--text3); }
+  .tbl-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; background: var(--white); border: 1px solid var(--border); padding: 2px 8px; border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--bg); }
+  th { padding: 9px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); text-align: center; border-bottom: 1px solid var(--border); font-weight: 600; }
+  th:first-child { text-align: left; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; font-size: 13px; text-align: center; }
+  td:first-child { text-align: left; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg); }
+
+  .atelier-num { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px; color: var(--text3); }
+  .atelier-nom { font-size: 13px; font-weight: 600; color: var(--text); margin-top: 1px; }
+
+  /* Barre de progression passages */
+  .prog-wrap { display: flex; align-items: center; gap: 10px; justify-content: center; }
+  .prog-bar { flex: 1; max-width: 80px; height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 3px; transition: width .4s ease; }
+  .prog-fill.high   { background: var(--green); }
+  .prog-fill.medium { background: var(--gold); }
+  .prog-fill.low    { background: #e0c0c0; }
+
+  .passages-num { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 15px; color: var(--navy); min-width: 28px; }
+  .moy-chip { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 8px; background: var(--bg2); color: var(--text2); }
+
+  /* ── VUE CARTES ── */
+  .cartes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+
+  .carte {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+    transition: box-shadow .2s, transform .2s;
+  }
+  .carte:hover { box-shadow: 0 6px 20px var(--shadow); transform: translateY(-2px); }
+
+  .carte-head {
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg2);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .carte-num { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: var(--text3); letter-spacing: .1em; margin-bottom: 3px; }
+  .carte-nom { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 13px; color: var(--navy); line-height: 1.3; }
+  .carte-badge { flex-shrink: 0; }
+  .passages-badge {
+    font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 16px;
+    background: var(--navy); color: var(--gold-mid);
+    padding: 4px 10px; border-radius: 8px;
+    min-width: 40px; text-align: center;
+  }
+
+  .carte-stats {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; gap: 16px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+    color: var(--text3);
+  }
+  .carte-stat strong { color: var(--text2); font-weight: 600; }
+
+  .carte-equipes { padding: 10px 14px; }
+  .equipes-liste { display: flex; flex-wrap: wrap; gap: 5px; }
+  .eq-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600;
+    padding: 2px 8px; border-radius: 6px;
+    background: var(--bg); border: 1px solid var(--border);
+    color: var(--text2);
+    cursor: default;
+    transition: all .12s;
+  }
+  .eq-tag:hover { background: var(--navy); color: var(--white); border-color: var(--navy); }
+  .eq-tag title { display: none; }
+  .carte-empty { font-size: 12px; color: var(--text3); font-style: italic; }
+
+  /* ── ÉTATS ── */
+  .state-box { padding: 48px; text-align: center; }
+  .state-icon { font-size: 36px; margin-bottom: 12px; }
+  .state-title { font-family: 'Libre Baskerville', serif; font-weight: 700; font-size: 16px; color: var(--navy); margin-bottom: 6px; }
+  .state-desc { font-size: 13px; color: var(--text3); line-height: 1.5; }
+  .spin-dark { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border2); border-top-color: var(--navy); border-radius: 50%; animation: rot .6s linear infinite; }
+  @keyframes rot { to { transform: rotate(360deg); } }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(70px); background: var(--navy); color: white; padding: 11px 22px; border-radius: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; z-index: 999; transition: transform .25s ease; letter-spacing: .04em; box-shadow: 0 8px 30px rgba(26,39,68,0.25); white-space: nowrap; }
+  .toast.on { transform: translateX(-50%) translateY(0); }
+  .toast.err { background: var(--red); }
+
+  /* ── LIGNES DÉPLIABLES ── */
+  .atelier-row { cursor: pointer; transition: background .15s; }
+  .atelier-row:hover td { background: #eef0f8 !important; }
+  .atelier-row.open td { background: #e8edf5 !important; }
+  .toggle-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 4px;
+    background: var(--bg2); border: 1px solid var(--border);
+    font-size: 10px; font-weight: 700; color: var(--text3);
+    transition: all .2s; flex-shrink: 0; margin-right: 8px;
+    font-family: monospace; cursor: pointer;
+  }
+  .atelier-row.open .toggle-icon { background: var(--navy); color: white; border-color: var(--navy); }
+  .detail-row { display: none; }
+  .detail-row.visible { display: table-row; }
+  .detail-inner { background: #f8f9fd; border-top: 1px solid var(--border); }
+  .detail-inner table { min-width: unset; margin: 0; }
+  .detail-inner thead tr { background: #eef0f8; }
+  .detail-inner th { padding: 6px 12px; font-size: 9px; background: #eef0f8; }
+  .detail-inner td { padding: 7px 12px; font-size: 12px; background: #f8f9fd; border-bottom: 1px solid var(--border); }
+  .detail-inner tr:last-child td { border-bottom: none; }
+  .detail-inner tr:hover td { background: #eef0f8 !important; }
+  .note-bar-wrap { display: flex; align-items: center; gap: 8px; }
+  .note-bar { flex: 1; max-width: 60px; height: 5px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+  .note-bar-fill { height: 100%; border-radius: 3px; }
+  .note-bar-fill.high   { background: var(--green); }
+  .note-bar-fill.medium { background: var(--gold); }
+  .note-bar-fill.low    { background: #e0a0a0; }
+  .note-val { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12px; color: var(--navy); }
+
+</style>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <nav>
+    <div class="tab active" id="tab-ateliers" onclick="showTab('ateliers')">Ateliers</div>
+    <div class="tab" id="tab-equipes" onclick="showTabEquipes()">Équipes</div>
+    <div class="nav-spacer"></div>
+    <div class="nav-info">
+      <span id="lastUpdate">—</span>
+      <button class="btn-refresh" onclick="chargerDonnees()">↻ Actualiser</button>
+    </div>
+  </nav>
+</div>
+
+<main>
+
+  <!-- ═══ COMPTAGE ═══ -->
+  <div class="panel active" id="panel-ateliers">
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <input type="text" id="searchAteliers" placeholder="Rechercher un atelier…" oninput="filtrerAteliers()">
+      </div>
+      <div class="sort-btns">
+        <button class="sort-btn active" id="sort-atel-num" onclick="trierAteliers('num')">N° atelier</button>
+        <button class="sort-btn" id="sort-atel-passages" onclick="trierAteliers('passages')">Passages ↓</button>
+      </div>
+      <span class="stat-pill" id="statAteliers">— ateliers</span>
+    </div>
+
+    <div class="tbl-wrap">
+      <div class="tbl-header">
+        Passages par atelier
+        <span class="tbl-cnt" id="cntAteliers">0</span>
+      </div>
+      <div id="bodyAteliers">
+        <div class="state-box">
+          <div class="spin-dark" style="margin:0 auto 12px"></div>
+          <div class="state-desc">Chargement…</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ ÉQUIPES ═══ -->
+  <div class="panel" id="panel-equipes">
+
+    <div class="toolbar">
+      <div class="search-wrap">
+        <input type="text" id="searchEquipes" placeholder="Rechercher une équipe…" oninput="filtrerEquipes()">
+      </div>
+      <div class="sort-btns">
+        <button class="sort-btn active" id="sort-eq-num" onclick="trierEquipes('num')">N° équipe</button>
+        <button class="sort-btn" id="sort-eq-ateliers" onclick="trierEquipes('ateliers')">Nb ateliers ↓</button>
+      </div>
+      <span class="stat-pill" id="statEquipes">— équipes</span>
+    </div>
+
+    <div class="tbl-wrap">
+      <div class="tbl-header">
+        Ateliers visités par équipe — cliquer pour voir le détail
+        <span class="tbl-cnt" id="cntEquipes">0</span>
+      </div>
+      <div id="bodyEquipes">
+        <div class="state-box">
+          <div class="state-desc">Chargement…</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let ateliersData   = [];
+let sortComptage   = 'num';
+let sortDetail     = 'num';
+let maxPassages    = 0;
+
+document.addEventListener('DOMContentLoaded', () => {
+  chargerDonnees();
+  setInterval(chargerDonnees, 30000);
+});
+
+async function chargerDonnees() {
+  try {
+    const data = await apiGet('getPassages');
+
+    if (data.message) {
+      const msg = `<div class="state-box"><div class="state-icon">⚠️</div><div class="state-desc">${data.message}</div></div>`;
+      document.getElementById('bodyAteliers').innerHTML = msg;
+      // bodyDetail supprimé
+      return;
+    }
+
+    ateliersData = data.ateliers || [];
+    maxPassages  = Math.max(...ateliersData.map(a => a.passages), 1);
+
+    filtrerAteliers();
+    if (document.getElementById('panel-equipes').classList.contains('active')) {
+      buildEquipesData();
+      filtrerEquipes();
+    }
+
+    const now = new Date();
+    document.getElementById('lastUpdate').textContent =
+      'Actualisé à ' + now.getHours().toString().padStart(2,'0') + ':' +
+      now.getMinutes().toString().padStart(2,'0') + ':' +
+      now.getSeconds().toString().padStart(2,'0');
+
+  } catch(e) {
+    toast('Erreur : ' + e.message, 'err');
+  }
+}
+
+// ── COMPTAGE ────────────────────────────────────────────
+function trierAteliers(col) {
+  sortComptage = col;
+  document.querySelectorAll('#panel-ateliers .sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sort-atel-' + col).classList.add('active');
+  filtrerAteliers();
+}
+
+function filtrerAteliers() {
+  const search = document.getElementById('searchAteliers').value.toLowerCase();
+  let data = ateliersData.filter(a =>
+    !search ||
+    a.numAtelier.includes(search) ||
+    a.nomAtelier.toLowerCase().includes(search)
+  );
+
+  data = sortComptage === 'passages'
+    ? [...data].sort((a, b) => b.passages - a.passages || parseInt(a.numAtelier) - parseInt(b.numAtelier))
+    : [...data].sort((a, b) => parseInt(a.numAtelier) - parseInt(b.numAtelier));
+
+  renderAteliers(data);
+}
+
+function renderAteliers(data) {
+  document.getElementById('cntAteliers').textContent  = data.length;
+  document.getElementById('statAteliers').textContent = data.length + ' atelier' + (data.length > 1 ? 's' : '');
+
+  if (!data.length) {
+    document.getElementById('bodyAteliers').innerHTML =
+      '<div class="state-box"><div class="state-desc">Aucun atelier trouvé.</div></div>';
+    return;
+  }
+
+  const totalPassages = data.reduce((s, a) => s + a.passages, 0);
+
+  let h = `<table>
+    <thead><tr>
+      <th style="text-align:left">Atelier</th>
+      <th>Passages</th>
+      <th>Note moy.</th>
+      <th>Comport. moy.</th>
+    </tr></thead><tbody>`;
+
+  data.forEach(a => {
+    const pct     = Math.round((a.passages / maxPassages) * 100);
+    const progCls = pct >= 70 ? 'high' : pct >= 40 ? 'medium' : 'low';
+    const id      = 'a-' + a.numAtelier;
+
+    h += `<tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}', this)">
+      <td>
+        <div style="display:flex;align-items:center;">
+          <span class="toggle-icon" id="icon-${id}">▶</span>
+          <div>
+            <div class="atelier-num">Atelier ${a.numAtelier}</div>
+            <div class="atelier-nom">${a.nomAtelier}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="prog-wrap">
+          <span class="passages-num">${a.passages}</span>
+          <div class="prog-bar"><div class="prog-fill ${progCls}" style="width:${pct}%"></div></div>
+        </div>
+      </td>
+      <td><span class="moy-chip">${a.moyenneNote} / 10</span></td>
+      <td><span class="moy-chip" style="background:var(--green-lt);color:var(--green)">${a.moyenneComport !== undefined ? a.moyenneComport + ' / 5' : '—'}</span></td>
+    </tr>`;
+
+    const equipesTri = [...a.equipes].sort((x, y) => y.note - x.note);
+    let detail = `<tr class="detail-row" id="detail-${id}">
+      <td colspan="4" style="padding:0;">
+        <div class="detail-inner">
+          <table><thead><tr>
+            <th style="text-align:left">N°</th>
+            <th style="text-align:left">Équipe</th>
+            <th style="text-align:left">Établissement</th>
+            <th style="text-align:center">Note atelier</th>
+            <th style="text-align:center">Comportement</th>
+          </tr></thead><tbody>`;
+
+    equipesTri.forEach(e => {
+      const notePct = Math.round((e.note / 10) * 100);
+      const noteCls = e.note >= 7 ? 'high' : e.note >= 4 ? 'medium' : 'low';
+      detail += `<tr>
+        <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${e.num}</span></td>
+        <td>${e.nom || '—'}</td>
+        <td style="color:var(--text3);font-size:11px">${e.etab || '—'}</td>
+        <td style="text-align:center">
+          <div class="note-bar-wrap" style="justify-content:center">
+            <span class="note-val">${e.note}</span>
+            <div class="note-bar"><div class="note-bar-fill ${noteCls}" style="width:${notePct}%"></div></div>
+          </div>
+        </td>
+        <td style="text-align:center">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2)">${e.comport}</span>
+        </td>
+      </tr>`;
+    });
+
+    detail += `</tbody></table></div></td></tr>`;
+    h += detail;
+  });
+
+  h += `</tbody></table>
+    <div style="padding:10px 14px;background:var(--bg);border-top:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);text-align:right">
+      Total passages : <strong style="color:var(--navy)">${totalPassages}</strong>
+      &nbsp;·&nbsp; Moy. par atelier : <strong style="color:var(--navy)">${data.length ? Math.round(totalPassages/data.length*10)/10 : 0}</strong>
+    </div>`;
+
+  document.getElementById('bodyAteliers').innerHTML = h;
+}
+
+function toggleDetail(id, row) {
+  const detail = document.getElementById('detail-' + id);
+  const icon   = document.getElementById('icon-' + id);
+  const isOpen = detail.classList.contains('visible');
+  if (isOpen) {
+    detail.classList.remove('visible');
+    icon.textContent = '▶';
+    row.classList.remove('open');
+  } else {
+    detail.classList.add('visible');
+    icon.textContent = '▼';
+    row.classList.add('open');
+  }
+}
+
+
+
+// ── VUE ÉQUIPES ─────────────────────────────────────────
+let equipesView = [];  // données construites depuis ateliersData
+let sortEquipes = 'num';
+
+function showTabEquipes() {
+  showTab('equipes');
+  buildEquipesData();
+  filtrerEquipes();
+}
+
+function buildEquipesData() {
+  // Construire la vue inverse : équipe → liste des ateliers visités
+  const map = new Map();
+
+  ateliersData.forEach(a => {
+    a.equipes.forEach(e => {
+      if (!map.has(e.num)) {
+        map.set(e.num, {
+          num:     e.num,
+          nom:     e.nom,
+          etab:    e.etab,
+          ateliers: []
+        });
+      }
+      map.get(e.num).ateliers.push({
+        numAtelier:  a.numAtelier,
+        nomAtelier:  a.nomAtelier,
+        note:        e.note,
+        comport:     e.comport
+      });
+    });
+  });
+
+  equipesView = Array.from(map.values());
+}
+
+function trierEquipes(col) {
+  sortEquipes = col;
+  document.querySelectorAll('#panel-equipes .sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sort-eq-' + (col === 'num' ? 'num' : 'ateliers')).classList.add('active');
+  filtrerEquipes();
+}
+
+function filtrerEquipes() {
+  if (!equipesView.length) buildEquipesData();
+  const search = document.getElementById('searchEquipes').value.toLowerCase();
+
+  let data = equipesView.filter(e =>
+    !search ||
+    e.num.includes(search) ||
+    e.nom.toLowerCase().includes(search) ||
+    e.etab.toLowerCase().includes(search)
+  );
+
+  data = sortEquipes === 'ateliers'
+    ? [...data].sort((a, b) => b.ateliers.length - a.ateliers.length || parseInt(a.num) - parseInt(b.num))
+    : [...data].sort((a, b) => parseInt(a.num) - parseInt(b.num));
+
+  renderEquipes(data);
+}
+
+function renderEquipes(data) {
+  document.getElementById('cntEquipes').textContent  = data.length;
+  document.getElementById('statEquipes').textContent = data.length + ' équipe' + (data.length > 1 ? 's' : '');
+
+  if (!data.length) {
+    document.getElementById('bodyEquipes').innerHTML =
+      '<div class="state-box"><div class="state-desc">Aucune équipe trouvée.</div></div>';
+    return;
+  }
+
+  let h = `<table>
+    <thead><tr>
+      <th style="text-align:left">Équipe</th>
+      <th>Nb ateliers</th>
+      <th>Moy. notes</th>
+      <th>Comport. moy.</th>
+    </tr></thead><tbody>`;
+
+  data.forEach(e => {
+    const id = 'eq-' + e.num;
+    const nbAteliers = e.ateliers.length;
+    const moy = nbAteliers > 0
+      ? Math.round((e.ateliers.reduce((s,a) => s + a.note, 0) / nbAteliers) * 10) / 10
+      : 0;
+    const moyComport = nbAteliers > 0
+      ? Math.round((e.ateliers.reduce((s,a) => s + (a.comport || 0), 0) / nbAteliers) * 10) / 10
+      : 0;
+
+    h += `<tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}', this)">
+      <td>
+        <div style="display:flex;align-items:center;">
+          <span class="toggle-icon" id="icon-${id}">▶</span>
+          <div>
+            <div class="atelier-num">${e.num}</div>
+            <div class="atelier-nom">${e.nom || '—'}</div>
+            <div style="font-size:11px;color:var(--text3)">${e.etab || ''}</div>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="prog-wrap">
+          <span class="passages-num">${nbAteliers}</span>
+          <div class="prog-bar">
+            <div class="prog-fill ${nbAteliers >= 5 ? 'high' : nbAteliers >= 3 ? 'medium' : 'low'}"
+              style="width:${Math.round(nbAteliers/10*100)}%"></div>
+          </div>
+        </div>
+      </td>
+      <td><span class="moy-chip">${moy} / 10</span></td>
+      <td><span class="moy-chip" style="background:var(--green-lt);color:var(--green)">${moyComport} / 5</span></td>
+    </tr>`;
+
+    // Détail des ateliers visités
+    const ateliersTri = [...e.ateliers].sort((a, b) => parseInt(a.numAtelier) - parseInt(b.numAtelier));
+    h += `<tr class="detail-row" id="detail-${id}">
+      <td colspan="4" style="padding:0;">
+        <div class="detail-inner">
+          <table><thead><tr>
+            <th style="text-align:left">N° atelier</th>
+            <th style="text-align:left">Nom atelier</th>
+            <th style="text-align:center">Note atelier</th>
+            <th style="text-align:center">Comportement</th>
+          </tr></thead><tbody>`;
+
+    ateliersTri.forEach(a => {
+      const notePct = Math.round((a.note / 10) * 100);
+      const noteCls = a.note >= 7 ? 'high' : a.note >= 4 ? 'medium' : 'low';
+      h += `<tr>
+        <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${a.numAtelier}</span></td>
+        <td>${a.nomAtelier || '—'}</td>
+        <td style="text-align:center">
+          <div class="note-bar-wrap" style="justify-content:center">
+            <span class="note-val">${a.note}</span>
+            <div class="note-bar"><div class="note-bar-fill ${noteCls}" style="width:${notePct}%"></div></div>
+          </div>
+        </td>
+        <td style="text-align:center">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2)">${a.comport}</span>
+        </td>
+      </tr>`;
+    });
+
+    h += `</tbody></table></div></td></tr>`;
+  });
+
+  h += '</tbody></table>';
+  document.getElementById('bodyEquipes').innerHTML = h;
+}
+
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+async function apiGet(action) {
+  const res = await fetch(`${API_URL}?action=${action}`);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return res.json();
+}
+
+function toast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + (type || '');
+  t.classList.add('on');
+  setTimeout(() => t.classList.remove('on'), 3000);
+}
+</script>
+</body>
+</html>
