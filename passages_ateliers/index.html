@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Passages Ateliers — Rallye Citoyen 2026</title>
 <script src="../PC/config.js"></script>
-<script src="../PC/nav.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
@@ -326,6 +325,8 @@ async function chargerDonnees() {
       now.getSeconds().toString().padStart(2,'0');
 
   } catch(e) {
+    document.getElementById('bodyAteliers').innerHTML =
+      `<div class="state-box"><div class="state-icon">❌</div><div class="state-title">Erreur de chargement</div><div class="state-desc">${e.message}</div></div>`;
     toast('Erreur : ' + e.message, 'err');
   }
 }
@@ -617,9 +618,11 @@ function showTab(name) {
 }
 
 async function apiGet(action) {
-  const res = await fetch(`${API_URL}?action=${action}`);
+  const res  = await fetch(`${API_URL}?action=${action}`);
   if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+  const text = await res.text();
+  try { return JSON.parse(text); }
+  catch(e) { throw new Error('Réponse invalide : ' + text.slice(0, 80)); }
 }
 
 // ── EXPORTS ─────────────────────────────────────────────
