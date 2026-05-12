@@ -211,8 +211,7 @@
 
 <div class="nav-wrap">
   <nav>
-    <div class="tab active" id="tab-ateliers" onclick="showTab('ateliers')">Ateliers</div>
-    <div class="tab" id="tab-equipes" onclick="showTabEquipes()">Équipes</div>
+    <div class="tab active" id="tab-ateliers">Ateliers — Rallye Citoyen 2026</div>
     <div class="nav-spacer"></div>
     <div class="nav-info">
       <span id="lastUpdate">—</span>
@@ -255,33 +254,7 @@
 
   </div>
 
-  <!-- ═══ ÉQUIPES ═══ -->
-  <div class="panel" id="panel-equipes">
 
-    <div class="toolbar">
-      <div class="search-wrap">
-        <input type="text" id="searchEquipes" placeholder="Rechercher une équipe…" oninput="filtrerEquipes()">
-      </div>
-      <div class="sort-btns">
-        <button class="sort-btn active" id="sort-eq-num" onclick="trierEquipes('num')">N° équipe</button>
-        <button class="sort-btn" id="sort-eq-ateliers" onclick="trierEquipes('ateliers')">Nb ateliers ↓</button>
-      </div>
-      <span class="stat-pill" id="statEquipes">— équipes</span>
-    </div>
-
-    <div class="tbl-wrap">
-      <div class="tbl-header">
-        Ateliers visités par équipe — cliquer pour voir le détail
-        <span class="tbl-cnt" id="cntEquipes">0</span>
-      </div>
-      <div id="bodyEquipes">
-        <div class="state-box">
-          <div class="state-desc">Chargement…</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
 
 </main>
 
@@ -290,10 +263,14 @@
 <script>
 let ateliersData   = [];
 let sortComptage   = 'num';
-let sortDetail     = 'num';
 let maxPassages    = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof API_URL === 'undefined') {
+    document.getElementById('bodyAteliers').innerHTML =
+      '<div class="state-box"><div class="state-icon">⚠️</div><div class="state-title">Configuration manquante</div><div class="state-desc">config.js introuvable ou API_URL non définie.</div></div>';
+    return;
+  }
   chargerDonnees();
   setInterval(chargerDonnees, 30000);
 });
@@ -313,10 +290,7 @@ async function chargerDonnees() {
     maxPassages  = Math.max(...ateliersData.map(a => a.passages), 1);
 
     filtrerAteliers();
-    if (document.getElementById('panel-equipes').classList.contains('active')) {
-      buildEquipesData();
-      filtrerEquipes();
-    }
+
 
     const now = new Date();
     document.getElementById('lastUpdate').textContent =
@@ -461,154 +435,6 @@ function toggleDetail(id, row) {
 
 
 // ── VUE ÉQUIPES ─────────────────────────────────────────
-let equipesView = [];  // données construites depuis ateliersData
-let sortEquipes = 'num';
-
-function showTabEquipes() {
-  showTab('equipes');
-  buildEquipesData();
-  filtrerEquipes();
-}
-
-function buildEquipesData() {
-  // Construire la vue inverse : équipe → liste des ateliers visités
-  const map = new Map();
-
-  ateliersData.forEach(a => {
-    a.equipes.forEach(e => {
-      if (!map.has(e.num)) {
-        map.set(e.num, {
-          num:     e.num,
-          nom:     e.nom,
-          etab:    e.etab,
-          ateliers: []
-        });
-      }
-      map.get(e.num).ateliers.push({
-        numAtelier:  a.numAtelier,
-        nomAtelier:  a.nomAtelier,
-        note:        e.note,
-        comport:     e.comport
-      });
-    });
-  });
-
-  equipesView = Array.from(map.values());
-}
-
-function trierEquipes(col) {
-  sortEquipes = col;
-  document.querySelectorAll('#panel-equipes .sort-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('sort-eq-' + (col === 'num' ? 'num' : 'ateliers')).classList.add('active');
-  filtrerEquipes();
-}
-
-function filtrerEquipes() {
-  if (!equipesView.length) buildEquipesData();
-  const search = document.getElementById('searchEquipes').value.toLowerCase();
-
-  let data = equipesView.filter(e =>
-    !search ||
-    e.num.includes(search) ||
-    e.nom.toLowerCase().includes(search) ||
-    e.etab.toLowerCase().includes(search)
-  );
-
-  data = sortEquipes === 'ateliers'
-    ? [...data].sort((a, b) => b.ateliers.length - a.ateliers.length || parseInt(a.num) - parseInt(b.num))
-    : [...data].sort((a, b) => parseInt(a.num) - parseInt(b.num));
-
-  renderEquipes(data);
-}
-
-function renderEquipes(data) {
-  document.getElementById('cntEquipes').textContent  = data.length;
-  document.getElementById('statEquipes').textContent = data.length + ' équipe' + (data.length > 1 ? 's' : '');
-
-  if (!data.length) {
-    document.getElementById('bodyEquipes').innerHTML =
-      '<div class="state-box"><div class="state-desc">Aucune équipe trouvée.</div></div>';
-    return;
-  }
-
-  let h = `<table>
-    <thead><tr>
-      <th style="text-align:left">Équipe</th>
-      <th>Nb ateliers</th>
-      <th>Moy. notes</th>
-      <th>Comport. moy.</th>
-    </tr></thead><tbody>`;
-
-  data.forEach(e => {
-    const id = 'eq-' + e.num;
-    const nbAteliers = e.ateliers.length;
-    const moy = nbAteliers > 0
-      ? Math.round((e.ateliers.reduce((s,a) => s + a.note, 0) / nbAteliers) * 10) / 10
-      : 0;
-    const moyComport = nbAteliers > 0
-      ? Math.round((e.ateliers.reduce((s,a) => s + (a.comport || 0), 0) / nbAteliers) * 10) / 10
-      : 0;
-
-    h += `<tr class="atelier-row" id="row-${id}" onclick="toggleDetail('${id}', this)">
-      <td>
-        <div style="display:flex;align-items:center;">
-          <span class="toggle-icon" id="icon-${id}">▶</span>
-          <div>
-            <div class="atelier-num">${e.num}</div>
-            <div class="atelier-nom">${e.nom || '—'}</div>
-            <div style="font-size:11px;color:var(--text3)">${e.etab || ''}</div>
-          </div>
-        </div>
-      </td>
-      <td>
-        <div class="prog-wrap">
-          <span class="passages-num">${nbAteliers}</span>
-          <div class="prog-bar">
-            <div class="prog-fill ${nbAteliers >= 5 ? 'high' : nbAteliers >= 3 ? 'medium' : 'low'}"
-              style="width:${Math.round(nbAteliers/10*100)}%"></div>
-          </div>
-        </div>
-      </td>
-      <td><span class="moy-chip">${moy} / 10</span></td>
-      <td><span class="moy-chip" style="background:var(--green-lt);color:var(--green)">${moyComport} / 5</span></td>
-    </tr>`;
-
-    // Détail des ateliers visités
-    const ateliersTri = [...e.ateliers].sort((a, b) => parseInt(a.numAtelier) - parseInt(b.numAtelier));
-    h += `<tr class="detail-row" id="detail-${id}">
-      <td colspan="4" style="padding:0;">
-        <div class="detail-inner">
-          <table><thead><tr>
-            <th style="text-align:left">N° atelier</th>
-            <th style="text-align:left">Nom atelier</th>
-            <th style="text-align:center">Note atelier</th>
-            <th style="text-align:center">Comportement</th>
-          </tr></thead><tbody>`;
-
-    ateliersTri.forEach(a => {
-      const notePct = Math.round((a.note / 10) * 100);
-      const noteCls = a.note >= 7 ? 'high' : a.note >= 4 ? 'medium' : 'low';
-      h += `<tr>
-        <td><span style="font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy)">${a.numAtelier}</span></td>
-        <td>${a.nomAtelier || '—'}</td>
-        <td style="text-align:center">
-          <div class="note-bar-wrap" style="justify-content:center">
-            <span class="note-val">${a.note}</span>
-            <div class="note-bar"><div class="note-bar-fill ${noteCls}" style="width:${notePct}%"></div></div>
-          </div>
-        </td>
-        <td style="text-align:center">
-          <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text2)">${a.comport}</span>
-        </td>
-      </tr>`;
-    });
-
-    h += `</tbody></table></div></td></tr>`;
-  });
-
-  h += '</tbody></table>';
-  document.getElementById('bodyEquipes').innerHTML = h;
-}
 
 function showTab(name) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
