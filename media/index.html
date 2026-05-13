@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veille médiatique — Rallye Citoyen 2026</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap');
+:root{
+  --navy:#1a2744;--navy-lt:#243358;--gold:#b8932a;--gold-lt:#f5ead4;--gold-mid:#e8d090;
+  --bg:#f2f0eb;--bg2:#e8e5de;--white:#fff;--text:#1a1e2e;--text2:#4a5068;--text3:#8a90a8;
+  --border:#dcd8ce;--border2:#c8c4b8;--shadow:rgba(26,39,68,0.08);
+  --fb:#1877f2;--fb-lt:#e7f0fd;--li:#0a66c2;--li-lt:#e8f1fb;
+  --tw:#111;--tw-lt:#f0f0f0;--ig:#e1306c;--ig-lt:#fce4ec;
+  --pr:#c0392b;--pr-lt:#fdecea;--ra:#e67e22;--ra-lt:#fef5ec;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;}
+header{background:var(--navy);padding:28px 24px 24px;text-align:center;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.015) 0,rgba(255,255,255,.015) 1px,transparent 1px,transparent 12px);pointer-events:none;}
+.header-logo{width:80px;height:80px;object-fit:contain;margin-bottom:14px;filter:drop-shadow(0 4px 16px rgba(0,0,0,.3));}
+.header-org{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:8px;}
+.header-title{font-family:'Libre Baskerville',serif;font-weight:700;font-size:24px;color:#fff;margin-bottom:10px;}
+.header-meta{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;}
+.meta-pill{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.06em;padding:4px 14px;border-radius:20px;text-transform:uppercase;}
+.meta-pill.date{background:var(--gold);color:var(--navy);}
+.meta-pill.lieu{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.15);}
+main{flex:1;max-width:1100px;margin:0 auto;padding:28px 20px 60px;width:100%;}
+
+.loading-state{text-align:center;padding:60px;}
+.spin{display:inline-block;width:24px;height:24px;border:3px solid var(--border2);border-top-color:var(--navy);border-radius:50%;animation:rot .6s linear infinite;margin-bottom:12px;}
+@keyframes rot{to{transform:rotate(360deg)}}
+.loading-txt{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:22px;}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:12px 14px;text-align:center;box-shadow:0 2px 8px var(--shadow);}
+.stat-val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:26px;line-height:1;}
+.stat-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-top:4px;}
+
+.viz{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:18px 22px;margin-bottom:22px;box-shadow:0 2px 8px var(--shadow);}
+.viz-title{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--text3);margin-bottom:14px;}
+.viz-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.viz-label{font-size:12px;font-weight:600;color:var(--text2);width:120px;flex-shrink:0;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:7px;}
+.viz-bar-wrap{flex:1;height:20px;background:var(--bg2);border-radius:5px;overflow:hidden;}
+.viz-bar{height:100%;border-radius:5px;transition:width .7s ease;}
+.viz-count{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--text2);width:20px;}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:20px;}
+.filter-btn{padding:7px 14px;background:var(--white);border:1.5px solid var(--border2);border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--text3);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:7px;}
+.filter-btn:hover{border-color:var(--navy);color:var(--navy);}
+.filter-btn.active{color:#fff;}
+.filter-btn[data-f=all].active{background:var(--navy);border-color:var(--navy);}
+.filter-btn[data-f=facebook].active{background:var(--fb);border-color:var(--fb);}
+.filter-btn[data-f=instagram].active{background:var(--ig);border-color:var(--ig);}
+.filter-btn[data-f=linkedin].active{background:var(--li);border-color:var(--li);}
+.filter-btn[data-f=twitter].active{background:#222;border-color:#222;}
+.filter-btn[data-f=presse].active{background:var(--pr);border-color:var(--pr);}
+.filter-btn[data-f=radio].active{background:var(--ra);border-color:var(--ra);}
+.count-pill{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:3px 10px;border-radius:10px;background:var(--bg2);border:1px solid var(--border);color:var(--text2);margin-left:auto;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.card{background:var(--white);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);transition:all .2s;display:flex;flex-direction:column;}
+.card:hover{box-shadow:0 8px 24px var(--shadow);transform:translateY(-2px);}
+.card-preview{height:140px;background:var(--bg2);overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.card-preview img{width:100%;height:100%;object-fit:cover;}
+.card-preview-lbl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:.08em;}
+.card-head{padding:10px 14px 8px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);}
+.card-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.card-source-wrap{flex:1;min-width:0;}
+.card-source{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.card-subtype{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;}
+.card-badge{flex-shrink:0;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:6px;}
+.card.facebook .card-icon{background:var(--fb-lt);color:var(--fb);}
+.card.instagram .card-icon{background:var(--ig-lt);color:var(--ig);}
+.card.linkedin .card-icon{background:var(--li-lt);color:var(--li);}
+.card.twitter  .card-icon{background:var(--tw-lt);color:var(--tw);}
+.card.presse   .card-icon{background:var(--pr-lt);color:var(--pr);}
+.card.radio    .card-icon{background:var(--ra-lt);color:var(--ra);}
+.card.facebook .card-badge{background:var(--fb-lt);color:var(--fb);}
+.card.instagram .card-badge{background:var(--ig-lt);color:var(--ig);}
+.card.linkedin .card-badge{background:var(--li-lt);color:var(--li);}
+.card.twitter  .card-badge{background:var(--tw-lt);color:#333;}
+.card.presse   .card-badge{background:var(--pr-lt);color:var(--pr);}
+.card.radio    .card-badge{background:var(--ra-lt);color:var(--ra);}
+.card-body{padding:12px 14px 14px;flex:1;display:flex;flex-direction:column;gap:8px;}
+.card-title{font-family:'Libre Baskerville',serif;font-size:13px;font-weight:700;color:var(--navy);line-height:1.4;flex:1;}
+.card-desc{font-size:12px;color:var(--text2);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px;}
+.card-date{font-size:11px;color:var(--text3);font-family:'IBM Plex Mono',monospace;}
+.card-link{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:var(--navy);text-decoration:none;padding:5px 10px;border:1.5px solid var(--border2);border-radius:8px;transition:all .15s;}
+.card-link:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+.empty{padding:48px;text-align:center;color:var(--text3);font-style:italic;grid-column:1/-1;}
+.error-box{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:32px;text-align:center;color:var(--text3);}
+@media print{header .meta-pill.lieu,.toolbar{display:none!important;}.card{break-inside:avoid;}body{background:white;}}
+</style>
+</head>
+<body>
+
+<header>
+  <img src="../LogoRC2026.png" class="header-logo" alt="" onerror="this.style.display='none'">
+  <div class="header-org">Délégation Militaire Départementale 82</div>
+  <div class="header-title">Veille médiatique — Rallye Citoyen 2026</div>
+  <div class="header-meta">
+    <span class="meta-pill date">12 mai 2026</span>
+    <span class="meta-pill lieu">Complexe Jacques Chirac · Montauban</span>
+  </div>
+</header>
+
+<main id="main">
+  <div class="loading-state">
+    <div class="spin"></div>
+    <div class="loading-txt">Chargement de la veille…</div>
+  </div>
+</main>
+
+<script>
+// ⚠️ Remplacer par l'URL de votre Web App media_veille.gs après déploiement
+var MEDIA_API_URL = 'https://script.google.com/macros/s/AKfycbweM3vnMH9-1xJQpVLZnxm4ZnpFvMX0h82SCDtwE3-dUPaqpEpL4xa9r9rzQ3vKkm_K/exec';
+
+var TYPE_LABELS = {presse:'Presse',radio:'Radio',facebook:'Facebook',instagram:'Instagram',twitter:'X / Twitter',linkedin:'LinkedIn',web:'Web'};
+var TYPE_COLORS = {presse:'var(--pr)',radio:'var(--ra)',facebook:'var(--fb)',instagram:'var(--ig)',twitter:'#222',linkedin:'var(--li)',web:'var(--text3)'};
+
+var SVG_ICONS = {
+  all:       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
+  presse:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8M15 18h-5M10 6h8v4h-8z"/></svg>',
+  radio:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.4"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.4"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>',
+  facebook:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>',
+  twitter:   '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+  linkedin:  '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+  web:       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'
+};
+
+var SUBTYPE_LABELS = {post:'Post',reel:'Reel',story:'Story',tweet:'Tweet',video:'Vidéo'};
+
+var allLinks = [];
+var currentFilter = 'all';
+var previewCache = {};
+
+function icon(type, size) {
+  size = size || 14;
+  var svg = SVG_ICONS[type] || SVG_ICONS.web;
+  return svg.replace('<svg ', '<svg width="'+size+'" height="'+size+'" style="flex-shrink:0" ');
+}
+
+function buildStats(links) {
+  var counts = {};
+  links.forEach(function(l){ counts[l.type] = (counts[l.type]||0)+1; });
+  var html = '<div class="stat"><div class="stat-val" style="color:var(--navy)">'+links.length+'</div><div class="stat-lbl">Publications</div></div>';
+  Object.entries(counts).sort(function(a,b){return b[1]-a[1];}).forEach(function(e){
+    html += '<div class="stat"><div class="stat-val" style="color:'+TYPE_COLORS[e[0]]+'">'+e[1]+'</div><div class="stat-lbl">'+(TYPE_LABELS[e[0]]||e[0])+'</div></div>';
+  });
+  return '<div class="stats">'+html+'</div>';
+}
+
+function buildViz(links) {
+  var counts = {};
+  links.forEach(function(l){ counts[l.type] = (counts[l.type]||0)+1; });
+  var max = Math.max.apply(null, Object.values(counts).concat([1]));
+  var rows = Object.entries(counts).sort(function(a,b){return b[1]-a[1];}).map(function(e){
+    var pct = Math.round(e[1]/max*100);
+    return '<div class="viz-row">' +
+      '<div class="viz-label">'+icon(e[0],12)+' '+(TYPE_LABELS[e[0]]||e[0])+'</div>' +
+      '<div class="viz-bar-wrap"><div class="viz-bar" style="width:'+pct+'%;background:'+TYPE_COLORS[e[0]]+'"></div></div>' +
+      '<div class="viz-count">'+e[1]+'</div></div>';
+  }).join('');
+  return '<div class="viz"><div class="viz-title">Répartition par source</div>'+rows+'</div>';
+}
+
+function buildToolbar(links) {
+  var types = ['all','presse','radio','facebook','instagram','twitter','linkedin'];
+  var labels = {all:'Tous',presse:'Presse',radio:'Radio',facebook:'Facebook',instagram:'Instagram',twitter:'X',linkedin:'LinkedIn'};
+  var html = types.map(function(t){
+    var cnt = t==='all' ? links.length : links.filter(function(l){return l.type===t;}).length;
+    if (cnt===0 && t!=='all') return '';
+    return '<button class="filter-btn'+(t===currentFilter?' active':'')+'" data-f="'+t+'" onclick="setFilter(\''+t+'\',this)">'+
+      icon(t,13)+' '+labels[t]+'</button>';
+  }).join('');
+  html += '<span class="count-pill" id="countPill">'+links.length+' publications</span>';
+  return '<div class="toolbar">'+html+'</div>';
+}
+
+function buildCard(m) {
+  var preview = previewCache[m.id];
+  var previewHTML = '';
+  if (preview && preview.image) {
+    previewHTML = '<div class="card-preview"><img src="'+preview.image+'" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'\'"></div>';
+  }
+  var titleText = (preview && preview.title) ? preview.title : m.source + (m.subtype ? ' — '+(SUBTYPE_LABELS[m.subtype]||m.subtype) : '');
+  var descHTML  = (preview && preview.description) ? '<div class="card-desc">'+preview.description+'</div>' : '';
+  var subtypeHTML = m.subtype ? '<div class="card-subtype">'+(SUBTYPE_LABELS[m.subtype]||m.subtype)+'</div>' : '';
+  return '<div class="card '+m.type+'" id="card-'+m.id+'">' +
+    previewHTML +
+    '<div class="card-head">' +
+      '<div class="card-icon">'+icon(m.type,14)+'</div>' +
+      '<div class="card-source-wrap"><div class="card-source">'+m.source+'</div>'+subtypeHTML+'</div>' +
+      '<span class="card-badge">'+(TYPE_LABELS[m.type]||m.type)+'</span>' +
+    '</div>' +
+    '<div class="card-body">' +
+      '<div class="card-title">'+titleText+'</div>' +
+      descHTML +
+      '<div class="card-footer">' +
+        '<span class="card-date">'+m.date+'</span>' +
+        '<a class="card-link" href="'+m.url+'" target="_blank" rel="noopener">Voir ' +
+          '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>' +
+        '</a>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function renderAll() {
+  var data = currentFilter === 'all' ? allLinks : allLinks.filter(function(l){return l.type===currentFilter;});
+  var pill = document.getElementById('countPill');
+  if (pill) pill.textContent = data.length + ' publication' + (data.length>1?'s':'');
+  var grid = document.getElementById('mediaGrid');
+  if (!grid) return;
+  if (!data.length) { grid.innerHTML = '<div class="empty">Aucune publication pour ce filtre.</div>'; return; }
+  grid.innerHTML = data.map(buildCard).join('');
+}
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderAll();
+}
+
+function updateCardPreview(id) {
+  var card = document.getElementById('card-'+id);
+  if (!card) return;
+  var m = allLinks.find(function(x){return x.id===id;});
+  if (!m) return;
+  var preview = previewCache[id];
+  if (!preview) return;
+
+  // Image
+  if (preview.image && !card.querySelector('.card-preview')) {
+    card.insertAdjacentHTML('afterbegin','<div class="card-preview"><img src="'+preview.image+'" alt="" loading="lazy" onerror="this.parentNode.innerHTML=\'\'"></div>');
+  }
+  // Titre
+  var titleEl = card.querySelector('.card-title');
+  if (titleEl && preview.title) titleEl.textContent = preview.title;
+  // Description
+  var bodyEl = card.querySelector('.card-body');
+  if (bodyEl && preview.description && !bodyEl.querySelector('.card-desc')) {
+    var titleEl2 = bodyEl.querySelector('.card-title');
+    if (titleEl2) titleEl2.insertAdjacentHTML('afterend','<div class="card-desc">'+preview.description+'</div>');
+  }
+}
+
+function loadPreviews(links) {
+  var delay = 0;
+  links.forEach(function(m) {
+    if (previewCache[m.id] !== undefined) return;
+    setTimeout(function(){
+      fetch('https://api.microlink.io?url='+encodeURIComponent(m.url)+'&screenshot=false')
+        .then(function(r){return r.json();})
+        .then(function(d){
+          if (d.status==='success' && d.data) {
+            previewCache[m.id] = {
+              title:       d.data.title || null,
+              description: d.data.description || null,
+              image:       (d.data.image && d.data.image.url) ? d.data.image.url : null
+            };
+          } else {
+            previewCache[m.id] = null;
+          }
+          updateCardPreview(m.id);
+        })
+        .catch(function(){ previewCache[m.id] = null; });
+    }, delay);
+    delay += 150;
+  });
+}
+
+// Chargement
+fetch(MEDIA_API_URL)
+  .then(function(r){
+    if (!r.ok) throw new Error('HTTP '+r.status);
+    return r.text();
+  })
+  .then(function(text){
+    var data;  
+    try { data = JSON.parse(text); }
+    catch(e) { throw new Error('Réponse invalide du serveur'); }
+    if (!data.success) throw new Error(data.message || 'Erreur inconnue');
+
+    allLinks = data.links || [];
+    var main = document.getElementById('main');
+    main.innerHTML =
+      buildStats(allLinks) +
+      buildViz(allLinks) +
+      buildToolbar(allLinks) +
+      '<div class="grid" id="mediaGrid"></div>';
+
+    renderAll();
+    setTimeout(function(){ loadPreviews(allLinks); }, 500);
+  })
+  .catch(function(err){
+    document.getElementById('main').innerHTML =
+      '<div class="error-box"><div style="font-size:32px;margin-bottom:12px">⚠️</div>' +
+      '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:13px;color:var(--text3)">'+err.message+'</div>' +
+      (MEDIA_API_URL === 'VOTRE_URL_MEDIA_VEILLE_ICI'
+        ? '<div style="margin-top:12px;font-size:12px;color:var(--text3)">Pensez à renseigner MEDIA_API_URL dans le fichier media/index.html</div>'
+        : '') +
+      '</div>';
+  });
+</script>
+</body>
+</html>
