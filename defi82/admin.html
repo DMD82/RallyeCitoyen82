@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Défi Trinôme Académique 82 — Espace admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a2744;--navy-lt:#243358;--gold:#b8932a;--gold-lt:#f5ead4;--gold-mid:#e8d090;
+  --bg:#f2f0eb;--bg2:#e8e5de;--white:#ffffff;
+  --text:#1a1e2e;--text2:#4a5068;--text3:#8a90a8;
+  --border:#dcd8ce;--border2:#c8c4b8;
+  --green:#1a5a32;--green-lt:#e8f5ed;
+  --red:#a32d2d;--red-lt:#faeaea;
+  --amber:#8a6b1a;--amber-lt:#f7edd4;
+  --shadow:rgba(26,39,68,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;}
+
+header{background:var(--navy);padding:36px 24px 28px;text-align:center;}
+.h-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:8px;}
+.h-title{font-family:'Libre Baskerville',serif;font-weight:700;font-size:24px;color:#fff;}
+
+.page{max-width:1000px;margin:0 auto;padding:32px 20px 80px;}
+
+.login-card{max-width:360px;margin:60px auto;background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px;box-shadow:0 2px 8px var(--shadow);text-align:center;}
+.login-card label{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px;}
+.login-card input{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:8px;font-size:14px;margin-bottom:12px;}
+.login-card button{width:100%;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
+.login-card .err{color:var(--red);font-size:12px;margin-top:10px;display:none;}
+
+.tabs{display:flex;gap:8px;margin-bottom:20px;}
+.tab-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:9px 18px;border-radius:20px;border:1px solid var(--border2);background:var(--white);color:var(--text2);cursor:pointer;}
+.tab-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.filter-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:6px 14px;border-radius:16px;border:1px solid var(--border2);background:var(--white);color:var(--text2);cursor:pointer;}
+.filter-btn.active{background:var(--gold);color:var(--navy);border-color:var(--gold);}
+
+.depot-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;box-shadow:0 2px 8px var(--shadow);}
+.depot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.depot-etab{font-family:'Libre Baskerville',serif;font-weight:700;font-size:15px;color:var(--navy);}
+.depot-meta{font-size:12px;color:var(--text3);margin-top:2px;}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:14px;}
+.badge.attente{background:var(--amber-lt);color:var(--amber);}
+.badge.valide{background:var(--green-lt);color:var(--green);}
+.badge.refuse{background:var(--red-lt);color:var(--red);}
+.depot-desc{font-size:13px;color:var(--text2);margin:10px 0;}
+.depot-links{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.depot-links a{font-size:11px;color:var(--navy);text-decoration:none;background:var(--bg);padding:4px 10px;border-radius:20px;border:1px solid var(--border);}
+.depot-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.act-btn{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:7px 14px;border-radius:16px;border:1px solid var(--border2);background:var(--white);cursor:pointer;}
+.act-btn.valider{background:var(--green);color:#fff;border-color:var(--green);}
+.act-btn.refuser{background:var(--red);color:#fff;border-color:var(--red);}
+.act-btn.highlight{background:var(--gold-lt);color:var(--navy);border-color:var(--gold-mid);}
+.act-btn.highlight.on{background:var(--gold);}
+.pts-input{width:60px;padding:6px 8px;border:1px solid var(--border2);border-radius:6px;font-size:12px;}
+
+.defi-row{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px 18px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;box-shadow:0 2px 8px var(--shadow);}
+.defi-row.inactif{opacity:.55;}
+.defi-row-name{font-weight:600;color:var(--navy);font-size:14px;display:flex;align-items:center;gap:8px;}
+.defi-row-pts{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);}
+
+.add-defi-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-top:20px;box-shadow:0 2px 8px var(--shadow);}
+.add-defi-card h3{font-family:'Libre Baskerville',serif;font-size:15px;color:var(--navy);margin-bottom:14px;}
+.add-defi-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:10px;}
+@media(max-width:600px){.add-defi-grid{grid-template-columns:1fr;}}
+.add-defi-grid input,.add-defi-grid textarea{padding:9px 12px;border:1px solid var(--border2);border-radius:8px;font-size:13px;}
+.add-defi-card button{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
+
+.empty{text-align:center;color:var(--text3);font-size:13px;padding:24px;}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;display:none;z-index:10;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-label">Trinôme Académique 82</div>
+  <div class="h-title">Espace admin</div>
+</header>
+
+<div class="page">
+
+  <div class="login-card" id="login-card">
+    <label>Jeton admin</label>
+    <input type="password" id="login-token" placeholder="Coller le jeton admin">
+    <button id="login-btn">Se connecter</button>
+    <div class="err" id="login-err">Jeton invalide.</div>
+  </div>
+
+  <div id="admin-content" style="display:none;">
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-depots-btn">Dépôts</button>
+      <button class="tab-btn" id="tab-defis-btn">Défis</button>
+      <button class="tab-btn" id="tab-etabs-btn">Établissements</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-depots">
+      <div class="filter-bar">
+        <button class="filter-btn active" data-f="Tous">Tous</button>
+        <button class="filter-btn" data-f="En attente">En attente</button>
+        <button class="filter-btn" data-f="Validé">Validé</button>
+        <button class="filter-btn" data-f="Refusé">Refusé</button>
+      </div>
+      <div id="depots-zone"><div class="empty">Chargement…</div></div>
+    </div>
+
+    <div class="tab-panel" id="tab-defis">
+      <div id="defis-zone"><div class="empty">Chargement…</div></div>
+
+      <div class="add-defi-card">
+        <h3>Ajouter ou modifier des défis en masse</h3>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:6px;">La façon la plus rapide : ouvrez directement l'onglet <b>Défis</b> du Google Sheet et collez vos lignes depuis Excel (plusieurs à la fois, avec mise en forme, tri, etc.).</p>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">Colonnes attendues : <code>ID</code> (laissez vide — généré automatiquement au premier chargement du site), <code>Libellé</code>, <code>Points</code>, <code>Actif</code> (TRUE/FALSE), <code>Catégorie</code>, <code>Description</code>, <code>Icône</code>. Vos changements apparaissent sur le site dès le prochain chargement de page, aucune synchronisation manuelle nécessaire.</p>
+        <a href="https://docs.google.com/spreadsheets/d/1JB9yR9z7Rmqu1bATOC8NpLtop79aEH5G0BnahgkOCVI/edit?gid=1126570768#gid=1126570768" target="_blank" rel="noopener" style="display:inline-block;background:var(--navy);color:#fff;text-decoration:none;border-radius:8px;padding:10px 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;">Ouvrir l'onglet Défis ↗</a>
+      </div>
+
+      <div class="add-defi-card">
+        <h3>Ajouter un défi</h3>
+        <div class="add-defi-grid">
+          <input type="text" id="nd-libelle" placeholder="Libellé de la mission">
+          <input type="number" id="nd-points" placeholder="Points">
+          <input type="text" id="nd-categorie" placeholder="Catégorie (facultatif)">
+        </div>
+        <div class="add-defi-grid" style="grid-template-columns:1fr 1fr;margin-bottom:14px;">
+          <input type="text" id="nd-icone" placeholder="Icône, ex. 🎖️ (facultatif)">
+          <textarea id="nd-description" placeholder="Descriptif (facultatif, affiché sur la tuile)" rows="2"></textarea>
+        </div>
+        <button id="nd-submit">Ajouter</button>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-etabs">
+      <div id="etabs-zone"><div class="empty">Chargement…</div></div>
+
+      <div class="add-defi-card">
+        <h3>Ajouter ou modifier des établissements en masse</h3>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:6px;">Comme pour les défis : ouvrez directement l'onglet <b>Établissements</b> du Google Sheet pour ajouter, corriger ou fusionner des noms depuis Excel.</p>
+        <p style="font-size:12px;color:var(--text2);margin-bottom:12px;">Colonnes attendues : <code>ID</code> (laissez vide — généré automatiquement), <code>Nom</code>, <code>Actif</code> (TRUE/FALSE). C'est cette liste, et elle seule, qui alimente le menu déroulant du formulaire — un établissement qui n'y figure pas ne peut apparaître qu'en passant par « Autre ». Un établissement saisi via « Autre » est automatiquement ajouté ici en Actif=FALSE (grisé ci-dessous) : activez-le s'il est légitime, ou laissez-le de côté et corrigez le dépôt correspondant si c'était en fait un doublon.</p>
+        <a href="https://docs.google.com/spreadsheets/d/1JB9yR9z7Rmqu1bATOC8NpLtop79aEH5G0BnahgkOCVI/edit?gid=1487219248#gid=1487219248" target="_blank" rel="noopener" style="display:inline-block;background:var(--navy);color:#fff;text-decoration:none;border-radius:8px;padding:10px 18px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;">Ouvrir l'onglet Établissements ↗</a>
+      </div>
+
+      <div class="add-defi-card">
+        <h3>Ajouter un établissement</h3>
+        <div class="add-defi-grid" style="grid-template-columns:2fr 1fr;">
+          <input type="text" id="ne-nom" placeholder="Nom officiel de l'établissement">
+          <button id="ne-submit">Ajouter</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ⚠️ À COMPLÉTER : coller ici l'URL /exec du déploiement Apps Script
+const API_URL = 'https://script.google.com/macros/s/AKfycbwcSQSXjdaY7e0mmfn8CNx5n_IHU2CQEABBmH37HhRpKlYtjzX177kMblgxLBQpgACo_g/exec';
+const TOKEN_KEY = 'defi82_admin_token';
+
+let allDepots = [];
+let currentFilter = 'Tous';
+
+function getToken() { return sessionStorage.getItem(TOKEN_KEY) || ''; }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2500);
+}
+
+async function apiGet(action) {
+  const res = await fetch(`${API_URL}?action=${action}&token=${encodeURIComponent(getToken())}`);
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || action);
+  return data.data;
+}
+async function apiPost(body) {
+  body.token = getToken();
+  const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) });
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || body.action);
+  return data.data;
+}
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+  const token = document.getElementById('login-token').value.trim();
+  if (!token) return;
+  sessionStorage.setItem(TOKEN_KEY, token);
+  try {
+    await apiGet('depots'); // sert de vérification
+    document.getElementById('login-card').style.display = 'none';
+    document.getElementById('admin-content').style.display = 'block';
+    loadDepots();
+    loadDefis();
+    loadEtabs();
+  } catch (err) {
+    sessionStorage.removeItem(TOKEN_KEY);
+    document.getElementById('login-err').style.display = 'block';
+  }
+});
+
+// ---- Onglets ----
+document.getElementById('tab-depots-btn').addEventListener('click', () => switchTab('depots'));
+document.getElementById('tab-defis-btn').addEventListener('click', () => switchTab('defis'));
+document.getElementById('tab-etabs-btn').addEventListener('click', () => switchTab('etabs'));
+function switchTab(name) {
+  document.getElementById('tab-depots-btn').classList.toggle('active', name === 'depots');
+  document.getElementById('tab-defis-btn').classList.toggle('active', name === 'defis');
+  document.getElementById('tab-etabs-btn').classList.toggle('active', name === 'etabs');
+  document.getElementById('tab-depots').classList.toggle('active', name === 'depots');
+  document.getElementById('tab-defis').classList.toggle('active', name === 'defis');
+  document.getElementById('tab-etabs').classList.toggle('active', name === 'etabs');
+}
+
+// ---- Dépôts ----
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.f;
+    renderDepots();
+  });
+});
+
+async function loadDepots() {
+  try {
+    allDepots = await apiGet('depots');
+    renderDepots();
+  } catch (err) {
+    document.getElementById('depots-zone').innerHTML = `<div class="empty">Erreur : ${err.message}</div>`;
+  }
+}
+
+function renderDepots() {
+  const zone = document.getElementById('depots-zone');
+  const list = currentFilter === 'Tous' ? allDepots : allDepots.filter(d => d.statut === currentFilter);
+  if (list.length === 0) { zone.innerHTML = '<div class="empty">Aucun dépôt dans cette catégorie.</div>'; return; }
+
+  const badgeClass = s => s === 'Validé' ? 'valide' : s === 'Refusé' ? 'refuse' : 'attente';
+
+  zone.innerHTML = list.map(d => `
+    <div class="depot-card">
+      <div class="depot-top">
+        <div>
+          <div class="depot-etab">${d.etablissement}${d.classe ? ' · ' + d.classe : ''}</div>
+          <div class="depot-meta">${d.mission || ''} — ${d.professeur || ''} ${d.date ? '— ' + new Date(d.date).toLocaleDateString('fr-FR') : ''}</div>
+        </div>
+        <span class="badge ${badgeClass(d.statut)}">${d.statut}</span>
+      </div>
+      ${d.description ? `<div class="depot-desc">${d.description}</div>` : ''}
+      ${d.temoignage ? `<div class="depot-desc" style="font-style:italic;">“${d.temoignage}”</div>` : ''}
+      ${d.liens && d.liens.length ? `<div class="depot-links">${d.liens.map((l, i) => `<a href="${l}" target="_blank" rel="noopener">Pièce jointe ${d.liens.length > 1 ? i + 1 : ''}</a>`).join('')}</div>` : ''}
+      <div class="depot-actions">
+        <input type="number" class="pts-input" value="${d.points || 0}" id="pts-${d.id}" title="Points">
+        <button class="act-btn valider" onclick="validate('${d.id}','Validé')">Valider</button>
+        <button class="act-btn refuser" onclick="validate('${d.id}','Refusé')">Refuser</button>
+        <button class="act-btn" onclick="validate('${d.id}','En attente')">Remettre en attente</button>
+        <button class="act-btn highlight ${d.misEnAvant ? 'on' : ''}" onclick="toggleHighlight('${d.id}', ${!d.misEnAvant})">${d.misEnAvant ? '★ Mis en avant' : '☆ Mettre en avant'}</button>
+      </div>
+    </div>`).join('');
+}
+
+async function validate(id, statut) {
+  const ptsInput = document.getElementById('pts-' + id);
+  const points = ptsInput ? Number(ptsInput.value) : undefined;
+  try {
+    await apiPost({ action: 'validate', id, statut, points });
+    showToast('Statut mis à jour : ' + statut);
+    await loadDepots();
+  } catch (err) { showToast('Erreur : ' + err.message); }
+}
+async function toggleHighlight(id, val) {
+  try {
+    await apiPost({ action: 'highlight', id, misEnAvant: val });
+    showToast(val ? 'Mis en avant' : 'Retiré de la mise en avant');
+    await loadDepots();
+  } catch (err) { showToast('Erreur : ' + err.message); }
+}
+
+// ---- Défis ----
+async function loadDefis() {
+  try {
+    const defis = await apiGet('defis');
+    const zone = document.getElementById('defis-zone');
+    if (defis.length === 0) { zone.innerHTML = '<div class="empty">Aucun défi pour le moment.</div>'; return; }
+    zone.innerHTML = defis.map(d => `
+      <div class="defi-row ${d.actif ? '' : 'inactif'}">
+        <div>
+          <div class="defi-row-name">${d.icone ? `<span>${d.icone}</span>` : ''}${d.libelle}</div>
+          <div class="defi-row-pts">${d.points} pts ${d.categorie ? '· ' + d.categorie : ''}</div>
+        </div>
+        <button class="act-btn" onclick="toggleDefi('${d.id}', ${!d.actif})">${d.actif ? 'Désactiver' : 'Activer'}</button>
+      </div>`).join('');
+  } catch (err) {
+    document.getElementById('defis-zone').innerHTML = `<div class="empty">Erreur : ${err.message}</div>`;
+  }
+}
+async function toggleDefi(id, actif) {
+  try {
+    await apiPost({ action: 'toggleDefi', id, actif });
+    showToast(actif ? 'Défi activé' : 'Défi désactivé');
+    await loadDefis();
+  } catch (err) { showToast('Erreur : ' + err.message); }
+}
+document.getElementById('nd-submit').addEventListener('click', async () => {
+  const libelle = document.getElementById('nd-libelle').value.trim();
+  const points = document.getElementById('nd-points').value;
+  const categorie = document.getElementById('nd-categorie').value.trim();
+  const icone = document.getElementById('nd-icone').value.trim();
+  const description = document.getElementById('nd-description').value.trim();
+  if (!libelle) { showToast('Le libellé est obligatoire.'); return; }
+  try {
+    await apiPost({ action: 'addDefi', libelle, points, categorie, icone, description });
+    showToast('Défi ajouté');
+    document.getElementById('nd-libelle').value = '';
+    document.getElementById('nd-points').value = '';
+    document.getElementById('nd-categorie').value = '';
+    document.getElementById('nd-icone').value = '';
+    document.getElementById('nd-description').value = '';
+    await loadDefis();
+  } catch (err) { showToast('Erreur : ' + err.message); }
+});
+
+// ---- Établissements ----
+async function loadEtabs() {
+  try {
+    const etabs = await apiGet('etablissements');
+    const zone = document.getElementById('etabs-zone');
+    if (etabs.length === 0) { zone.innerHTML = '<div class="empty">Aucun établissement pour le moment.</div>'; return; }
+    zone.innerHTML = etabs.map(e => `
+      <div class="defi-row ${e.actif ? '' : 'inactif'}">
+        <div class="defi-row-name">${e.nom}</div>
+        <button class="act-btn" onclick="toggleEtab('${e.id}', ${!e.actif})">${e.actif ? 'Désactiver' : 'Activer'}</button>
+      </div>`).join('');
+  } catch (err) {
+    document.getElementById('etabs-zone').innerHTML = `<div class="empty">Erreur : ${err.message}</div>`;
+  }
+}
+async function toggleEtab(id, actif) {
+  try {
+    await apiPost({ action: 'toggleEtablissement', id, actif });
+    showToast(actif ? 'Établissement activé' : 'Établissement désactivé');
+    await loadEtabs();
+  } catch (err) { showToast('Erreur : ' + err.message); }
+}
+document.getElementById('ne-submit').addEventListener('click', async () => {
+  const nom = document.getElementById('ne-nom').value.trim();
+  if (!nom) { showToast('Le nom est obligatoire.'); return; }
+  try {
+    await apiPost({ action: 'addEtablissement', nom });
+    showToast('Établissement ajouté');
+    document.getElementById('ne-nom').value = '';
+    await loadEtabs();
+  } catch (err) { showToast('Erreur : ' + err.message); }
+});
+
+// ---- Session existante ----
+if (getToken()) {
+  document.getElementById('login-card').style.display = 'none';
+  document.getElementById('admin-content').style.display = 'block';
+  loadDepots();
+  loadDefis();
+  loadEtabs();
+}
+</script>
+</body>
+</html>

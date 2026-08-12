@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes dépôts — Défi Trinôme Académique 82</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a2744;--navy-lt:#243358;--gold:#b8932a;--gold-lt:#f5ead4;--gold-mid:#e8d090;
+  --bg:#f2f0eb;--bg2:#e8e5de;--white:#ffffff;
+  --text:#1a1e2e;--text2:#4a5068;--text3:#8a90a8;
+  --border:#dcd8ce;--border2:#c8c4b8;
+  --green:#1a5a32;--green-lt:#e8f5ed;
+  --red:#a32d2d;--red-lt:#faeaea;
+  --amber:#8a6b1a;--amber-lt:#f7edd4;
+  --shadow:rgba(26,39,68,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;}
+
+header{background:var(--navy);padding:40px 24px 32px;text-align:center;}
+.h-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:10px;}
+.h-title{font-family:'Libre Baskerville',serif;font-weight:700;font-size:clamp(22px,4vw,30px);color:#fff;margin-bottom:8px;}
+.h-sub{font-size:13px;color:rgba(255,255,255,0.6);max-width:440px;margin:0 auto;}
+.nav-bar{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:8px 16px;border-radius:20px;text-decoration:none;color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.25);}
+.nav-link:hover{background:rgba(255,255,255,0.1);}
+
+.page{max-width:640px;margin:0 auto;padding:32px 20px 80px;}
+
+.search-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:0 2px 8px var(--shadow);display:flex;gap:10px;flex-wrap:wrap;}
+.search-card input{flex:1;min-width:200px;padding:10px 12px;border:1px solid var(--border2);border-radius:8px;font-size:14px;}
+.search-card button{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;}
+
+.depot-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-top:12px;box-shadow:0 2px 8px var(--shadow);}
+.depot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;}
+.depot-etab{font-family:'Libre Baskerville',serif;font-weight:700;font-size:15px;color:var(--navy);}
+.depot-meta{font-size:12px;color:var(--text3);margin-top:2px;}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 10px;border-radius:14px;}
+.badge.attente{background:var(--amber-lt);color:var(--amber);}
+.badge.valide{background:var(--green-lt);color:var(--green);}
+.badge.refuse{background:var(--red-lt);color:var(--red);}
+
+.empty{text-align:center;color:var(--text3);font-size:13px;padding:24px;}
+.err-msg{color:var(--red);font-size:13px;text-align:center;padding:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-label">Trinôme Académique 82</div>
+  <div class="h-title">Mes dépôts</div>
+  <div class="h-sub">Retrouvez le statut de vos missions déposées avec votre adresse e-mail.</div>
+  <div class="nav-bar">
+    <a class="nav-link" href="index.html">Règles &amp; missions</a>
+    <a class="nav-link" href="formulaire.html">Déposer une mission</a>
+  </div>
+</header>
+
+<div class="page">
+  <div class="search-card">
+    <input type="email" id="email-input" placeholder="votre-email@exemple.fr">
+    <button id="search-btn">Voir mes dépôts</button>
+  </div>
+  <div id="results-zone"></div>
+</div>
+
+<script>
+// ⚠️ À COMPLÉTER : coller ici l'URL /exec du déploiement Apps Script
+const API_URL = 'https://script.google.com/macros/s/AKfycbwcSQSXjdaY7e0mmfn8CNx5n_IHU2CQEABBmH37HhRpKlYtjzX177kMblgxLBQpgACo_g/exec';
+
+const emailInput = document.getElementById('email-input');
+const resultsZone = document.getElementById('results-zone');
+
+document.getElementById('search-btn').addEventListener('click', search);
+emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') search(); });
+
+function formatDate(d) {
+  if (!d) return '';
+  const date = new Date(d);
+  if (isNaN(date)) return d;
+  return date.toLocaleDateString('fr-FR');
+}
+function badgeClass(s) { return s === 'Validé' ? 'valide' : s === 'Refusé' ? 'refuse' : 'attente'; }
+
+async function search() {
+  const email = emailInput.value.trim();
+  if (!email) return;
+  resultsZone.innerHTML = '<div class="empty">Recherche…</div>';
+  try {
+    const res = await fetch(`${API_URL}?action=mesDepots&email=${encodeURIComponent(email)}`);
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || 'erreur');
+    if (data.data.length === 0) {
+      resultsZone.innerHTML = '<div class="empty">Aucun dépôt trouvé pour cette adresse e-mail.</div>';
+      return;
+    }
+    resultsZone.innerHTML = data.data.map(d => `
+      <div class="depot-card">
+        <div class="depot-top">
+          <div>
+            <div class="depot-etab">${d.mission || ''}</div>
+            <div class="depot-meta">${d.etablissement} ${d.date ? '— ' + formatDate(d.date) : ''}</div>
+          </div>
+          <span class="badge ${badgeClass(d.statut)}">${d.statut}</span>
+        </div>
+      </div>`).join('');
+  } catch (err) {
+    resultsZone.innerHTML = `<div class="err-msg">Erreur : ${err.message}</div>`;
+  }
+}
+</script>
+</body>
+</html>
