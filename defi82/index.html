@@ -85,6 +85,7 @@ header::before{content:'';position:absolute;inset:0;background-image:repeating-l
   <div class="h-title">Défi Trinôme Académique 82</div>
   <div class="h-sub">Règles du jeu et catalogue des missions ouvertes aux classes de Tarn-et-Garonne.</div>
   <div class="nav-bar">
+    <a class="nav-link ghost" href="missions.html">Catalogue des missions</a>
     <a class="nav-link ghost" href="dashboard.html">Voir la participation</a>
     <a class="nav-link ghost" href="mes-depots.html">Mes dépôts</a>
     <a class="nav-link gold" href="formulaire.html">Déposer une mission</a>
@@ -115,6 +116,10 @@ header::before{content:'';position:absolute;inset:0;background-image:repeating-l
 
   <div class="s-title">Comment fonctionne le site</div>
   <div class="site-map-grid">
+    <a class="site-card" href="missions.html">
+      <div class="site-card-name">Catalogue des missions</div>
+      <div class="site-card-desc">Toutes les missions disponibles, classées par catégorie, avec descriptif et dépôt direct.</div>
+    </a>
     <a class="site-card" href="dashboard.html">
       <div class="site-card-name">Tableau de bord</div>
       <div class="site-card-desc">L'activité de tous les établissements en direct : qui a fait quoi, missions les plus tentées, réalisations mises en avant.</div>
@@ -126,10 +131,6 @@ header::before{content:'';position:absolute;inset:0;background-image:repeating-l
     <a class="site-card" href="mes-depots.html">
       <div class="site-card-name">Mes dépôts</div>
       <div class="site-card-desc">Retrouvez, avec votre e-mail, le statut de toutes les missions que vous avez déposées (en attente, validée, refusée).</div>
-    </a>
-    <a class="site-card" href="index.html">
-      <div class="site-card-name">Règles &amp; missions</div>
-      <div class="site-card-desc">Cette page : le principe du défi et le catalogue complet des missions disponibles, classées par catégorie.</div>
     </a>
   </div>
 
@@ -155,26 +156,14 @@ header::before{content:'';position:absolute;inset:0;background-image:repeating-l
     <div class="faq-card-body">Les pièces jointes peuvent montrer des élèves mineurs. Cette case confirme que les autorisations nécessaires (droit à l'image) ont bien été recueillies auprès des familles avant tout dépôt, conformément aux règles de votre établissement.</div>
   </details>
 
-  <div class="s-title">Catalogue des missions</div>
-  <div id="catalogue-zone"><div class="empty">Chargement des missions…</div></div>
+  <div class="s-title">Aperçu du catalogue</div>
+  <div id="catalogue-teaser"><div class="empty">Chargement…</div></div>
 
 </div>
 
 <script>
 // ⚠️ À COMPLÉTER : coller ici l'URL /exec du déploiement Apps Script
 const API_URL = 'https://script.google.com/macros/s/AKfycbwcSQSXjdaY7e0mmfn8CNx5n_IHU2CQEABBmH37HhRpKlYtjzX177kMblgxLBQpgACo_g/exec';
-
-// Icône par défaut si aucune n'est définie pour la mission (par catégorie)
-const CATEGORY_ICONS = {
-  'Mémoire et histoire': '🎖️',
-  'Citoyenneté': '🤝',
-  'Environnement': '🌱',
-  'Culture': '🎭',
-  'Sport': '🏅',
-};
-function iconFor(d) {
-  return d.icone || CATEGORY_ICONS[d.categorie] || '📌';
-}
 
 async function api(action) {
   const res = await fetch(`${API_URL}?action=${action}`);
@@ -183,61 +172,18 @@ async function api(action) {
   return data.data;
 }
 
-function formatDate(d) {
-  if (!d) return '';
-  const date = new Date(d);
-  if (isNaN(date)) return d;
-  return date.toLocaleDateString('fr-FR');
-}
-
-function renderCatalogue(defis, participation) {
-  const zone = document.getElementById('catalogue-zone');
-  if (defis.length === 0) { zone.innerHTML = '<div class="empty">Aucune mission publiée pour le moment.</div>'; return; }
-
-  const byCat = {};
-  defis.forEach(d => {
-    const cat = d.categorie || 'Missions';
-    if (!byCat[cat]) byCat[cat] = [];
-    byCat[cat].push(d);
-  });
-
-  let counter = 0;
-  zone.innerHTML = Object.entries(byCat).map(([cat, missions]) => `
-    <div class="cat-group">
-      <div class="cat-label">${cat}</div>
-      <div class="mission-list">
-        ${missions.map(d => {
-          const idx = counter++;
-          const examples = participation.filter(p => p.mission === d.libelle).slice(0, 5);
-          return `
-          <div class="mission-card">
-            <div class="mission-head" onclick="toggleMission(${idx})">
-              <span class="mission-name"><span class="mission-icon">${iconFor(d)}</span>${d.libelle}</span>
-              <span class="mission-pts">${d.points} pts</span>
-            </div>
-            <div class="mission-body" id="mb-${idx}">
-              <div class="mission-body-inner">
-                ${d.description ? `<div>${d.description}</div>` : '<div style="color:var(--text3)">Pas de descriptif détaillé — contactez le Trinôme si besoin de précisions.</div>'}
-                ${examples.length ? `<div class="mb-examples"><b>Déjà réalisée par :</b>${examples.map(e => `<div>${e.etablissement} — ${formatDate(e.date)}</div>`).join('')}</div>` : ''}
-                <a class="mb-deposit" href="formulaire.html?mission=${encodeURIComponent(d.libelle)}">Déposer cette mission</a>
-              </div>
-            </div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`).join('');
-}
-
-function toggleMission(idx) {
-  document.getElementById('mb-' + idx).classList.toggle('open');
-}
-
 async function init() {
+  const zone = document.getElementById('catalogue-teaser');
   try {
-    const [defis, participation] = await Promise.all([api('defis'), api('participation')]);
-    renderCatalogue(defis, participation);
+    const defis = await api('defis');
+    const categories = [...new Set(defis.map(d => d.categorie || 'Missions'))];
+    zone.innerHTML = `
+      <div class="rules-card" style="text-align:center;">
+        <p style="margin-bottom:16px;"><b style="color:var(--navy);">${defis.length} missions</b> réparties en <b style="color:var(--navy);">${categories.length} catégorie${categories.length > 1 ? 's' : ''}</b> : ${categories.join(', ')}.</p>
+        <a class="nav-link gold" style="display:inline-block;" href="missions.html">Voir le catalogue complet →</a>
+      </div>`;
   } catch (err) {
-    document.getElementById('catalogue-zone').innerHTML = `<div class="empty">Erreur de chargement — ${err.message}</div>`;
+    zone.innerHTML = `<div class="empty">Erreur de chargement — ${err.message}</div>`;
   }
 }
 init();
