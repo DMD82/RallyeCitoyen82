@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogue des missions — Défi Trinôme Académique 82</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a2744;--navy-lt:#243358;--gold:#b8932a;--gold-lt:#f5ead4;--gold-mid:#e8d090;
+  --bg:#f2f0eb;--bg2:#e8e5de;--white:#ffffff;
+  --text:#1a1e2e;--text2:#4a5068;--text3:#8a90a8;
+  --border:#dcd8ce;--border2:#c8c4b8;
+  --shadow:rgba(26,39,68,0.10);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Source Sans 3',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;}
+
+header{background:var(--navy);padding:44px 24px 32px;text-align:center;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,0.015) 0px,rgba(255,255,255,0.015) 1px,transparent 1px,transparent 12px);pointer-events:none;}
+.h-label{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:10px;}
+.h-title{font-family:'Libre Baskerville',serif;font-weight:700;font-size:clamp(24px,4.5vw,36px);color:#fff;margin-bottom:10px;line-height:1.15;}
+.h-sub{font-size:13px;color:rgba(255,255,255,0.6);max-width:480px;margin:0 auto;}
+
+.nav-bar{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.nav-link{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:9px 18px;border-radius:20px;text-decoration:none;transition:.15s;}
+.nav-link.ghost{color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.25);}
+.nav-link.ghost:hover{background:rgba(255,255,255,0.1);}
+.nav-link.gold{background:var(--gold);color:var(--navy);}
+.nav-link.gold:hover{background:var(--gold-mid);}
+
+.page{max-width:800px;margin:0 auto;padding:32px 20px 80px;}
+
+.search-wrap{position:sticky;top:0;background:var(--bg);padding:8px 0 16px;z-index:5;}
+.search-input{width:100%;padding:13px 16px;border:1px solid var(--border2);border-radius:12px;font-family:'Source Sans 3',sans-serif;font-size:14px;background:var(--white);box-shadow:0 2px 8px var(--shadow);}
+.search-input:focus{outline:none;border-color:var(--gold);}
+.result-count{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);margin-top:8px;}
+
+.cat-group{margin-bottom:22px;}
+.cat-label{font-family:'Libre Baskerville',serif;font-weight:700;font-size:15px;color:var(--navy);margin-bottom:10px;}
+.mission-list{display:flex;flex-direction:column;gap:8px;}
+.mission-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 2px 8px var(--shadow);}
+.mission-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer;user-select:none;}
+.mission-head:hover{background:var(--bg);}
+.mission-name{font-size:14px;color:var(--navy);font-weight:600;display:flex;align-items:center;gap:8px;}
+.mission-icon{font-size:18px;line-height:1;}
+.mission-pts{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:var(--navy);background:var(--gold-lt);padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.mission-body{max-height:0;overflow:hidden;transition:max-height .2s ease;}
+.mission-body.open{max-height:500px;border-top:1px solid var(--border);}
+.mission-body-inner{padding:14px 16px;font-size:13px;color:var(--text2);}
+.mb-examples{margin:10px 0;}
+.mb-examples div{padding:3px 0;color:var(--text3);font-size:12px;}
+.mb-deposit{display:inline-block;margin-top:8px;background:var(--navy);color:#fff;text-decoration:none;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:9px 16px;border-radius:20px;}
+.mb-deposit:hover{background:var(--navy-lt);}
+
+.empty{text-align:center;color:var(--text3);font-size:13px;padding:24px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="h-label">Trinôme Académique 82</div>
+  <div class="h-title">Catalogue des missions</div>
+  <div class="h-sub">Toutes les missions ouvertes cette année, classées par catégorie. Cliquez sur une mission pour la détailler et la déposer directement.</div>
+  <div class="nav-bar">
+    <a class="nav-link ghost" href="index.html">Règles du jeu</a>
+    <a class="nav-link ghost" href="dashboard.html">Voir la participation</a>
+    <a class="nav-link gold" href="formulaire.html">Déposer une mission</a>
+  </div>
+</header>
+
+<div class="page">
+  <div class="search-wrap">
+    <input type="text" class="search-input" id="search-input" placeholder="Rechercher une mission ou une catégorie…">
+    <div class="result-count" id="result-count"></div>
+  </div>
+  <div id="catalogue-zone"><div class="empty">Chargement des missions…</div></div>
+</div>
+
+<script>
+// ⚠️ À COMPLÉTER : coller ici l'URL /exec du déploiement Apps Script
+const API_URL = 'https://script.google.com/macros/s/AKfycbwcSQSXjdaY7e0mmfn8CNx5n_IHU2CQEABBmH37HhRpKlYtjzX177kMblgxLBQpgACo_g/exec';
+
+const CATEGORY_ICONS = {
+  'Mémoire et histoire': '🎖️',
+  'Citoyenneté': '🤝',
+  'Environnement': '🌱',
+  'Culture': '🎭',
+  'Sport': '🏅',
+};
+function iconFor(d) {
+  return d.icone || CATEGORY_ICONS[d.categorie] || '📌';
+}
+
+let allDefis = [];
+let allParticipation = [];
+
+async function api(action) {
+  const res = await fetch(`${API_URL}?action=${action}`);
+  const data = await res.json();
+  if (!data.success) throw new Error(data.error || action);
+  return data.data;
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const date = new Date(d);
+  if (isNaN(date)) return d;
+  return date.toLocaleDateString('fr-FR');
+}
+
+function renderCatalogue(defis) {
+  const zone = document.getElementById('catalogue-zone');
+  const countEl = document.getElementById('result-count');
+  if (allDefis.length === 0) { zone.innerHTML = '<div class="empty">Aucune mission publiée pour le moment.</div>'; countEl.textContent = ''; return; }
+  if (defis.length === 0) { zone.innerHTML = '<div class="empty">Aucune mission ne correspond à votre recherche.</div>'; countEl.textContent = '0 résultat'; return; }
+  countEl.textContent = `${defis.length} mission${defis.length > 1 ? 's' : ''}`;
+
+  const byCat = {};
+  defis.forEach(d => {
+    const cat = d.categorie || 'Missions';
+    if (!byCat[cat]) byCat[cat] = [];
+    byCat[cat].push(d);
+  });
+
+  let counter = 0;
+  zone.innerHTML = Object.entries(byCat).map(([cat, missions]) => `
+    <div class="cat-group">
+      <div class="cat-label">${cat}</div>
+      <div class="mission-list">
+        ${missions.map(d => {
+          const idx = counter++;
+          const examples = allParticipation.filter(p => p.mission === d.libelle).slice(0, 5);
+          return `
+          <div class="mission-card">
+            <div class="mission-head" onclick="toggleMission(${idx})">
+              <span class="mission-name"><span class="mission-icon">${iconFor(d)}</span>${d.libelle}</span>
+              <span class="mission-pts">${d.points} pts</span>
+            </div>
+            <div class="mission-body" id="mb-${idx}">
+              <div class="mission-body-inner">
+                ${d.description ? `<div>${d.description}</div>` : '<div style="color:var(--text3)">Pas de descriptif détaillé — contactez le Trinôme si besoin de précisions.</div>'}
+                ${examples.length ? `<div class="mb-examples"><b>Déjà réalisée par :</b>${examples.map(e => `<div>${e.etablissement} — ${formatDate(e.date)}</div>`).join('')}</div>` : ''}
+                <a class="mb-deposit" href="formulaire.html?mission=${encodeURIComponent(d.libelle)}">Déposer cette mission</a>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function toggleMission(idx) {
+  document.getElementById('mb-' + idx).classList.toggle('open');
+}
+
+document.getElementById('search-input').addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  if (!q) { renderCatalogue(allDefis); return; }
+  const filtered = allDefis.filter(d =>
+    d.libelle.toLowerCase().includes(q) ||
+    (d.categorie || '').toLowerCase().includes(q) ||
+    (d.description || '').toLowerCase().includes(q)
+  );
+  renderCatalogue(filtered);
+});
+
+async function init() {
+  try {
+    const [defis, participation] = await Promise.all([api('defis'), api('participation')]);
+    allDefis = defis;
+    allParticipation = participation;
+    renderCatalogue(allDefis);
+  } catch (err) {
+    document.getElementById('catalogue-zone').innerHTML = `<div class="empty">Erreur de chargement — ${err.message}</div>`;
+  }
+}
+init();
+</script>
+</body>
+</html>
